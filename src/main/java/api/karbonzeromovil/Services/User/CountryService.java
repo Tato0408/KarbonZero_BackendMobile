@@ -52,7 +52,6 @@ public class CountryService {
     }
     public boolean deleteCountry(String id){
         try{
-            System.out.println(id);
             if(repo.existsById(id)){
                 repo.deleteById(id);
                 return true;
