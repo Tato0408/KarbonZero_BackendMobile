@@ -13,6 +13,5 @@ public class FoodCategoryDTO {
     private String idFoodCategory;
     @NotBlank(message="No se permiten espacios en blanco")
     private String foodCategoryName;
-    @NotBlank(message="No se permiten espacios en blanco")
     private double carbonFootPrint;
 }
