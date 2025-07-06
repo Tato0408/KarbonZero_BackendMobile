@@ -23,6 +23,33 @@ public class CountryService {
                 .map(this::CountryToDTO)
                 .collect(Collectors.toList());
     }
+    public CountryDTO insertCountry(CountryDTO dto) throws IllegalAccessException {
+        if(dto == null){
+            throw new IllegalAccessException("Country cannot be null or empty");
+        }
+        try {
+            CountryEntity entity = DTOToCountry(dto);
+            CountryEntity savedCountry = repo.save(entity);
+            return CountryToDTO(savedCountry);
+        } catch (Exception e) {
+            throw new RuntimeException("The country could not be created"+ e.getMessage());
+        }
+    }
+    public CountryDTO updateCountry(String id, CountryDTO dto){
+        try {
+            if (repo.existsById((id))){
+                CountryEntity entity = repo.getById(id);
+                entity.setName(dto.getName());
+                entity.setCarbonFootprint(dto.getCarbonFootprint());
+
+                CountryEntity savedCountry = repo.save(entity);
+                return CountryToDTO(savedCountry);
+            }
+            throw new IllegalArgumentException("The country could not be updated"+id+" check if it exist");
+        }catch (Exception e){
+            throw new RuntimeException("The country could not be updated" + e.getMessage());
+        }
+    }
     public boolean deleteCountry(String id){
         try{
             System.out.println(id);
