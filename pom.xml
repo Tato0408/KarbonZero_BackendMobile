@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -8,12 +8,12 @@
 		<version>3.4.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>project</groupId>
-	<artifactId>karbonzero</artifactId>
+	<groupId>api</groupId>
+	<artifactId>karbonzeromovil</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
-	<name>karbonzero</name>
-	<description>Proyecto de gestión de huella de carbono</description>
+	<name>karbonzeromovil</name>
+	<description>Api encargada de gestionar la aplicación móvil</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -90,6 +90,7 @@
 			<version>2.11</version>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
