@@ -1,9 +1,12 @@
 package api.karbonzeromovil.Controllers.Food;
 
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
+import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Services.Food.FoodCategoryService;
+import api.karbonzeromovil.Services.Food.FoodConsumptionService;
 import api.karbonzeromovil.Services.Food.FoodService;
+import com.sun.jna.WString;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ public class FoodController {
     private FoodCategoryService serviceCategory;
     @Autowired
     private FoodService service;
+    @Autowired
+    private FoodConsumptionService serviceConsumption;
 
     @GetMapping("/getFoods")
     public List<FoodDTO> dataFood(){return service.getAllFood();}
@@ -31,12 +36,15 @@ public class FoodController {
     @GetMapping("/getFoodCategory")
     public List<FoodCategoryDTO> dataFoodCategory(){return serviceCategory.getAllCategories();}
 
+    @GetMapping("/getFoodConsumption")
+    public List<FoodConsumptionDTO> dataFoodConsumption(){return serviceConsumption.getAllFoodConsumption(); }
+
     @PostMapping("/insertFoods")
     public ResponseEntity<Map<String, Object >> insertFood(@Valid @RequestBody FoodDTO dto, HttpServletRequest request){
         try{
             FoodDTO answer = service.insertFood(dto);
             if(answer == null){
-                return responseCreated(answer);
+                return responseBadRequest("Invalid data to create food object");
             }
             return responseCreated(answer);
         } catch (Exception e){
@@ -50,7 +58,7 @@ public class FoodController {
         try{
             FoodCategoryDTO answer = serviceCategory.insertCategory(dto);
             if(answer == null){
-                return responseBadRequest("Invalid Data to create food object");
+                return responseBadRequest("Invalid Data to create food category object");
             }
             return responseCreated(answer);
         }catch (Exception e){
@@ -58,6 +66,20 @@ public class FoodController {
         }
 
     }
+
+    @PostMapping("/insertFoodConsumption")
+    public ResponseEntity<Map<String, Object>> insertFoodConsumption(@Valid @RequestBody FoodConsumptionDTO dto, HttpServletRequest request){
+        try{
+            FoodConsumptionDTO answer = serviceConsumption.insertFooConsumption(dto);
+            if(answer == null){
+                return  responseBadRequest("Invalid Data to create a food consumption object");
+            }
+            return responseCreated(answer);
+        } catch(Exception e){
+            return responseServerError(e, "Can't create a food consumption object");
+        }
+    }
+
 
     @PutMapping("/updateFood/{id}")
     public ResponseEntity <?> updateFood(
@@ -93,6 +115,23 @@ public class FoodController {
             return responseServerError(e, "Can't update a food object");
         }
     }
+
+    @PutMapping("/updateFoodConsumption/{id}")
+    public ResponseEntity<?>updateFoodConsumption(@PathVariable String id, @Valid @RequestBody FoodConsumptionDTO dto, BindingResult bindingResult){
+        if(bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+        try{
+            FoodConsumptionDTO answer = serviceConsumption.updateFoodConsumption(id, dto);
+            if(answer == null){
+               return responseBadRequest("Invalid data to update food consumption object");
+            }
+            return responseUpdated(answer);
+        }catch(Exception e){
+            return responseServerError(e, "Can't update a food consumption object");
+        }
+    }
+
     @DeleteMapping("/deleteFood/{id}")
     public ResponseEntity<Map<String, Object>> deleteFood(
             @PathVariable String id){
@@ -100,7 +139,7 @@ public class FoodController {
             if(!service.deleteFood(id)){
                 return responseNotFound ("Food not found");
             }
-            return responseOK("Food deleted with succes");
+            return responseOK("Food deleted with success");
         } catch(Exception e){
             return responseServerError(e, "Can't delete the food object");
         }
@@ -108,15 +147,29 @@ public class FoodController {
 
 
 
-    @DeleteMapping("deleteCategory/{id}")
+    @DeleteMapping("/deleteCategory/{id}")
     public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable String id){
         try{
             if(!serviceCategory.deleteCategory(id)){
                 return responseNotFound("Category not found ");
             }
-            return responseOK("Category deleted with succes");
+            return responseOK("Category deleted with success");
         } catch (Exception e){
             return responseServerError(e, "Can't delete the category object");
         }
+
+
+        }
+    @DeleteMapping("/deleteFoodConsumption/{id}")
+    public ResponseEntity<Map<String, Object>> deleteFoodConsumption(@PathVariable String id){
+        try{
+            if(!serviceConsumption.deleteFoodConsumption(id)){
+                return responseNotFound("Food consumption not found");
+            }
+            return  responseOK("Food consumption deleted with success");
+        } catch(Exception e){
+            return responseServerError(e, "Can't delete the food consumption object");
+        }
     }
 }
+
