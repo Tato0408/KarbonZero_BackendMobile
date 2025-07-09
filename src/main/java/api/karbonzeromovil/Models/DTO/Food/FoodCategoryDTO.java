@@ -1,6 +1,8 @@
 package api.karbonzeromovil.Models.DTO.Food;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +13,11 @@ import lombok.ToString;
 public class FoodCategoryDTO {
     @Getter @Setter
     private String idFoodCategory;
+
     @NotBlank(message="No se permiten espacios en blanco")
+    @Size(max=200)
     private String foodCategoryName;
+
+    @Min(0)
     private double carbonFootPrint;
 }

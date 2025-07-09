@@ -19,9 +19,11 @@ public class FoodConsumptionFoodEntity {
     @Column(name="IDFOODCONSUMPTIONSFOOD")
     private String idFoodConsumptionsFood;
 
-    @Column(name="IDFOOD")
+    @ManyToOne
+    @JoinColumn(name="IDFOOD", nullable = false)
     private String idFood;
 
-    @Column(name="IDFOODCONSUMPTION")
+    @ManyToOne
+    @JoinColumn(name="IDFOODCONSUMPTION", nullable = false)
     private String idFoodConsumption;
 }

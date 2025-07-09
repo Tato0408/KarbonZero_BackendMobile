@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Set;
+
 @Entity
 @Table(name="TBLIVINGSPACETYPES")
 @Getter @Setter
@@ -24,4 +26,6 @@ public class LivingSpaceTypeEntity {
     @Column(name = "CARBONFOOTPRINT")
     private Double carbonFootPrint;
 
+    @OneToMany(mappedBy = "idLivingSpaceType")
+    private Set<LivingSpaceEntity> livingSpaceSet;
 }

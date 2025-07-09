@@ -1,7 +1,9 @@
 package api.karbonzeromovil.Models.DTO.LivingSpace;
 
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +16,10 @@ public class LivingSpaceTypeDTO {
     private String idLivingSpaceType;
 
     @NotBlank(message = "No es permitido dejar espacios en blanco")
+    @Size(max=200)
     private String nameLivingSpaceType;
 
+    @Min(0)
     private Double carbonFootPrint;
 
 }

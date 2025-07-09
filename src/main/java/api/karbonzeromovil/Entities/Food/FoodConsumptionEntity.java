@@ -8,6 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 
 @Entity
@@ -21,7 +22,8 @@ public class FoodConsumptionEntity {
     @Column(name="IDFOODCONSUMPTION")
     private String idFoodConsumption;
 
-    @Column(name="IDUSER")
+    @ManyToOne
+    @JoinColumn(name="IDUSER", nullable = false)
     private String idUser;
 
     @Column(name="CONSUMPTIONDATE")
@@ -32,4 +34,7 @@ public class FoodConsumptionEntity {
 
     @Column(name="LONGITUDE")
     private Double longitude;
+
+    @OneToMany(mappedBy = "idFoodConsumption")
+    private Set<FoodConsumptionFoodEntity> foodConsumptionFoodSet;
 }
