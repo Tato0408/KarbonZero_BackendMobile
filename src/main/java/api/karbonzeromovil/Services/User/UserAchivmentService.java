@@ -20,8 +20,8 @@ public class UserAchivmentService {
     private UserAchivmentRepository repo;
 
     public List<UserAchivmentDTO> getAllAchivments(){
-        List<UserAchivmentEntity> countries = repo.findAll();
-        return countries.stream()
+        List<UserAchivmentEntity> achivments = repo.findAll();
+        return achivments.stream()
                 .map(this::AchivmentToDTO)
                 .collect(Collectors.toList());
     }
