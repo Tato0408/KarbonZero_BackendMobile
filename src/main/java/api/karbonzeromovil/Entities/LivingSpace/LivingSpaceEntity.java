@@ -19,9 +19,11 @@ public class LivingSpaceEntity {
     @Column(name="IDLIVINGSPACE")
     private String idLivingSpace;
 
-    @Column(name="IDLIVINGSPACETYPE")
+    @ManyToOne
+    @JoinColumn(name="IDLIVINGSPACETYPE", nullable = false)
     private String idLivingSpaceType;
 
-    @Column(name="IDUSER")
+    @ManyToOne
+    @JoinColumn(name="IDUSER", nullable = false)
     private String idUser;
 }

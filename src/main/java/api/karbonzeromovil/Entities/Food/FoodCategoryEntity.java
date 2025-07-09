@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.Set;
+
 @Entity
 @Table(name="TBFOODCATEGORIES")
 @ToString @EqualsAndHashCode
@@ -17,8 +19,13 @@ public class FoodCategoryEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDFOODCATEGORY")
     private String idFoodCategory;
+
     @Column(name="NAME")
     private String foodCategoryName;
+
     @Column(name="CARBONFOOTPRINT")
     private double carbonFootPrint;
+
+    @OneToMany(mappedBy = "idFoodCategory")
+    private Set<FoodEntity> foodSet;
 }
