@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
+
 @Entity
 @Table(name="TBCOUNTRIES")
 @Getter @Setter @ToString @EqualsAndHashCode
@@ -20,4 +22,7 @@ public class CountryEntity {
     private String name;
     @Column(name = "CARBONFOOTPRINT", nullable = false)
     private Double carbonFootprint;
+
+    @OneToMany(mappedBy = "idCountry")
+    private List<UserEntity> consumptionList;
 }
