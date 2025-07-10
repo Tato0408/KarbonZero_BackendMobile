@@ -3,6 +3,8 @@ package api.karbonzeromovil.Services.Food;
 import api.karbonzeromovil.Entities.Food.FoodConsumptionFoodEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionFoodRepository;
+import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
+import api.karbonzeromovil.Repositories.Food.FoodRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,6 +18,10 @@ import java.util.stream.Collectors;
 public class FoodConsumptionFoodService {
     @Autowired
     private FoodConsumptionFoodRepository repo;
+    @Autowired
+    private FoodRepository repoFood;
+    @Autowired
+    private FoodConsumptionRepository repoConsumption;
 
     public List<FoodConsumptionFoodDTO> getAllFoodConsumptionFood(){
         List<FoodConsumptionFoodEntity> entity = repo.findAll();
@@ -43,8 +49,8 @@ public class FoodConsumptionFoodService {
             if(repo.existsById(id)){
                 FoodConsumptionFoodEntity entity =  repo.getById(id);
 
-                entity.setIdFood(dto.getIdFood());
-                entity.setIdFoodConsumption(dto.getIdFoodConsumption());
+                entity.setIdFood(repoFood.getReferenceById(dto.getIdFood()));
+                entity.setIdFoodConsumption(repoConsumption.getReferenceById(dto.getIdFoodConsumption()));
 
                 FoodConsumptionFoodEntity savedEntity = repo.save(entity);
                 return foodConsumptionFoodToDTO(savedEntity);
@@ -76,8 +82,8 @@ public class FoodConsumptionFoodService {
         FoodConsumptionFoodDTO dto = new FoodConsumptionFoodDTO();
 
         dto.setIdFoodConsumptionsFood(entity.getIdFoodConsumptionsFood());
-        dto.setIdFood(entity.getIdFood());
-        dto.setIdFoodConsumption(entity.getIdFoodConsumption());
+        dto.setIdFood(entity.getIdFood().getIdFood());
+        dto.setIdFoodConsumption(entity.getIdFoodConsumption().getIdFoodConsumption());
 
         return dto;
     }
@@ -86,8 +92,8 @@ public class FoodConsumptionFoodService {
         FoodConsumptionFoodEntity entity = new FoodConsumptionFoodEntity();
 
         entity.setIdFoodConsumptionsFood(dto.getIdFoodConsumptionsFood());
-        entity.setIdFood(dto.getIdFood());
-        entity.setIdFoodConsumption(dto.getIdFoodConsumption());
+        entity.setIdFood(repoFood.getReferenceById(dto.getIdFood()));
+        entity.setIdFoodConsumption(repoConsumption.getReferenceById(dto.getIdFoodConsumption()));
 
         return entity;
     }

@@ -5,6 +5,8 @@ import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceTypeEntity;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceTypeDTO;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceRepository;
+import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceTypeRepository;
+import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,7 +20,10 @@ import java.util.stream.Collectors;
 public class LivingSpaceService {
     @Autowired
     private LivingSpaceRepository repo;
-
+    @Autowired
+    private LivingSpaceTypeRepository repoType;
+    @Autowired
+    private UserRepository repoUser;
     public List<LivingSpaceDTO> getAllLivingSpace (){
         List<LivingSpaceEntity> livingSpace = repo.findAll();
         return livingSpace.stream()
@@ -46,8 +51,8 @@ public class LivingSpaceService {
             if(repo.existsById(id)){
                 LivingSpaceEntity entity =  repo.getById(id);
 
-                entity.setIdLivingSpaceType(dto.getIdLivingSpaceType());
-                entity.setIdUser(dto.getIdUser());
+                entity.setIdLivingSpaceType(repoType.getReferenceById(dto.getIdLivingSpaceType()));
+                entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
 
                 LivingSpaceEntity savedEntity = repo.save(entity);
                 return livingSpaceToDTO(savedEntity);
@@ -78,8 +83,8 @@ public class LivingSpaceService {
         LivingSpaceDTO dto = new LivingSpaceDTO();
 
         dto.setIdLivingSpace(entity.getIdLivingSpace());
-        dto.setIdLivingSpaceType(entity.getIdLivingSpaceType());
-        dto.setIdUser(entity.getIdUser());
+        dto.setIdLivingSpaceType(entity.getIdLivingSpaceType().getIdLivingSpaceType());
+        dto.setIdUser(entity.getIdUser().getIdUser());
 
         return dto;
     }
@@ -87,8 +92,8 @@ public class LivingSpaceService {
     private LivingSpaceEntity DTOToLivingSpace(LivingSpaceDTO dto){
         LivingSpaceEntity entity = new LivingSpaceEntity();
         entity.setIdLivingSpace(dto.getIdLivingSpace());
-        entity.setIdLivingSpaceType(dto.getIdLivingSpaceType());
-       entity.setIdUser(dto.getIdUser());
+        entity.setIdLivingSpaceType(repoType.getReferenceById(dto.getIdLivingSpaceType()));
+        entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
 
         return entity;
     }

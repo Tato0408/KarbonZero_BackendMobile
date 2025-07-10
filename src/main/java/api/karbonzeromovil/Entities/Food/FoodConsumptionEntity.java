@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Entities.Food;
 
+import api.karbonzeromovil.Entities.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class FoodConsumptionEntity {
 
     @ManyToOne
     @JoinColumn(name="IDUSER", nullable = false)
-    private String idUser;
+    private UserEntity idUser;
 
     @Column(name="CONSUMPTIONDATE")
     private LocalDate consumptionDate;

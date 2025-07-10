@@ -3,6 +3,7 @@ package api.karbonzeromovil.Models.DTO.LivingSpace;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class LivingSpaceTypeDTO {
     private String nameLivingSpaceType;
 
     @Min(0)
+    @Positive
     private Double carbonFootPrint;
 
 }

@@ -2,6 +2,7 @@ package api.karbonzeromovil.Models.DTO.Food;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,5 +20,6 @@ public class FoodCategoryDTO {
     private String foodCategoryName;
 
     @Min(0)
+    @Positive
     private double carbonFootPrint;
 }
