@@ -4,6 +4,7 @@ import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
+import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class FoodConsumptionService {
     @Autowired
     private FoodConsumptionRepository repo;
+    @Autowired
+    private UserRepository repoUser;
 
     public List<FoodConsumptionDTO> getAllFoodConsumption(){
         List<FoodConsumptionEntity> foodConsumption = repo.findAll();
@@ -43,7 +46,7 @@ public class FoodConsumptionService {
             if(repo.existsById(id)){
                 FoodConsumptionEntity entity = repo.getReferenceById(id);
 
-                entity.setIdUser(dto.getIdUser());
+                entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
                 entity.setConsumptionDate(dto.getConsumptionDate());
                 entity.setLatitude(dto.getLatitude());
                 entity.setLongitude(dto.getLongitude());
@@ -76,7 +79,7 @@ public class FoodConsumptionService {
         FoodConsumptionDTO dto = new FoodConsumptionDTO();
 
         dto.setIdFoodConsumption(consumption.getIdFoodConsumption());
-        dto.setIdUser(consumption.getIdUser());
+        dto.setIdUser(consumption.getIdUser().getIdUser());
         dto.setConsumptionDate(consumption.getConsumptionDate());
         dto.setLatitude(consumption.getLatitude());
         dto.setLongitude(consumption.getLongitude());
@@ -88,7 +91,7 @@ public class FoodConsumptionService {
         FoodConsumptionEntity entity = new FoodConsumptionEntity();
 
         entity.setIdFoodConsumption(dto.getIdFoodConsumption());
-        entity.setIdUser(dto.getIdUser());
+        entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
         entity.setConsumptionDate(dto.getConsumptionDate());
         entity.setLatitude(dto.getLatitude());
         entity.setLongitude(dto.getLongitude());

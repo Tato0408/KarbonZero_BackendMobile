@@ -22,7 +22,7 @@ public class FoodEntity {
 
     @ManyToOne
     @JoinColumn(name ="IDFOODCATEGORY", nullable = false)
-    private String idFoodCategory;
+    private FoodCategoryEntity idFoodCategory;
 
     @Column(name = "NAME")
     private String foodName;

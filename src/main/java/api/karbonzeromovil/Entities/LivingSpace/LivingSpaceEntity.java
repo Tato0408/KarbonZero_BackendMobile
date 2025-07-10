@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Entities.LivingSpace;
 
+import api.karbonzeromovil.Entities.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,9 +22,9 @@ public class LivingSpaceEntity {
 
     @ManyToOne
     @JoinColumn(name="IDLIVINGSPACETYPE", nullable = false)
-    private String idLivingSpaceType;
+    private LivingSpaceTypeEntity idLivingSpaceType;
 
     @ManyToOne
     @JoinColumn(name="IDUSER", nullable = false)
-    private String idUser;
+    private UserEntity idUser;
 }
