@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
+
 @Entity
 @Table(name="TBUSERACHIVMENTS")
 @Getter
@@ -17,8 +19,10 @@ public class UserAchivmentEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDUSERACHIVMENT")
     private String idAchivment;
-    @Column(name = "IDUSER")
-    private String idUser;
+    @ManyToOne
+    @JoinColumn(name = "IDUSER")
+    private UserEntity idUser;
     @Column(name = "ACHIVMENTNAME", nullable = false)
     private String achivmentName;
+
 }
