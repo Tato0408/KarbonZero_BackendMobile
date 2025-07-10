@@ -2,9 +2,11 @@ package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.UserAchivmentEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchivmentDTO;
 import api.karbonzeromovil.Repositories.User.UserAchivmentRepository;
+import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 public class UserAchivmentService {
     @Autowired
     private UserAchivmentRepository repo;
+    @Autowired
+    private UserRepository userRepo;
 
     public List<UserAchivmentDTO> getAllAchivments(){
         List<UserAchivmentEntity> achivments = repo.findAll();
@@ -41,7 +45,7 @@ public class UserAchivmentService {
         try {
             if (repo.existsById((id))){
                 UserAchivmentEntity entity = repo.getById(id);
-                entity.setIdUser(dto.getIdUser());
+                entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
                 entity.setAchivmentName(dto.getAchivmentName());
 
                 UserAchivmentEntity savedAchivment = repo.save(entity);
@@ -67,14 +71,14 @@ public class UserAchivmentService {
     private UserAchivmentDTO AchivmentToDTO(UserAchivmentEntity entity){
         UserAchivmentDTO dto = new UserAchivmentDTO();
         dto.setIdAchivment(entity.getIdAchivment());
-        dto.setIdUser(entity.getIdUser());
+        dto.setIdUser(entity.getIdUser().getIdUser());
         dto.setAchivmentName(entity.getAchivmentName());
         return dto;
     }
     private UserAchivmentEntity DTOToAchivment(UserAchivmentDTO dto){
         UserAchivmentEntity entity = new UserAchivmentEntity();
         entity.setIdAchivment(dto.getIdAchivment());
-        entity.setIdUser(dto.getIdUser());
+        entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
         entity.setAchivmentName(dto.getAchivmentName());
         return entity;
     }
