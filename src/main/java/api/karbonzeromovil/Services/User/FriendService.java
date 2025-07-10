@@ -5,6 +5,7 @@ import api.karbonzeromovil.Entities.User.FriendEntity;
 import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Repositories.User.FriendRepository;
+import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class FriendService {
     @Autowired
     private FriendRepository repo;
+    @Autowired
+    private UserRepository userRepo;
 
     public List<FriendDTO> getAllFriends(){
         List<FriendEntity> friends = repo.findAll();
@@ -41,8 +44,8 @@ public class FriendService {
         try{
             if (repo.existsById(id)){
                 FriendEntity entity = repo.getById(id);
-                entity.setUser1(dto.getUser1());
-                entity.setUser2(dto.getUser2());
+                entity.setUser1(userRepo.getReferenceById(dto.getUser1()));
+                entity.setUser2(userRepo.getReferenceById(dto.getUser2()));
 
                 FriendEntity savedFriend = repo.save(entity);
                 return FriendToDTO(savedFriend);
@@ -67,15 +70,15 @@ public class FriendService {
     private FriendDTO FriendToDTO(FriendEntity entity){
         FriendDTO dto = new FriendDTO();
         dto.setIdFriend(entity.getIdFriend());
-        dto.setUser1(entity.getUser1());
-        dto.setUser2(entity.getUser2());
+        dto.setUser1(entity.getUser1().getIdUser());
+        dto.setUser2(entity.getUser2().getIdUser());
         return dto;
     }
     private FriendEntity DTOToFriend(FriendDTO dto){
         FriendEntity entity = new FriendEntity();
         entity.setIdFriend(dto.getIdFriend());
-        entity.setUser1(dto.getUser1());
-        entity.setUser2(dto.getUser2());
+        entity.setUser1(userRepo.getReferenceById(dto.getUser1()));
+        entity.setUser2(userRepo.getReferenceById(dto.getUser2()));
         return entity;
     }
 }
