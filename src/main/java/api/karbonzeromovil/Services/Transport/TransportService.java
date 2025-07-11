@@ -42,8 +42,8 @@ public class TransportService {
                 entity.setName(dto.getName());
                 entity.setCarbonFootprint(dto.getCarbonFootprint());
 
-                TransportEntity savedCountry = repo.save(entity);
-                return TransportToDTO(savedCountry);
+                TransportEntity savedTransport = repo.save(entity);
+                return TransportToDTO(savedTransport);
             }
             throw new IllegalArgumentException("The Transport could not be updated"+id+" check if it exist");
         }catch (Exception e){

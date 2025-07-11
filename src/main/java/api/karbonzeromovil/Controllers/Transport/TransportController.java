@@ -30,11 +30,11 @@ public class TransportController {
         try {
             TransportDTO answer = transportService.insertTransport(dto);
             if (answer == null){
-                return responseBadRequest("Invalid data to create a country object");
+                return responseBadRequest("Invalid data to create a transport object");
             }
             return responseCreated(answer);
         } catch (Exception e) {
-            return responseServerError(e, "Cannot create country object");
+            return responseServerError(e, "Cannot create transport object");
         }
     }
     @PutMapping("/updateTransport/{id}")
@@ -45,22 +45,22 @@ public class TransportController {
         try {
             TransportDTO answer = transportService.updateTransport(id,dto);
             if (answer== null){
-                return responseBadRequest("Invalid data to update a country object");
+                return responseBadRequest("Invalid data to update a transport object");
             }
             return responseUpdated(answer);
         }catch (Exception e){
-            return responseServerError(e, "Cannot update a country object");
+            return responseServerError(e, "Cannot update a transport object");
         }
     }
     @DeleteMapping("/deleteTransport/{id}")
     public ResponseEntity<Map<String, Object>> deleteTransport(@PathVariable String id) {
         try {
             if(!transportService.deleteTransport(id)){
-                return responseNotFound("Country not found");
+                return responseNotFound("Transport not found");
             }
-            return responseOK("Country deleted with success");
+            return responseOK("Transport deleted with success");
         } catch (Exception e) {
-            return responseServerError(e, "Cannot delete the country with the country Object");
+            return responseServerError(e, "Cannot delete the transport with the country Object");
         }
     }
 }
