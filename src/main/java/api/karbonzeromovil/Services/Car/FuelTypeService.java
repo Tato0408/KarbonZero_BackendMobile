@@ -4,6 +4,7 @@ import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class FuelTypeService {
+    @Autowired
     private FuelTypeRepository repo;
 
     public List<FuelTypeDTO> getAllFuelType(){
-        List<FuelTypeEntity> cars = repo.findAll();
-        return cars.stream()
+        List<FuelTypeEntity> Fueltype = repo.findAll();
+        return Fueltype.stream()
                 .map(this::FuelTypeToDTO)
                 .collect(Collectors.toList());
     }

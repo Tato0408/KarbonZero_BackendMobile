@@ -22,5 +22,5 @@ public class CarSizeEntity {
     private String name;
 
     @OneToMany(mappedBy = "idCarSize")
-    private List<CarEntity> consumptionList;
+    private List<CarEntity> carSizeList;
 }

@@ -4,6 +4,7 @@ import api.karbonzeromovil.Entities.Car.CarSizeEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarSizeDTO;
 import api.karbonzeromovil.Repositories.Car.CarSizeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +14,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class CarSizeService {
+    @Autowired
     private CarSizeRepository repo;
 
     public List<CarSizeDTO> getAllCarSize(){
-        List<CarSizeEntity> cars = repo.findAll();
-        return cars.stream()
+        List<CarSizeEntity> carSize = repo.findAll();
+        return carSize.stream()
                 .map(this::CarSizeToDTO)
                 .collect(Collectors.toList());
     }

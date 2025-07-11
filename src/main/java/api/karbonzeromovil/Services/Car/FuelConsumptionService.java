@@ -4,6 +4,7 @@ import api.karbonzeromovil.Entities.Car.FuelConsumptionEntity;
 import api.karbonzeromovil.Models.DTO.Car.FuelConsumptionDTO;
 import api.karbonzeromovil.Repositories.Car.FuelConsumptionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class FuelConsumptionService {
+    @Autowired
     private FuelConsumptionRepository repo;
 
     public List<FuelConsumptionDTO> getAllFuelConsumption(){
@@ -24,14 +26,14 @@ public class FuelConsumptionService {
 
     public FuelConsumptionDTO insertFuelConsumption(FuelConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){
-            throw new IllegalAccessException("Car size cannot be null or empty");
+            throw new IllegalAccessException("Fuel Consumption size cannot be null or empty");
         }
         try {
             FuelConsumptionEntity entity = DT0ToFuelConsumption(dto);
             FuelConsumptionEntity savedFuelConsumption = repo.save(entity);
             return FuelConsumptionToDTO(savedFuelConsumption);
         } catch (Exception e) {
-            throw new RuntimeException("The car size could not be created"+ e.getMessage());
+            throw new RuntimeException("The fuel consumption size could not be created"+ e.getMessage());
         }
     }
 
@@ -48,9 +50,9 @@ public class FuelConsumptionService {
                 FuelConsumptionEntity savedFuelConsumption = repo.save(entity);
                 return FuelConsumptionToDTO(savedFuelConsumption);
             }
-            throw new IllegalArgumentException("The car size could not be updated"+id+" check if it exist");
+            throw new IllegalArgumentException("The fuel consumption could not be updated"+id+" check if it exist");
         }catch (Exception e){
-            throw new RuntimeException("The car size could not be updated" + e.getMessage());
+            throw new RuntimeException("The fuel consumption could not be updated" + e.getMessage());
         }
     }
 
@@ -63,7 +65,7 @@ public class FuelConsumptionService {
                 return false;
             }
         }catch (EmptyResultDataAccessException e){
-            throw new EmptyResultDataAccessException("The Car size with the ID : " + id + " doesn't exists", 1);
+            throw new EmptyResultDataAccessException("The fuel consumption with the ID : " + id + " doesn't exists", 1);
         }
     }
 

@@ -9,7 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import java.util.List;
 
 @Entity
-@Table(name = "TBUSERS")
+@Table(name = "TBCARS")
 @Setter @Getter @EqualsAndHashCode
 public class CarEntity {
 
@@ -24,7 +24,6 @@ public class CarEntity {
     private String idCarSize;
 
     @OneToMany(mappedBy = "idCar")
-    private List<TypeCarEntity> typeCarList;
-    @OneToMany(mappedBy = "idCar")
-    private List<FuelConsumptionEntity> fuelConsumptionList;
+    private List<TypeCarEntity> TypeCarList;
+
 }

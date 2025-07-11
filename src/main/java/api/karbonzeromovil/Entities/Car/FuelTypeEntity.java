@@ -27,7 +27,5 @@ public class FuelTypeEntity {
     private Double carbonFooTprint;
 
     @OneToMany(mappedBy = "idFuelType")
-    private List<FuelConsumptionEntity> fuelConsumptionList;
-    @OneToMany(mappedBy = "idFuelType")
     private List<TypeCarEntity> carConsumptionList;
 }
