@@ -1,4 +1,7 @@
 package api.karbonzeromovil.Repositories.Car;
 
-public interface TypeCarRepository {
+import api.karbonzeromovil.Entities.Car.TypeCarEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TypeCarRepository extends JpaRepository<TypeCarEntity, String >{
 }
