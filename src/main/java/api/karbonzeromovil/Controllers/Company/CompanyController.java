@@ -24,6 +24,8 @@ import static api.karbonzeromovil.Utils.Responses.responseOK;
 import static api.karbonzeromovil.Utils.Responses.responseServerError;
 import static api.karbonzeromovil.Utils.Responses.responseUpdated;
 
+@RestController
+@RequestMapping("/apiCompany")
 public class CompanyController {
     @Autowired
     private CompanyService serviceCompany;
