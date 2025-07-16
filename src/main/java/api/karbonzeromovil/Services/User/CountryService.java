@@ -38,7 +38,7 @@ public class CountryService {
     public CountryDTO updateCountry(String id, CountryDTO dto){
         try {
             if (repo.existsById((id))){
-                CountryEntity entity = repo.getById(id);
+                CountryEntity entity = repo.getReferenceById(id);
                 entity.setName(dto.getName());
                 entity.setCarbonFootprint(dto.getCarbonFootprint());
 

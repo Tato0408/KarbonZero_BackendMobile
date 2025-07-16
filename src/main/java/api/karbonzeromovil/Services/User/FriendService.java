@@ -1,8 +1,6 @@
 package api.karbonzeromovil.Services.User;
 
-import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.FriendEntity;
-import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Repositories.User.FriendRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
@@ -43,7 +41,7 @@ public class FriendService {
     public FriendDTO updateFriend(String id, FriendDTO dto){
         try{
             if (repo.existsById(id)){
-                FriendEntity entity = repo.getById(id);
+                FriendEntity entity = repo.getReferenceById(id);
                 entity.setUser1(userRepo.getReferenceById(dto.getUser1()));
                 entity.setUser2(userRepo.getReferenceById(dto.getUser2()));
 

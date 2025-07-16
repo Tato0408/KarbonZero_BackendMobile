@@ -1,9 +1,7 @@
 package api.karbonzeromovil.Services.LivingSpace;
 
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
-import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceTypeEntity;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
-import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceTypeDTO;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceRepository;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceTypeRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
@@ -49,7 +47,7 @@ public class LivingSpaceService {
     public LivingSpaceDTO updateLivingSpace(String id, LivingSpaceDTO dto){
         try{
             if(repo.existsById(id)){
-                LivingSpaceEntity entity =  repo.getById(id);
+                LivingSpaceEntity entity =  repo.getReferenceById(id);
 
                 entity.setIdLivingSpaceType(repoType.getReferenceById(dto.getIdLivingSpaceType()));
                 entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));

@@ -17,7 +17,7 @@ public class ServiceService {
     @Autowired
     private ServiceRepository repo;
 
-    public List<ServiceDTO> getAllService(){
+    public List<ServiceDTO> getAllServices(){
         List<ServiceEntity> countries = repo.findAll();
         return countries.stream()
                 .map(this::ServiceToDTO)
@@ -38,7 +38,7 @@ public class ServiceService {
     public ServiceDTO updateService(String id, ServiceDTO dto){
         try {
             if (repo.existsById((id))){
-                ServiceEntity entity = repo.getById(id);
+                ServiceEntity entity = repo.getReferenceById(id);
                 entity.setName(dto.getName());
                 ServiceEntity savedService = repo.save(entity);
                 return ServiceToDTO(savedService);

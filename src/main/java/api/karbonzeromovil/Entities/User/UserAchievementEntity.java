@@ -6,23 +6,21 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.List;
-
 @Entity
-@Table(name="TBUSERACHIVMENTS")
+@Table(name="TBUSERACHIEVEMENTS")
 @Getter
 @Setter
 @EqualsAndHashCode
-public class UserAchivmentEntity {
+public class UserAchievementEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")
-    @Column(name="IDUSERACHIVMENT")
-    private String idAchivment;
+    @Column(name="IDUSERACHIEVEMENT")
+    private String idAchievement;
     @ManyToOne
     @JoinColumn(name = "IDUSER")
     private UserEntity idUser;
-    @Column(name = "ACHIVMENTNAME", nullable = false)
-    private String achivmentName;
+    @Column(name = "ACHIEVEMENTNAME", nullable = false)
+    private String achievementName;
 
 }

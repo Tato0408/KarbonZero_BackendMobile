@@ -20,13 +20,13 @@ public class ServiceController {
     @Autowired
     private ServiceService serviceService;
 
-    @GetMapping("/getAllService")
-    public List<ServiceDTO> getAllService(){
-        return serviceService.getAllService();
+    @GetMapping("/getAllServices")
+    public List<ServiceDTO> getAllServices(){
+        return serviceService.getAllServices();
     }
 
     @PostMapping("/insertService")
-    public ResponseEntity<Map<String,Object>> insertTransport(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> insertService(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){
         try {
             ServiceDTO answer = serviceService.insertService(dto);
             if (answer == null){
@@ -45,22 +45,22 @@ public class ServiceController {
         try {
             ServiceDTO answer = serviceService.updateService(id,dto);
             if (answer== null){
-                return responseBadRequest("Invalid data to update a transport object");
+                return responseBadRequest("Invalid data to update a service object");
             }
             return responseUpdated(answer);
         }catch (Exception e){
-            return responseServerError(e, "Cannot update a transport object");
+            return responseServerError(e, "Cannot update a service object");
         }
     }
     @DeleteMapping("/deleteService/{id}")
-    public ResponseEntity<Map<String, Object>> deleteTransport(@PathVariable String id) {
+    public ResponseEntity<Map<String, Object>> deleteService(@PathVariable String id) {
         try {
             if(!serviceService.deleteService(id)){
-                return responseNotFound("Transport not found");
+                return responseNotFound("Service not found");
             }
-            return responseOK("Transport deleted with success");
+            return responseOK("Service deleted with success");
         } catch (Exception e) {
-            return responseServerError(e, "Cannot delete the transport with the country Object");
+            return responseServerError(e, "Cannot delete the service with the service Object");
         }
     }
 }

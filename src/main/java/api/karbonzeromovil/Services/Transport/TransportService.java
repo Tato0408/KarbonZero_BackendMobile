@@ -17,7 +17,7 @@ public class TransportService {
     @Autowired
     private TransportRepository repo;
 
-    public List<TransportDTO> getAllTransport(){
+    public List<TransportDTO> getAllTransports(){
         List<TransportEntity> countries = repo.findAll();
         return countries.stream()
                 .map(this::TransportToDTO)
@@ -38,7 +38,7 @@ public class TransportService {
     public TransportDTO updateTransport(String id, TransportDTO dto){
         try {
             if (repo.existsById((id))){
-                TransportEntity entity = repo.getById(id);
+                TransportEntity entity = repo.getReferenceById(id);
                 entity.setName(dto.getName());
                 entity.setCarbonFootprint(dto.getCarbonFootprint());
 

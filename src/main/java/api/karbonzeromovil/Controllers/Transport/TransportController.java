@@ -20,9 +20,9 @@ public class TransportController {
     @Autowired
     private TransportService transportService;
 
-    @GetMapping("/getAllTransport")
-    public List<TransportDTO> getAllTransport(){
-        return transportService.getAllTransport();
+    @GetMapping("/getAllTransports")
+    public List<TransportDTO> getAllTransports(){
+        return transportService.getAllTransports();
     }
 
     @PostMapping("/insertTransport")
