@@ -4,10 +4,8 @@ import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceTypeDTO;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceService;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceTypeService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -27,11 +25,11 @@ public class LivingSpaceController {
     @Autowired
     private LivingSpaceService serviceLivingSpace;
 
-    @GetMapping("/getAllLivingSpaceType")
-    public List<LivingSpaceTypeDTO> dataLivingSpaceType(){return serviceLivingSpaceType.getAllLivingSpaceType();}
+    @GetMapping("/getAllLivingSpaceTypes")
+    public List<LivingSpaceTypeDTO> getAllLivingSpaceTypes(){return serviceLivingSpaceType.getAllLivingSpaceType();}
 
-    @GetMapping("/getAllLivingSpace")
-    public List<LivingSpaceDTO> dataLivingSpace(){return serviceLivingSpace.getAllLivingSpace(); }
+    @GetMapping("/getAllLivingSpaces")
+    public List<LivingSpaceDTO> getAllLivingSpaces(){return serviceLivingSpace.getAllLivingSpace(); }
 
     @PostMapping("/insertLivingSpaceType")
     public ResponseEntity<Map<String, Object>> insertLivingSpaceType(@Valid @RequestBody LivingSpaceTypeDTO dto, HttpServletRequest request){

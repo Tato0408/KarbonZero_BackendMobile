@@ -23,7 +23,7 @@ public class FoodConsumptionFoodService {
     @Autowired
     private FoodConsumptionRepository repoConsumption;
 
-    public List<FoodConsumptionFoodDTO> getAllFoodConsumptionFood(){
+    public List<FoodConsumptionFoodDTO> getAllFoodConsumptionFoods(){
         List<FoodConsumptionFoodEntity> entity = repo.findAll();
         return entity.stream()
                 .map(this::foodConsumptionFoodToDTO)
@@ -47,7 +47,7 @@ public class FoodConsumptionFoodService {
     public FoodConsumptionFoodDTO updateFoodConsumptionFood(String id, FoodConsumptionFoodDTO dto){
         try{
             if(repo.existsById(id)){
-                FoodConsumptionFoodEntity entity =  repo.getById(id);
+                FoodConsumptionFoodEntity entity =  repo.getReferenceById(id);
 
                 entity.setIdFood(repoFood.getReferenceById(dto.getIdFood()));
                 entity.setIdFoodConsumption(repoConsumption.getReferenceById(dto.getIdFoodConsumption()));
