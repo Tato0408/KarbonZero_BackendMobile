@@ -18,5 +18,5 @@ public class MeasureUnitDTO {
 
     @NotBlank(message = "No es permitido dejar espacios en blanco")
     @Size(max=200)
-    private String nameMeasureUnits;
+    private String nameMeasureUnit;
 }

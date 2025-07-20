@@ -20,15 +20,16 @@ import static api.karbonzeromovil.Utils.Responses.responseCreated;
 import static api.karbonzeromovil.Utils.Responses.responseServerError;
 
 @RestController
-@RequestMapping("api/Pet")
+@RequestMapping("/apiPet")
 public class PetController {
     @Autowired
     private PetTypeService servicePetType;
     @Autowired
     private UserPetService serviceUserPet;
-    @GetMapping("/getAllUserPet")
+
+    @GetMapping("/getAllUserPets")
     public List<UserPetDTO> dataUserPet(){return serviceUserPet.getAllUserPet();}
-    @GetMapping("/getAllPetType")
+    @GetMapping("/getAllPetTypes")
     public List<PetTypeDTO> dataPetType(){return servicePetType.getAllPetType();}
 
     @PostMapping("/insertUserPet")

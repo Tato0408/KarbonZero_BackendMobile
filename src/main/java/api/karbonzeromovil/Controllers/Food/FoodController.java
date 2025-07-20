@@ -180,7 +180,7 @@ public class FoodController {
         }
     }
 
-    @DeleteMapping("/deleteCategory/{id}")
+    @DeleteMapping("/deleteFoodCategory/{id}")
     public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable String id){
         try{
             if(!serviceCategory.deleteCategory(id)){

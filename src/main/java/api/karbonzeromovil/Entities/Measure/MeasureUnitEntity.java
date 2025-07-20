@@ -8,7 +8,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name="TBMEASURESUNITS")
+@Table(name="TBMEASUREUNITS")
 @ToString @EqualsAndHashCode
 @Getter @Setter
 public class MeasureUnitEntity {
@@ -23,5 +23,5 @@ public class MeasureUnitEntity {
     private MeasureEntity idMeasure;
 
     @Column(name="NAME")
-    private String nameMeasuresUnits;
+    private String nameMeasuresUnit;
 }

@@ -17,5 +17,5 @@ public class MeasureDTO {
 
     @NotBlank(message = "No es permitido dejar espacios en blanco")
     @Size(max=200)
-    private String nameMeasures;
+    private String nameMeasure;
 }

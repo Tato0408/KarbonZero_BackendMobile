@@ -16,15 +16,16 @@ import java.util.Map;
 import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
-@RequestMapping("/apiMeasures")
+@RequestMapping("/apiMeasure")
 public class MeasureController {
     @Autowired
     private MeasureUnitService serviceMeasureUnit;
     @Autowired
     private MeasureService serviceMeasure;
-    @GetMapping("/getAllMeasureUnit")
+
+    @GetMapping("/getAllMeasureUnits")
     public List<MeasureUnitDTO> dataMeasureUnit(){return serviceMeasureUnit.getAllMeasureUnit();}
-    @GetMapping("/getAllMeasure")
+    @GetMapping("/getAllMeasures")
     public List<MeasureDTO> dataMeasure(){return serviceMeasure.getAllMeasure();}
 
     @PostMapping("/insertMeasureUnit")

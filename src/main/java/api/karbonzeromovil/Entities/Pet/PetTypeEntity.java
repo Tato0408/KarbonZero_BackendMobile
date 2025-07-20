@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,7 +18,7 @@ public class PetTypeEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")
-    @Column(name="IDPetType")
+    @Column(name="IDPETTYPE")
     private String idPetType;
 
     @Column(name="NAME")
@@ -27,5 +28,5 @@ public class PetTypeEntity {
     private Double carbonFootPrint;
 
     @OneToMany(mappedBy = "idPetType")
-    private Set<UserPetEntity> userPetSet;
+    private List<UserPetEntity> userPetList;
 }

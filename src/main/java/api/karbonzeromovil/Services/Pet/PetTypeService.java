@@ -70,13 +70,15 @@ public class PetTypeService {
     private PetTypeDTO PetTypeToDTO(PetTypeEntity entity){
         PetTypeDTO dto = new PetTypeDTO();
         dto.setIdPetType(entity.getIdPetType());
+        dto.setNamePetType(entity.getNamePetType());
         dto.setCarbonFootPrint(entity.getCarbonFootPrint());
         return dto;
     }
     private PetTypeEntity DTOToPetType(PetTypeDTO dto){
         PetTypeEntity entity = new PetTypeEntity();
         entity.setIdPetType(dto.getIdPetType());
-        dto.setCarbonFootPrint(entity.getCarbonFootPrint());
+        entity.setNamePetType(dto.getNamePetType());
+        entity.setCarbonFootPrint(dto.getCarbonFootPrint());
         return entity;
     }
 }

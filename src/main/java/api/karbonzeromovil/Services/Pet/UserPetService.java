@@ -47,7 +47,7 @@ public class UserPetService {
     public UserPetDTO updateUserPet(String id, UserPetDTO dto){
         try{
             if(repo.existsById(id)){
-                UserPetEntity entity =  repo.getById(id);
+                UserPetEntity entity =  repo.getReferenceById(id);
 
                 entity.setIdPetType(repoType.getReferenceById(dto.getIdPetType()));
                 entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
