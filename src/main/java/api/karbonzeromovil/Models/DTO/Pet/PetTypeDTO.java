@@ -12,8 +12,6 @@ import lombok.ToString;
 @ToString @EqualsAndHashCode
 @Getter @Setter
 public class PetTypeDTO {
-    @Getter
-    @Setter
     private String idPetType;
 
     @NotBlank(message = "No es permitido dejar espacios en blanco")

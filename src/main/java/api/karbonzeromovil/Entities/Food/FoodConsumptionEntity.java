@@ -28,7 +28,7 @@ public class FoodConsumptionEntity {
     private UserEntity idUser;
 
     @Column(name="CONSUMPTIONDATE")
-    private LocalDate consumptionDate;
+    private String consumptionDate;
 
     @Column(name="LATITUDE")
     private Double latitude;

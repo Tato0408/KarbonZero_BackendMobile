@@ -42,7 +42,7 @@ public class MeasureService {
         try{
             if(repo.existsById(id)){
                 MeasureEntity entity =  repo.getById(id);
-                entity.setNameMeasures(dto.getNameMeasures());
+                entity.setNameMeasure(dto.getNameMeasure());
                 MeasureEntity savedEntity = repo.save(entity);
                 return MeasureToDTO(savedEntity);
             }
@@ -69,11 +69,13 @@ public class MeasureService {
     private MeasureDTO MeasureToDTO(MeasureEntity entity){
         MeasureDTO dto = new MeasureDTO();
         dto.setIdMeasure(entity.getIdMeasure());
+        dto.setNameMeasure(entity.getNameMeasure());
         return dto;
     }
     private MeasureEntity DTOToMeasure(MeasureDTO dto){
         MeasureEntity entity = new MeasureEntity();
         entity.setIdMeasure(dto.getIdMeasure());
+        entity.setNameMeasure(dto.getNameMeasure());
         return entity;
     }
 

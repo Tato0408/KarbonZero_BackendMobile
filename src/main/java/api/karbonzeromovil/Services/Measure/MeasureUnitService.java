@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class MeasureUnitService {
     @Autowired
-    private MeasureUnitRepository repoUnit;
+    private MeasureUnitRepository repo;
     @Autowired
-    private MeasureRepository repo;
+    private MeasureRepository measureRepo;
 
     public List<MeasureUnitDTO> getAllMeasureUnit (){
-        List<MeasureUnitEntity> measureUnit = repoUnit.findAll();
+        List<MeasureUnitEntity> measureUnit = repo.findAll();
         return measureUnit.stream()
                 .map(this::MeasureUnitToDTO)
                 .collect(Collectors.toList());
@@ -33,7 +33,7 @@ public class MeasureUnitService {
         }
         try{
             MeasureUnitEntity entity = DTOToMeasureUnit(dto);
-            MeasureUnitEntity savedEntity = repoUnit.save(entity);
+            MeasureUnitEntity savedEntity = repo.save(entity);
             return MeasureUnitToDTO(savedEntity);
         }
         catch (Exception e){
@@ -42,11 +42,11 @@ public class MeasureUnitService {
     }
     public MeasureUnitDTO updateMeasureUnit(String id, MeasureUnitDTO dto){
         try{
-            if(repoUnit.existsById(id)){
-                MeasureUnitEntity entity =  repoUnit.getById(id);
-                entity.setNameMeasuresUnits(dto.getNameMeasureUnits());
-                entity.setIdMeasure(repo.getReferenceById(dto.getIdMeasure()));
-                MeasureUnitEntity savedEntity = repoUnit.save(entity);
+            if(repo.existsById(id)){
+                MeasureUnitEntity entity =  repo.getById(id);
+                entity.setNameMeasuresUnit(dto.getNameMeasureUnit());
+                entity.setIdMeasure(measureRepo.getReferenceById(dto.getIdMeasure()));
+                MeasureUnitEntity savedEntity = repo.save(entity);
                 return MeasureUnitToDTO(savedEntity);
             }
             throw new IllegalArgumentException("The measure unit with the id: " + id +" doesn't exist");
@@ -74,11 +74,16 @@ public class MeasureUnitService {
     private MeasureUnitDTO MeasureUnitToDTO(MeasureUnitEntity entity){
         MeasureUnitDTO dto = new MeasureUnitDTO();
         dto.setIdMeasureUnit(entity.getIdMeasureUnit());
+        dto.setIdMeasure(entity.getIdMeasure().getIdMeasure());
+        dto.setNameMeasureUnit(entity.getNameMeasuresUnit());
+
         return dto;
     }
     private MeasureUnitEntity DTOToMeasureUnit(MeasureUnitDTO dto){
         MeasureUnitEntity entity = new MeasureUnitEntity();
         entity.setIdMeasureUnit(dto.getIdMeasureUnit());
+        entity.setIdMeasure(measureRepo.getReferenceById(dto.getIdMeasure()));
+        entity.setNameMeasuresUnit(dto.getNameMeasureUnit());
         return entity;
     }
 
