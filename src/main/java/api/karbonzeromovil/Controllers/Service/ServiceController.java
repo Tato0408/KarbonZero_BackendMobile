@@ -1,6 +1,8 @@
 package api.karbonzeromovil.Controllers.Service;
 
+import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
+import api.karbonzeromovil.Services.Service.MeasureUnitServiceService;
 import api.karbonzeromovil.Services.Service.ServiceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,12 +21,15 @@ import static api.karbonzeromovil.Utils.Responses.*;
 public class ServiceController {
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    private MeasureUnitServiceService measureUnitServiceService;
 
     @GetMapping("/getAllServices")
     public List<ServiceDTO> getAllServices(){
         return serviceService.getAllServices();
     }
-
+    @GetMapping("/getMeasureUnitService")
+    public List<MeasureUnitServiceDTO> getAllMeasureUnitService(){return measureUnitServiceService.getAllMeasureUnitService();}
     @PostMapping("/insertService")
     public ResponseEntity<Map<String,Object>> insertService(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){
         try {
@@ -35,6 +40,18 @@ public class ServiceController {
             return responseCreated(answer);
         } catch (Exception e) {
             return responseServerError(e, "Cannot create service object");
+        }
+    }
+    @PostMapping("/insertMeasureUnitService")
+    public ResponseEntity<Map<String,Object>> insertMeasureUnitService(@Valid @RequestBody MeasureUnitServiceDTO dto, HttpServletRequest request){
+        try {
+            MeasureUnitServiceDTO answer = measureUnitServiceService.insertMeasureUnitService(dto);
+            if (answer == null){
+                return responseBadRequest("Invalid data to create an Measure Unit Service object");
+            }
+            return responseCreated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot create Measure Unit Service object");
         }
     }
     @PutMapping("/updateService/{id}")
@@ -52,6 +69,21 @@ public class ServiceController {
             return responseServerError(e, "Cannot update a service object");
         }
     }
+    @PutMapping("/updateMeasureUnitService/{id}")
+    public ResponseEntity<?>updateMeasureUnitService(@PathVariable String id, @Valid @RequestBody MeasureUnitServiceDTO dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+        try {
+            MeasureUnitServiceDTO answer = measureUnitServiceService.updateMeasureUnitService(id,dto);
+            if (answer== null){
+                return responseBadRequest("Invalid data to update an Measure Unit Service object");
+            }
+            return responseUpdated(answer);
+        }catch (Exception e){
+            return responseServerError(e, "Cannot update an Measure Unit Service object");
+        }
+    }
     @DeleteMapping("/deleteService/{id}")
     public ResponseEntity<Map<String, Object>> deleteService(@PathVariable String id) {
         try {
@@ -61,6 +93,17 @@ public class ServiceController {
             return responseOK("Service deleted with success");
         } catch (Exception e) {
             return responseServerError(e, "Cannot delete the service with the service Object");
+        }
+    }
+    @DeleteMapping("/deleteMeasureUnitService/{id}")
+    public ResponseEntity<Map<String, Object>> deleteMeasureUnitService(@PathVariable String id) {
+        try {
+            if(!measureUnitServiceService.deleteMeasureUnitService(id)){
+                return responseNotFound("Measure Unit Service not found");
+            }
+            return responseOK("Measure Unit Service deleted with success");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot delete the Measure Unit Service with the Measure Unit Service Object");
         }
     }
 }

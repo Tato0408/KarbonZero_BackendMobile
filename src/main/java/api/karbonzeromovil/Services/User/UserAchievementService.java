@@ -28,7 +28,7 @@ public class UserAchievementService {
     }
     public UserAchievementDTO insertAchievement(UserAchievementDTO dto) throws IllegalAccessException {
         if(dto == null){
-            throw new IllegalAccessException("Country cannot be null or empty");
+            throw new IllegalAccessException("Achievement cannot be null or empty");
         }
         try {
             UserAchievementEntity entity = DTOToAchievement(dto);
