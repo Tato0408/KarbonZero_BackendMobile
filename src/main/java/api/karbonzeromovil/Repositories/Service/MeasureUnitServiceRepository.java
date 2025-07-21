@@ -1,4 +1,7 @@
 package api.karbonzeromovil.Repositories.Service;
 
-public interface MeasureUnitServiceRepository {
+import api.karbonzeromovil.Entities.Service.MeasureUnitServiceEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MeasureUnitServiceRepository extends JpaRepository<MeasureUnitServiceEntity, String> {
 }
