@@ -16,8 +16,8 @@ public class ServiceConsumptionDTO {
     private String idMeasureUnitService;
     @NotBlank
     private String idUser;
-    @NotBlank @Positive
-    private String quantity;
+    @NotNull @Positive
+    private Number quantity;
     @NotNull
     private LocalDateTime consumptionDate;
     @NotNull

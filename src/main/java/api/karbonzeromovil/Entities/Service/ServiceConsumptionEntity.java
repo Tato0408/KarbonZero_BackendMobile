@@ -25,7 +25,7 @@ public class ServiceConsumptionEntity {
     @JoinColumn(name = "IDUSER")
     private UserEntity idUser;
     @Column(name = "QUANTITY")
-    private String quantity;
+    private Number quantity;
     @Column(name = "CONSUMPTIONDATE")
     private LocalDateTime consumptionDate;
     @Column(name = "LATITUDE")

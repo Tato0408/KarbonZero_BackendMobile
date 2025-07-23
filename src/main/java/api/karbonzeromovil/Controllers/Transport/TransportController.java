@@ -1,6 +1,8 @@
 package api.karbonzeromovil.Controllers.Transport;
 
+import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Transport.TransportDTO;
+import api.karbonzeromovil.Services.Transport.TransportConsumptionService;
 import api.karbonzeromovil.Services.Transport.TransportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,12 +21,18 @@ import static api.karbonzeromovil.Utils.Responses.*;
 public class TransportController {
     @Autowired
     private TransportService transportService;
+    @Autowired
+    private TransportConsumptionService transportConsumptionService;
 
     @GetMapping("/getAllTransports")
     public List<TransportDTO> getAllTransports(){
+
         return transportService.getAllTransports();
     }
-
+    @GetMapping("/getTransportConsumption")
+    public List<TransportConsumptionDTO> getAllTransportConsumption(){
+        return transportConsumptionService.getAllTransportConsumption();
+    }
     @PostMapping("/insertTransport")
     public ResponseEntity<Map<String,Object>> insertTransport(@Valid @RequestBody TransportDTO dto, HttpServletRequest request){
         try {
@@ -35,6 +43,18 @@ public class TransportController {
             return responseCreated(answer);
         } catch (Exception e) {
             return responseServerError(e, "Cannot create transport object");
+        }
+    }
+    @PostMapping("/insertTransportConsumption")
+    public ResponseEntity<Map<String,Object>> insertTransportConsumption(@Valid @RequestBody TransportConsumptionDTO dto, HttpServletRequest request){
+        try {
+            TransportConsumptionDTO answer = transportConsumptionService.insertTransportConsumption(dto);
+            if (answer == null){
+                return responseBadRequest("Invalid data to create an Transport Consumption object");
+            }
+            return responseCreated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot create Transport Consumption object");
         }
     }
     @PutMapping("/updateTransport/{id}")
@@ -52,6 +72,21 @@ public class TransportController {
             return responseServerError(e, "Cannot update a transport object");
         }
     }
+    @PutMapping("/updateTransportConsumption/{id}")
+    public ResponseEntity<?>updateTransportConsumption(@PathVariable String id, @Valid @RequestBody TransportConsumptionDTO dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+        try {
+            TransportConsumptionDTO answer = transportConsumptionService.updateTransportConsumption(id,dto);
+            if (answer== null){
+                return responseBadRequest("Invalid data to update an Transport Consumption object");
+            }
+            return responseUpdated(answer);
+        }catch (Exception e){
+            return responseServerError(e, "Cannot update an Transport Consumption object");
+        }
+    }
     @DeleteMapping("/deleteTransport/{id}")
     public ResponseEntity<Map<String, Object>> deleteTransport(@PathVariable String id) {
         try {
@@ -61,6 +96,17 @@ public class TransportController {
             return responseOK("Transport deleted with success");
         } catch (Exception e) {
             return responseServerError(e, "Cannot delete the transport with the country Object");
+        }
+    }
+    @DeleteMapping("/deleteTransportConsumption/{id}")
+    public ResponseEntity<Map<String, Object>> deleteTransportConsumption(@PathVariable String id) {
+        try {
+            if(!transportConsumptionService.deleteTransportConsumption(id)){
+                return responseNotFound("Transport Consumption not found");
+            }
+            return responseOK("Transport Consumption deleted with success");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot delete the Transport Consumption with the Transport Consumption Object");
         }
     }
 }
