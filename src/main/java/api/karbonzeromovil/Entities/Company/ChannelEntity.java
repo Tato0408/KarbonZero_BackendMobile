@@ -18,9 +18,9 @@ public class ChannelEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDCHANNEL")
     private String idChannel;
-    @Column(name = "IDCOMPANY")
+    @Column(name = "IDCOMPANY", nullable = true, unique = true)
     private String idCompany;
-    @Column(name = "NAME", nullable = true, unique = true)
+    @Column(name = "NAME", unique = true)
     private String name;
 
     @OneToMany(mappedBy = "idChannel")

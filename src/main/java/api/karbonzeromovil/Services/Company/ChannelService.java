@@ -4,6 +4,7 @@ import api.karbonzeromovil.Entities.Company.ChannelEntity;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
 import api.karbonzeromovil.Repositories.Company.ChannelRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Service
 
 public class ChannelService {
+    @Autowired
     private ChannelRepository repo;
 
 

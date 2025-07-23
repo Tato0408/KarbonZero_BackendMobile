@@ -1,6 +1,5 @@
 package api.karbonzeromovil.Entities.Car;
 
-import api.karbonzeromovil.Entities.User.UserEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

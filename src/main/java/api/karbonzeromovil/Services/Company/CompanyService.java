@@ -4,6 +4,7 @@ import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 public class CompanyService {
 
+    @Autowired
     private CompanyRepository repo;
 
     public List<CompanyDTO> getAllCompany(){
