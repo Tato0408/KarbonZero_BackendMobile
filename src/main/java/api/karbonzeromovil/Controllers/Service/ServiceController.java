@@ -1,8 +1,10 @@
 package api.karbonzeromovil.Controllers.Service;
 
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
+import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
 import api.karbonzeromovil.Services.Service.MeasureUnitServiceService;
+import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
 import api.karbonzeromovil.Services.Service.ServiceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -23,13 +25,21 @@ public class ServiceController {
     private ServiceService serviceService;
     @Autowired
     private MeasureUnitServiceService measureUnitServiceService;
+    @Autowired
+    private ServiceConsumptionService serviceConsumptionService;
 
     @GetMapping("/getAllServices")
     public List<ServiceDTO> getAllServices(){
         return serviceService.getAllServices();
     }
     @GetMapping("/getMeasureUnitService")
-    public List<MeasureUnitServiceDTO> getAllMeasureUnitService(){return measureUnitServiceService.getAllMeasureUnitService();}
+    public List<MeasureUnitServiceDTO> getAllMeasureUnitService(){
+        return measureUnitServiceService.getAllMeasureUnitService();
+    }
+    @GetMapping("/getServiceConsumption")
+    public List<ServiceConsumptionDTO> getAllServiceConsumption(){
+        return serviceConsumptionService.getAllServiceConsumption();
+    }
     @PostMapping("/insertService")
     public ResponseEntity<Map<String,Object>> insertService(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){
         try {
@@ -52,6 +62,18 @@ public class ServiceController {
             return responseCreated(answer);
         } catch (Exception e) {
             return responseServerError(e, "Cannot create Measure Unit Service object");
+        }
+    }
+    @PostMapping("/insertServiceConsumption")
+    public ResponseEntity<Map<String,Object>> insertServiceConsumption(@Valid @RequestBody ServiceConsumptionDTO dto, HttpServletRequest request){
+        try {
+            ServiceConsumptionDTO answer = serviceConsumptionService.insertServiceConsumption(dto);
+            if (answer == null){
+                return responseBadRequest("Invalid data to create an Service Consumption object");
+            }
+            return responseCreated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot create Service Consumption object");
         }
     }
     @PutMapping("/updateService/{id}")
@@ -84,6 +106,21 @@ public class ServiceController {
             return responseServerError(e, "Cannot update an Measure Unit Service object");
         }
     }
+    @PutMapping("/updateServiceConsumption/{id}")
+    public ResponseEntity<?>updateServiceConsumption(@PathVariable String id, @Valid @RequestBody ServiceConsumptionDTO dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+        try {
+            ServiceConsumptionDTO answer = serviceConsumptionService.updateServiceConsumption(id,dto);
+            if (answer== null){
+                return responseBadRequest("Invalid data to update an Service Consumption object");
+            }
+            return responseUpdated(answer);
+        }catch (Exception e){
+            return responseServerError(e, "Cannot update an Service Consumption object");
+        }
+    }
     @DeleteMapping("/deleteService/{id}")
     public ResponseEntity<Map<String, Object>> deleteService(@PathVariable String id) {
         try {
@@ -104,6 +141,17 @@ public class ServiceController {
             return responseOK("Measure Unit Service deleted with success");
         } catch (Exception e) {
             return responseServerError(e, "Cannot delete the Measure Unit Service with the Measure Unit Service Object");
+        }
+    }
+    @DeleteMapping("/deleteServiceConsumption/{id}")
+    public ResponseEntity<Map<String, Object>> deleteServiceConsumption(@PathVariable String id) {
+        try {
+            if(!serviceConsumptionService.deleteServiceConsumption(id)){
+                return responseNotFound("Service Consumption not found");
+            }
+            return responseOK("Service Consumption deleted with success");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot delete the Service Consumption with the Service Consumption Object");
         }
     }
 }
