@@ -1,4 +1,7 @@
 package api.karbonzeromovil.Repositories.Company;
 
-public interface ChannelUserRepository {
+import api.karbonzeromovil.Entities.Company.ChannelUserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ChannelUserRepository extends JpaRepository<ChannelUserEntity, String> {
 }
