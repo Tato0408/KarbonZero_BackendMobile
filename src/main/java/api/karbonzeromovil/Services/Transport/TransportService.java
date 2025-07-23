@@ -17,7 +17,7 @@ public class TransportService {
     @Autowired
     private TransportRepository repo;
 
-    public List<TransportDTO> getAllTransport(){
+    public List<TransportDTO> getAllTransports(){
         List<TransportEntity> countries = repo.findAll();
         return countries.stream()
                 .map(this::TransportToDTO)
@@ -38,12 +38,12 @@ public class TransportService {
     public TransportDTO updateTransport(String id, TransportDTO dto){
         try {
             if (repo.existsById((id))){
-                TransportEntity entity = repo.getById(id);
+                TransportEntity entity = repo.getReferenceById(id);
                 entity.setName(dto.getName());
                 entity.setCarbonFootprint(dto.getCarbonFootprint());
 
-                TransportEntity savedCountry = repo.save(entity);
-                return TransportToDTO(savedCountry);
+                TransportEntity savedTransport = repo.save(entity);
+                return TransportToDTO(savedTransport);
             }
             throw new IllegalArgumentException("The Transport could not be updated"+id+" check if it exist");
         }catch (Exception e){

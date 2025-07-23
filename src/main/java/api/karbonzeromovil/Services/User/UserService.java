@@ -1,9 +1,7 @@
 package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Config.Argon2PasswordEncoder;
-import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
-import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -46,14 +44,13 @@ public class UserService {
     public UserDTO updateUser(String id, UserDTO dto){
         try {
             if (repo.existsById((id))){
-                UserEntity entity = repo.getById(id);
+                UserEntity entity = repo.getReferenceById(id);
                 entity.setIdCompany(dto.getIdCompany());
                 entity.setIdCountry(dto.getIdCountry());
                 entity.setUserName(dto.getUserName());
                 entity.setFirstName(dto.getFirstName());
                 entity.setLastName(dto.getLastName());
                 entity.setEmail(dto.getEmail());
-                entity.setPasswordUser(dto.getPasswordUser());
                 entity.setImagePath(dto.getImagePath());
 
                 if (dto.getPasswordUser() !=null){

@@ -2,6 +2,7 @@ package api.karbonzeromovil.Models.DTO.Food;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,13 +22,11 @@ public class FoodConsumptionDTO {
 
     @NotBlank
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate consumptionDate;
+    private String consumptionDate;
 
-    @NotBlank
     @Min(0)
     private Double latitude;
 
-    @NotBlank
     @Min(0)
     private Double longitude;
 }

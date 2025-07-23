@@ -21,31 +21,31 @@ import java.util.Map;
 import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
-@RequestMapping("/apiFoods")
+@RequestMapping("/apiFood")
 public class FoodController {
 
     @Autowired
-    private FoodCategoryService serviceCategory;
-    @Autowired
     private FoodService service;
+    @Autowired
+    private FoodCategoryService serviceCategory;
     @Autowired
     private FoodConsumptionService serviceConsumption;
     @Autowired
     private FoodConsumptionFoodService serviceFoodConsumption;
 
-    @GetMapping("/getFoods")
-    public List<FoodDTO> dataFood(){return service.getAllFood();}
+    @GetMapping("/getAllFoods")
+    public List<FoodDTO> getAllFoods(){return service.getAllFood();}
 
-    @GetMapping("/getFoodCategory")
-    public List<FoodCategoryDTO> dataFoodCategory(){return serviceCategory.getAllCategories();}
+    @GetMapping("/getAllFoodCategories")
+    public List<FoodCategoryDTO> getAllFoodCategories(){return serviceCategory.getAllCategories();}
 
-    @GetMapping("/getFoodConsumption")
-    public List<FoodConsumptionDTO> dataFoodConsumption(){return serviceConsumption.getAllFoodConsumption(); }
+    @GetMapping("/getAllFoodConsumptions")
+    public List<FoodConsumptionDTO> getAllFoodConsumptions(){return serviceConsumption.getAllFoodConsumption(); }
 
-    @GetMapping("/getFoodConsumptionsFood")
-    public List<FoodConsumptionFoodDTO> dataFoodConsumptionFood(){return serviceFoodConsumption.getAllFoodConsumptionFood(); }
+    @GetMapping("/getAllFoodConsumptionFoods")
+    public List<FoodConsumptionFoodDTO> getAllFoodConsumptionFoods(){return serviceFoodConsumption.getAllFoodConsumptionFoods(); }
 
-    @PostMapping("/insertFoods")
+    @PostMapping("/insertFood")
     public ResponseEntity<Map<String, Object >> insertFood(@Valid @RequestBody FoodDTO dto, HttpServletRequest request){
         try{
             FoodDTO answer = service.insertFood(dto);
@@ -180,9 +180,7 @@ public class FoodController {
         }
     }
 
-
-
-    @DeleteMapping("/deleteCategory/{id}")
+    @DeleteMapping("/deleteFoodCategory/{id}")
     public ResponseEntity<Map<String, Object>> deleteCategory(@PathVariable String id){
         try{
             if(!serviceCategory.deleteCategory(id)){

@@ -43,7 +43,7 @@ public class FoodService {
     public FoodDTO updateFood(String id, FoodDTO dto){
         try{
             if (repo.existsById(id)) {
-                FoodEntity entity = repo.getById(id);
+                FoodEntity entity = repo.getReferenceById(id);
 
                 entity.setFoodName(dto.getFoodName());
                 entity.setIdFoodCategory(repoCategory.getReferenceById(dto.getIdFoodCategory()));

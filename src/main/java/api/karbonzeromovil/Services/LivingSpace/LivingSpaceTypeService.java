@@ -43,7 +43,7 @@ public class LivingSpaceTypeService {
     public LivingSpaceTypeDTO updateLivingSpaceType(String id, LivingSpaceTypeDTO dto){
         try{
             if(repo.existsById(id)){
-                LivingSpaceTypeEntity entity =  repo.getById(id);
+                LivingSpaceTypeEntity entity =  repo.getReferenceById(id);
 
                 entity.setNameLivingSpaceType(dto.getNameLivingSpaceType());
                 entity.setCarbonFootPrint(dto.getCarbonFootPrint());

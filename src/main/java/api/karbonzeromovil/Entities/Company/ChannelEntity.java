@@ -7,12 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
-
-@Entity
-@Table(name = "TBCHANNELS")
-@Setter @Getter @EqualsAndHashCode
 public class ChannelEntity {
-
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")
@@ -25,4 +20,5 @@ public class ChannelEntity {
 
     @OneToMany(mappedBy = "idChannel")
     private List<ChannelUserEntity> idChannelUserList;
+
 }

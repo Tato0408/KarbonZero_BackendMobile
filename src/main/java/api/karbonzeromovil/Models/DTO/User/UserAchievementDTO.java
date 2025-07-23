@@ -11,11 +11,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class UserAchivmentDTO {
-    private String idAchivment;
+public class UserAchievementDTO {
+    private String idAchievement;
     @NotBlank
     private String idUser;
     @NotBlank
     @Size(max = 100)
-    private String achivmentName;
+    private String achievementName;
 }

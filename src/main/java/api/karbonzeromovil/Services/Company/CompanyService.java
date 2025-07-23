@@ -84,4 +84,5 @@ public class CompanyService {
         entity.setDomain(dto.getDomain());
         return entity;
     }
+
 }
