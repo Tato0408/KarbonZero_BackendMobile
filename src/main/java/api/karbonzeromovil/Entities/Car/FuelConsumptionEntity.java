@@ -1,4 +1,37 @@
 package api.karbonzeromovil.Entities.Car;
 
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.Date;
+
+@Entity
+@Table(name = "TBFUELCONSUMPTIONS")
+@Setter @Getter @EqualsAndHashCode
+
 public class FuelConsumptionEntity {
+    @Id
+    @GenericGenerator(name = "db-uuid", strategy = "guid")
+    @GeneratedValue(generator = "db-uuid")
+
+    @Column(name="IDFUELCONSUMPTION")
+    private String idFuelConsumption;
+
+    @Column(name = "IDTYPECAR", nullable = false)
+    private String idTypeCar;
+
+    @Column(name = "QUANTITY", nullable = false)
+    private Double quantity;
+
+    @Column(name="CONSUMPTIONDATE", nullable = false)
+    private Date consumsuptionDate;
+
+    @Column(name = "LATITUDE")
+    private String latitude;
+
+    @Column(name = "LONGITUDE")
+    private String longitude;
 }
