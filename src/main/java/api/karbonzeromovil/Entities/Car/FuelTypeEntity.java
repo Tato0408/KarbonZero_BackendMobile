@@ -11,8 +11,8 @@ import java.util.List;
 @Entity
 @Table(name = "TBFUELTYPES")
 @Setter @Getter @EqualsAndHashCode
-
 public class FuelTypeEntity {
+
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")

@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Table(name = "TBCARSIZES")
 @Setter @Getter @EqualsAndHashCode
-
 public class CarSizeEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")

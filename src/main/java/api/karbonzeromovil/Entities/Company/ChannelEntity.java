@@ -11,7 +11,6 @@ import java.util.List;
 @Entity
 @Table(name = "TBCHANNELS")
 @Setter @Getter @EqualsAndHashCode
-
 public class ChannelEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
