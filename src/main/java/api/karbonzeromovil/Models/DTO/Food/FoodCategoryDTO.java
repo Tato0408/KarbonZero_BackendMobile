@@ -12,7 +12,6 @@ import lombok.ToString;
 @ToString @EqualsAndHashCode
 @Getter @Setter
 public class FoodCategoryDTO {
-    @Getter @Setter
     private String idFoodCategory;
 
     @NotBlank(message="No se permiten espacios en blanco")

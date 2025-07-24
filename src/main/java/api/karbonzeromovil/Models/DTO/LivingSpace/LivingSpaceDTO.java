@@ -10,7 +10,6 @@ import lombok.ToString;
 @Setter
 @ToString   @EqualsAndHashCode
 public class LivingSpaceDTO {
-    @Getter @Setter
     private String idLivingSpace;
 
     @NotBlank

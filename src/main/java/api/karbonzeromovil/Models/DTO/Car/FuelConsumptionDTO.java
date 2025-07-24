@@ -16,7 +16,6 @@ import java.util.Date;
 @ToString   @EqualsAndHashCode
 @Getter @Setter
 @Check(constraints = "quantity > 0")
-
 public class FuelConsumptionDTO {
     private String idFuelConsumption;
 
