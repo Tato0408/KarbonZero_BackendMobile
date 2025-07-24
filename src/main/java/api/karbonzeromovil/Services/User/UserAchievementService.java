@@ -42,7 +42,7 @@ public class UserAchievementService {
         try {
             if (repo.existsById((id))){
                 UserAchievementEntity entity = repo.getReferenceById(id);
-                entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
+                entity.setIdUser(dto.getIdUser());
                 entity.setAchievementName(dto.getAchievementName());
 
                 UserAchievementEntity savedAchievement = repo.save(entity);
@@ -68,14 +68,14 @@ public class UserAchievementService {
     private UserAchievementDTO AchievementToDTO(UserAchievementEntity entity){
         UserAchievementDTO dto = new UserAchievementDTO();
         dto.setIdAchievement(entity.getIdAchievement());
-        dto.setIdUser(entity.getIdUser().getIdUser());
+        dto.setIdUser(entity.getIdUser());
         dto.setAchievementName(entity.getAchievementName());
         return dto;
     }
     private UserAchievementEntity DTOToAchievement(UserAchievementDTO dto){
         UserAchievementEntity entity = new UserAchievementEntity();
         entity.setIdAchievement(dto.getIdAchievement());
-        entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
+        entity.setIdUser(dto.getIdUser());
         entity.setAchievementName(dto.getAchievementName());
         return entity;
     }

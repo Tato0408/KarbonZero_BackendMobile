@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name="TBUSERACHIEVEMENTS")
+@Table(name = "TBUSERACHIVMENTS")
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -15,12 +15,11 @@ public class UserAchievementEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")
-    @Column(name="IDUSERACHIEVEMENT")
+    @Column(name="IDUSERACHIVMENT")
     private String idAchievement;
-    @ManyToOne
-    @JoinColumn(name = "IDUSER")
-    private UserEntity idUser;
-    @Column(name = "ACHIEVEMENTNAME", nullable = false)
+    @Column(name = "IDUSER")
+    private String idUser;
+    @Column(name = "ACHIVMENTNAME", nullable = false)
     private String achievementName;
 
 }
