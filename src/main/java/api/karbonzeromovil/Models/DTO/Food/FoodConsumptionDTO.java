@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @ToString   @EqualsAndHashCode
 @Getter @Setter
 public class FoodConsumptionDTO {
-    @Getter @Setter
     private String idFoodConsumption;
 
     @NotBlank()

@@ -10,10 +10,8 @@ import lombok.ToString;
 @ToString @EqualsAndHashCode
 @Getter  @Setter
 public class FoodDTO {
-    @Getter @Setter
     private String idFood;
 
-    @Getter @Setter
     @NotBlank
     private String idFoodCategory;
 

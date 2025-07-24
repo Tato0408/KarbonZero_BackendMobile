@@ -9,7 +9,6 @@ import lombok.ToString;
 @Getter @Setter
 @ToString @EqualsAndHashCode
 public class UserPetDTO {
-    @Getter @Setter
     private String idUserPet;
 
     @NotBlank

@@ -9,7 +9,6 @@ import lombok.ToString;
 @ToString   @EqualsAndHashCode
 @Getter @Setter
 public class FoodConsumptionFoodDTO {
-    @Getter @Setter
     private String idFoodConsumptionsFood;
 
     @NotBlank()

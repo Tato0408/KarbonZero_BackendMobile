@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString @EqualsAndHashCode
 @Getter @Setter
 public class MeasureUnitDTO {
-    @Getter @Setter
     private String idMeasureUnit;
 
     @NotBlank

@@ -13,7 +13,6 @@ import lombok.ToString;
 @ToString   @EqualsAndHashCode
 @Getter @Setter
 public class LivingSpaceTypeDTO {
-    @Getter @Setter
     private String idLivingSpaceType;
 
     @NotBlank(message = "No es permitido dejar espacios en blanco")

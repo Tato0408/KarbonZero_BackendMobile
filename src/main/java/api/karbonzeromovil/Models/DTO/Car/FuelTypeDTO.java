@@ -11,7 +11,6 @@ import lombok.ToString;
 
 @ToString   @EqualsAndHashCode
 @Getter @Setter
-
 public class FuelTypeDTO {
     private String idFuelType;
 

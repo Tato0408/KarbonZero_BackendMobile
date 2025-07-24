@@ -12,7 +12,6 @@ import lombok.ToString;
 @Setter
 @ToString @EqualsAndHashCode
 public class MeasureDTO {
-    @Getter @Setter
     private String idMeasure;
 
     @NotBlank(message = "No es permitido dejar espacios en blanco")

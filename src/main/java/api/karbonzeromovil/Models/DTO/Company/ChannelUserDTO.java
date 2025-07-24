@@ -8,7 +8,6 @@ import lombok.ToString;
 
 @ToString   @EqualsAndHashCode
 @Getter @Setter
-
 public class ChannelUserDTO {
     private String idChannelUser;
 
