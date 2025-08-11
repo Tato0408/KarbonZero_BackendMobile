@@ -11,6 +11,7 @@ import api.karbonzeromovil.Services.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +33,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @GetMapping("/getAllCountries")
-    public List<CountryDTO> getAllCountries(){
-        return countryService.getAllCountries();
-    }
+    public List<CountryDTO> getAllCountries(){return  countryService.getAllCountries();}
 
     @GetMapping("/getAllFriends")
     public List<FriendDTO> getAllFriends(){return friendService.getAllFriends();}
@@ -46,8 +46,17 @@ public class UserController {
     }
 
     @GetMapping("/getAllUsers")
-    public List<UserDTO> getAllUsers(){return userService.getAllUsers();}
+    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamanio de la pagina debe de estar entre 1 y 50"));
+        }
+        Page<UserDTO> users = userService.getAllUsers(page, size);
+        if(users == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
 
+        return ResponseEntity.ok(users);
+    }
     @PostMapping("/insertCountry")
     public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody CountryDTO dto, HttpServletRequest request){
         try {

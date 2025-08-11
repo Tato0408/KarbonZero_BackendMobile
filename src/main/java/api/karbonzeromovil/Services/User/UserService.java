@@ -11,6 +11,9 @@ import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,12 +30,12 @@ public class UserService {
     private CountryRepository countryRepo;
 
 
-    public List<UserDTO> getAllUsers(){
-        List<UserEntity> users = repo.findAll();
-        return users.stream()
-                .map(this::UsersToDTO)
-                .collect(Collectors.toList());
+    public Page<UserDTO> getAllUsers(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<UserEntity> users = repo.findAll(pageable);
+        return users.map(this::UsersToDTO);
     }
+
     public UserDTO insertUser(UserDTO dto) throws IllegalAccessException {
         if(dto == null || dto.getPasswordUser() == null || dto.getPasswordUser().isEmpty()){
             throw new IllegalAccessException("User cannot be null or empty");
