@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Entities.User;
 
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,10 +16,12 @@ public class UserEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDUSER")
     private String idUser;
-    @Column(name = "IDCOMPANY", nullable = true)
-    private String idCompany;
-    @Column(name = "IDCOUNTRY", nullable = true)
-    private String idCountry;
+    @ManyToOne
+    @JoinColumn(name = "IDCOMPANY", referencedColumnName = "IDCOMPANY", nullable = true)
+    private CompanyEntity idCompany;
+    @ManyToOne
+    @JoinColumn(name = "IDCOUNTRY", referencedColumnName = "IDCOUNTRY", nullable = true)
+    private CountryEntity idCountry;
     @Column(name = "USERNAME", nullable = false)
     private String userName;
     @Column(name = "FIRSTNAME")

@@ -1,8 +1,12 @@
 package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Config.Argon2PasswordEncoder;
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
+import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
+import api.karbonzeromovil.Repositories.Company.CompanyRepository;
+import api.karbonzeromovil.Repositories.User.CountryRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,10 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     private UserRepository repo;
+    @Autowired
+    private CompanyRepository companyRepo;
+    @Autowired
+    private CountryRepository countryRepo;
 
 
     public List<UserDTO> getAllUsers(){
@@ -45,8 +53,8 @@ public class UserService {
         try {
             if (repo.existsById((id))){
                 UserEntity entity = repo.getReferenceById(id);
-                entity.setIdCompany(dto.getIdCompany());
-                entity.setIdCountry(dto.getIdCountry());
+                entity.setIdCompany(companyRepo.getReferenceById(dto.getIdCompany()));
+                entity.setIdCountry(countryRepo.getReferenceById(dto.getIdCountry()));
                 entity.setUserName(dto.getUserName());
                 entity.setFirstName(dto.getFirstName());
                 entity.setLastName(dto.getLastName());
@@ -81,27 +89,40 @@ public class UserService {
     private UserDTO UsersToDTO(UserEntity entity){
         UserDTO dto = new UserDTO();
         dto.setIdUser(entity.getIdUser());
-        dto.setIdCompany(entity.getIdCompany());
-        dto.setIdCountry(entity.getIdCountry());
         dto.setUserName(entity.getUserName());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
         dto.setPasswordUser(entity.getPasswordUser());
         dto.setImagePath(entity.getImagePath());
+        if(entity.getIdCompany() != null && entity.getIdCountry() != null){
+            dto.setIdCompany(entity.getIdCompany().getIdCompany());
+            dto.setIdCountry(entity.getIdCountry().getIdCountry());
+            dto.setCountryName(entity.getIdCountry().getName());
+            dto.setCompanyName(entity.getIdCompany().getName());
+        }else{
+            dto.setIdCompany(null);
+            dto.setIdCountry(null);
+            dto.setCompanyName("No hay una compañia asociada");
+            dto.setIdCountry("No hay un pais asociado");
+        }
         return dto;
     }
     private UserEntity DT0ToUser(UserDTO dto){
         UserEntity entity = new UserEntity();
         entity.setIdUser(dto.getIdUser());
-        entity.setIdCompany(dto.getIdCompany());
-        entity.setIdCountry(dto.getIdCountry());
         entity.setUserName(dto.getUserName());
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());
         entity.setPasswordUser(dto.getPasswordUser());
         entity.setImagePath(dto.getImagePath());
+        if(dto.getIdCompany() != null && dto.getIdCountry() != null){
+            CompanyEntity company = companyRepo.findById(dto.getIdCompany()).orElseThrow(()-> new IllegalArgumentException("No hay una compañia con ese id"+dto.getIdCountry()));
+            CountryEntity country = countryRepo.findById(dto.getIdCountry()).orElseThrow(()-> new IllegalArgumentException("No hay un pais con ese id"+ dto.getIdCountry()));
+            entity.setIdCompany(company);
+            entity.setIdCountry(country);
+        }
         return entity;
     }
 }

@@ -17,7 +17,9 @@ public class UserDTO {
 
     private String idUser;
     private String idCompany;
+    private String companyName;
     private String idCountry;
+    private String countryName;
     @NotBlank
     @Size(max = 200)
     private String userName;
