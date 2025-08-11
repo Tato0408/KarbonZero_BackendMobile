@@ -16,8 +16,10 @@ public class FriendEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDFRIEND")
     private String idFriend;
-    @Column(name = "IDUSER1", nullable = false)
-    private String user1;
-    @Column(name = "IDUSER2", nullable = false)
-    private String user2;
+    @ManyToOne
+    @JoinColumn(name = "IDUSER1", referencedColumnName = "IDUSER", nullable = false)
+    private UserEntity user1;
+    @ManyToOne
+    @JoinColumn(name = "IDUSER2", referencedColumnName = "IDUSER", nullable = false)
+    private UserEntity user2;
 }

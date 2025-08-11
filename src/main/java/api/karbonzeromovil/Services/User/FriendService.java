@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Entities.User.FriendEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Repositories.User.FriendRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
@@ -42,8 +43,8 @@ public class FriendService {
         try{
             if (repo.existsById(id)){
                 FriendEntity entity = repo.getReferenceById(id);
-                entity.setUser1(dto.getUser1());
-                entity.setUser2(dto.getUser2());
+                entity.setUser1(userRepo.getReferenceById(dto.getUser1()));
+                entity.setUser2(userRepo.getReferenceById(dto.getUser2()));
 
                 FriendEntity savedFriend = repo.save(entity);
                 return FriendToDTO(savedFriend);
@@ -68,15 +69,28 @@ public class FriendService {
     private FriendDTO FriendToDTO(FriendEntity entity){
         FriendDTO dto = new FriendDTO();
         dto.setIdFriend(entity.getIdFriend());
-        dto.setUser1(entity.getUser1());
-        dto.setUser2(entity.getUser2());
+        if(entity.getUser1() != null && entity.getUser2() != null){
+            dto.setUser1(entity.getUser1().getIdUser());
+            dto.setUser2(entity.getUser2().getIdUser());
+            dto.setFriendName1(entity.getUser1().getUserName());
+            dto.setFriendName2(entity.getUser2().getUserName());
+        }else{
+            dto.setUser1(null);
+            dto.setUser2(null);
+            dto.setFriendName1("No hay un usuario asociado");
+            dto.setFriendName2("No hay un usuario asociado");
+        }
         return dto;
     }
     private FriendEntity DTOToFriend(FriendDTO dto){
         FriendEntity entity = new FriendEntity();
         entity.setIdFriend(dto.getIdFriend());
-        entity.setUser1(dto.getUser1());
-        entity.setUser2(dto.getUser2());
+        if(dto.getUser1() != null && dto.getUser2() != null){
+            UserEntity user1 = userRepo.findById(dto.getUser1()).orElseThrow(()->new IllegalArgumentException("No hay un usuario con ese id "+dto.getUser1()));
+            UserEntity user2 = userRepo.findById(dto.getUser1()).orElseThrow(()->new IllegalArgumentException("No hay un usuario con ese id "+dto.getUser2()));
+            entity.setUser1(user1);
+            entity.setUser2(user2);
+        }
         return entity;
     }
 }

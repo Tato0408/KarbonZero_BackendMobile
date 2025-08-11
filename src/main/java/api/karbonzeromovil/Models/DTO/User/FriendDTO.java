@@ -13,6 +13,8 @@ public class FriendDTO {
     private String idFriend;
     @NotBlank
     private String user1;
+    private String friendName1;
     @NotBlank
     private String user2;
+    private String friendName2;
 }
