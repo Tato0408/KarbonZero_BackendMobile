@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Entities.User.UserAchievementEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Repositories.User.UserAchievementRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
@@ -42,7 +43,7 @@ public class UserAchievementService {
         try {
             if (repo.existsById((id))){
                 UserAchievementEntity entity = repo.getReferenceById(id);
-                entity.setIdUser(dto.getIdUser());
+                entity.setIdUser(userRepo.getReferenceById(dto.getIdUser()));
                 entity.setAchievementName(dto.getAchievementName());
 
                 UserAchievementEntity savedAchievement = repo.save(entity);
@@ -68,15 +69,25 @@ public class UserAchievementService {
     private UserAchievementDTO AchievementToDTO(UserAchievementEntity entity){
         UserAchievementDTO dto = new UserAchievementDTO();
         dto.setIdAchievement(entity.getIdAchievement());
-        dto.setIdUser(entity.getIdUser());
         dto.setAchievementName(entity.getAchievementName());
+        if(entity.getIdUser()!=null){
+            dto.setIdUser(entity.getIdUser().getIdUser());
+            dto.setUsername(entity.getIdUser().getUserName());
+        }else {
+            dto.setIdUser(null);
+            dto.setUsername("No hay un usuario asociado a ese logro");
+        }
         return dto;
     }
     private UserAchievementEntity DTOToAchievement(UserAchievementDTO dto){
         UserAchievementEntity entity = new UserAchievementEntity();
         entity.setIdAchievement(dto.getIdAchievement());
-        entity.setIdUser(dto.getIdUser());
         entity.setAchievementName(dto.getAchievementName());
+        if(dto.getIdUser() != null){
+            UserEntity user = userRepo.findById(dto.getIdUser()).orElseThrow(()-> new IllegalArgumentException("Usuario no encontrado con ese id " + dto.getIdUser()));
+            entity.setIdUser(user);
+        }
         return entity;
     }
+
 }
