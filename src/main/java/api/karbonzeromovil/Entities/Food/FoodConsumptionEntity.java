@@ -39,5 +39,5 @@ public class FoodConsumptionEntity {
     private Double longitude;
 
     @OneToMany(mappedBy = "foodConsumption", cascade = CascadeType.ALL)
-    private List<FoodConsumptionEntity> foodConsumption = new ArrayList<>();
+    private List<FoodConsumptionFoodEntity> foodConsumptionFood = new ArrayList<>();
 }
