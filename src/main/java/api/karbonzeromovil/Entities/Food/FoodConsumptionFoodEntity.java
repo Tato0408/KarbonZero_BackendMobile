@@ -20,10 +20,10 @@ public class FoodConsumptionFoodEntity {
     private String idFoodConsumptionsFood;
 
     @ManyToOne
-    @JoinColumn(name="IDFOOD", nullable = false)
-    private FoodEntity idFood;
+    @JoinColumn(name="IDFOOD", nullable = false, referencedColumnName = "IDFOOD")
+    private FoodEntity food;
 
     @ManyToOne
-    @JoinColumn(name="IDFOODCONSUMPTION", nullable = false)
-    private FoodConsumptionEntity idFoodConsumption;
+    @JoinColumn(name="IDFOODCONSUMPTION", nullable = false, referencedColumnName = "IDFOODCONSUMPTION")
+    private FoodConsumptionEntity foodConsumption;
 }

@@ -11,10 +11,11 @@ import lombok.ToString;
 @ToString   @EqualsAndHashCode
 public class LivingSpaceDTO {
     private String idLivingSpace;
-
-    @NotBlank
     private String idLivingSpaceType;
+    private String idUser;
+    @NotBlank
+    private String livingSpaceTypeName;
 
     @NotBlank
-    private String idUser;
+    private String userName;
 }

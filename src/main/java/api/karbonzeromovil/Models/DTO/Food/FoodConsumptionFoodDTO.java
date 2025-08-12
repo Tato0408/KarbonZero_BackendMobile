@@ -16,4 +16,8 @@ public class FoodConsumptionFoodDTO {
 
     @NotBlank
     private String idFoodConsumption;
+
+    private String foodName;
+
+    private String foodConsumptionName;
 }

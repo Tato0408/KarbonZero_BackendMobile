@@ -1,6 +1,8 @@
 package api.karbonzeromovil.Services.Food;
 
+import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
 import api.karbonzeromovil.Entities.Food.FoodConsumptionFoodEntity;
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionFoodRepository;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
@@ -8,6 +10,9 @@ import api.karbonzeromovil.Repositories.Food.FoodRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +28,11 @@ public class FoodConsumptionFoodService {
     @Autowired
     private FoodConsumptionRepository repoConsumption;
 
-    public List<FoodConsumptionFoodDTO> getAllFoodConsumptionFoods(){
-        List<FoodConsumptionFoodEntity> entity = repo.findAll();
-        return entity.stream()
-                .map(this::foodConsumptionFoodToDTO)
-                .collect(Collectors.toList());
+    public Page<FoodConsumptionFoodDTO> getAllFoodConsumptionFoods(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FoodConsumptionFoodEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::foodConsumptionFoodToDTO);
     }
 
     public FoodConsumptionFoodDTO insertFoodConsumptionFood(FoodConsumptionFoodDTO dto){
@@ -48,10 +53,14 @@ public class FoodConsumptionFoodService {
         try{
             if(repo.existsById(id)){
                 FoodConsumptionFoodEntity entity =  repo.getReferenceById(id);
-
-                entity.setIdFood(repoFood.getReferenceById(dto.getIdFood()));
-                entity.setIdFoodConsumption(repoConsumption.getReferenceById(dto.getIdFoodConsumption()));
-
+                if(dto.getIdFoodConsumption() != null && dto.getIdFood()!= null){
+                    FoodConsumptionEntity consumption = repoConsumption.findById(dto.getIdFoodConsumption())
+                            .orElseThrow(()-> new IllegalArgumentException("Can't find the id food consumption "));
+                    FoodEntity food = repoFood.findById(dto.getIdFood())
+                            .orElseThrow(()-> new IllegalArgumentException("Can't find the id food"));
+                    entity.setFoodConsumption(consumption);
+                    entity.setFood(food);
+                }
                 FoodConsumptionFoodEntity savedEntity = repo.save(entity);
                 return foodConsumptionFoodToDTO(savedEntity);
             }
@@ -82,9 +91,11 @@ public class FoodConsumptionFoodService {
         FoodConsumptionFoodDTO dto = new FoodConsumptionFoodDTO();
 
         dto.setIdFoodConsumptionsFood(entity.getIdFoodConsumptionsFood());
-        dto.setIdFood(entity.getIdFood().getIdFood());
-        dto.setIdFoodConsumption(entity.getIdFoodConsumption().getIdFoodConsumption());
-
+       if(entity.getFoodConsumption()!= null && entity.getFood()!= null){
+           dto.setIdFoodConsumption(entity.getFoodConsumption().getIdFoodConsumption());
+           dto.setFoodName(entity.getFood().getFoodName());
+           dto.setIdFood(entity.getFood().getIdFood());
+       }
         return dto;
     }
 
@@ -92,8 +103,14 @@ public class FoodConsumptionFoodService {
         FoodConsumptionFoodEntity entity = new FoodConsumptionFoodEntity();
 
         entity.setIdFoodConsumptionsFood(dto.getIdFoodConsumptionsFood());
-        entity.setIdFood(repoFood.getReferenceById(dto.getIdFood()));
-        entity.setIdFoodConsumption(repoConsumption.getReferenceById(dto.getIdFoodConsumption()));
+        if(dto.getIdFoodConsumption() != null && dto.getIdFood()!= null){
+            FoodConsumptionEntity consumption = repoConsumption.findById(dto.getIdFoodConsumption())
+                    .orElseThrow(()-> new IllegalArgumentException("Can't find the id food consumption "));
+            FoodEntity food = repoFood.findById(dto.getIdFood())
+                    .orElseThrow(()-> new IllegalArgumentException("Can't find the id food"));
+            entity.setFoodConsumption(consumption);
+            entity.setFood(food);
+        }
 
         return entity;
     }

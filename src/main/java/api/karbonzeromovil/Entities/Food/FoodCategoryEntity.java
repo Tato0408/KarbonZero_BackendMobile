@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,6 +28,6 @@ public class FoodCategoryEntity {
     @Column(name="CARBONFOOTPRINT")
     private double carbonFootPrint;
 
-    @OneToMany(mappedBy = "idFoodCategory")
-    private Set<FoodEntity> foodSet;
+    @OneToMany(mappedBy = "foodCategory", cascade = CascadeType.ALL)
+    private List<FoodEntity> food = new ArrayList<>();
 }

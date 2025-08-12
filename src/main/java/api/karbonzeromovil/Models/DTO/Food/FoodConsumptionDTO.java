@@ -28,4 +28,6 @@ public class FoodConsumptionDTO {
 
     @Min(0)
     private Double longitude;
+
+    private String userName;
 }
