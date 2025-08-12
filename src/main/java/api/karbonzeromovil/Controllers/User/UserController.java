@@ -41,14 +41,23 @@ public class UserController {
     public List<FriendDTO> getAllFriends(){return friendService.getAllFriends();}
 
     @GetMapping("/getAllAchievements")
-    public List<UserAchievementDTO> getAllAchievements(){
-        return userAchievementService.getAllAchievements();
+    public ResponseEntity<Page<UserAchievementDTO>> getAllAchievements(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamanio de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<UserAchievementDTO> achievements = userAchievementService.getAllAchievements(page, size);
+        if(achievements ==null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados "));
+        }
+        return ResponseEntity.ok(achievements);
     }
 
     @GetMapping("/getAllUsers")
     public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size<=0 || size>50){
             ResponseEntity.badRequest().body(Map.of("status","El tamanio de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
         }
         Page<UserDTO> users = userService.getAllUsers(page, size);
         if(users == null){

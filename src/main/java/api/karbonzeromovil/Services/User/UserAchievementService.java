@@ -3,11 +3,15 @@ package api.karbonzeromovil.Services.User;
 import api.karbonzeromovil.Entities.User.UserAchievementEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.User.UserAchievementRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +25,10 @@ public class UserAchievementService {
     @Autowired
     private UserRepository userRepo;
 
-    public List<UserAchievementDTO> getAllAchievements(){
-        List<UserAchievementEntity> achievements = repo.findAll();
-        return achievements.stream()
-                .map(this::AchievementToDTO)
-                .collect(Collectors.toList());
+    public Page<UserAchievementDTO> getAllAchievements(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<UserAchievementEntity> achievements = repo.findAll(pageable);
+        return achievements.map(this ::AchievementToDTO);
     }
     public UserAchievementDTO insertAchievement(UserAchievementDTO dto) throws IllegalAccessException {
         if(dto == null){
