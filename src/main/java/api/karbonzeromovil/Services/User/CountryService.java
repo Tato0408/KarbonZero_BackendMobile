@@ -6,6 +6,9 @@ import api.karbonzeromovil.Repositories.User.CountryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +20,10 @@ public class CountryService {
     @Autowired
     private CountryRepository repo;
 
-    public List<CountryDTO> getAllCountries(){
-        List<CountryEntity> countries = repo.findAll();
-        return countries.stream()
-                .map(this::CountryToDTO)
-                .collect(Collectors.toList());
+    public Page<CountryDTO> getAllCountries(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CountryEntity> countries = repo.findAll(pageable);
+        return countries.map(this::CountryToDTO);
     }
     public CountryDTO insertCountry(CountryDTO dto) throws IllegalAccessException {
         if(dto == null){

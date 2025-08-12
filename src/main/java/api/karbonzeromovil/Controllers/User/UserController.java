@@ -35,15 +35,36 @@ public class UserController {
 
 
     @GetMapping("/getAllCountries")
-    public List<CountryDTO> getAllCountries(){return  countryService.getAllCountries();}
+    public ResponseEntity<Page<CountryDTO>> getAllCountries(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size){
+        if(size <=0 || size >50){
+            ResponseEntity.badRequest().body(Map.of("status", "el tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<CountryDTO> countries = countryService.getAllCountries(page,size);
+        if(countries == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados"));
+        }
+        return ResponseEntity.ok(countries);
+
+    }
 
     @GetMapping("/getAllFriends")
-    public List<FriendDTO> getAllFriends(){return friendService.getAllFriends();}
+    public ResponseEntity<Page<FriendDTO>> getAllFriends(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10") int size){
+        if(size <=0 || size >50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<FriendDTO> friends = friendService.getAllFriends(page, size);
+        if(friends == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay amigos registrados "));
+        }
+        return ResponseEntity.ok(friends);
+    }
 
     @GetMapping("/getAllAchievements")
     public ResponseEntity<Page<UserAchievementDTO>> getAllAchievements(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size <=0 || size>50){
-            ResponseEntity.badRequest().body(Map.of("status","El tamanio de la pagina debe de estar entre 1 y 50"));
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
             return ResponseEntity.ok(null);
         }
         Page<UserAchievementDTO> achievements = userAchievementService.getAllAchievements(page, size);
@@ -56,7 +77,7 @@ public class UserController {
     @GetMapping("/getAllUsers")
     public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size<=0 || size>50){
-            ResponseEntity.badRequest().body(Map.of("status","El tamanio de la pagina debe de estar entre 1 y 50"));
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
             return ResponseEntity.ok(null);
         }
         Page<UserDTO> users = userService.getAllUsers(page, size);

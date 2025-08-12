@@ -8,6 +8,9 @@ import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +24,10 @@ public class FriendService {
     @Autowired
     private UserRepository userRepo;
 
-    public List<FriendDTO> getAllFriends(){
-        List<FriendEntity> friends = repo.findAll();
-        return friends.stream()
-                .map(this::FriendToDTO)
-                .collect(Collectors.toList());
+    public Page<FriendDTO> getAllFriends(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FriendEntity> friends = repo.findAll(pageable);
+        return friends.map(this::FriendToDTO);
     }
     public FriendDTO insertFriend(FriendDTO dto)throws IllegalAccessException{
         if (dto ==null){
