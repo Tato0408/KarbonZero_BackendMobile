@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -21,12 +23,12 @@ public class FoodEntity {
     private String idFood;
 
     @ManyToOne
-    @JoinColumn(name ="IDFOODCATEGORY", nullable = false)
-    private FoodCategoryEntity idFoodCategory;
+    @JoinColumn(name ="IDFOODCATEGORY", nullable = false, referencedColumnName = "IDFOODCATEGORY")
+    private FoodCategoryEntity foodCategory;
 
     @Column(name = "NAME")
     private String foodName;
 
-    @OneToMany(mappedBy = "idFood")
-    private Set<FoodConsumptionFoodEntity> foodConsumptionFoodSet;
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL)
+    private List<FoodConsumptionFoodEntity> foodConsumptionFood = new ArrayList<>();
 }

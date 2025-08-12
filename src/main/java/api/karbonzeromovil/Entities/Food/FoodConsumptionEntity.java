@@ -9,6 +9,8 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,7 +26,7 @@ public class FoodConsumptionEntity {
     private String idFoodConsumption;
 
     @ManyToOne
-    @JoinColumn(name="IDUSER", nullable = false)
+    @JoinColumn(name="IDUSER", nullable = false, referencedColumnName = "IDUSER")
     private UserEntity idUser;
 
     @Column(name="CONSUMPTIONDATE")
@@ -36,6 +38,6 @@ public class FoodConsumptionEntity {
     @Column(name="LONGITUDE")
     private Double longitude;
 
-    @OneToMany(mappedBy = "idFoodConsumption")
-    private Set<FoodConsumptionFoodEntity> foodConsumptionFoodSet;
+    @OneToMany(mappedBy = "foodConsumption", cascade = CascadeType.ALL)
+    private List<FoodConsumptionFoodEntity> foodConsumptionFood = new ArrayList<>();
 }

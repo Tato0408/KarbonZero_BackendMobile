@@ -1,6 +1,8 @@
 package api.karbonzeromovil.Services.LivingSpace;
 
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
+import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceTypeEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceRepository;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceTypeRepository;
@@ -48,9 +50,15 @@ public class LivingSpaceService {
         try{
             if(repo.existsById(id)){
                 LivingSpaceEntity entity =  repo.getReferenceById(id);
+                if(dto.getIdLivingSpace()!= null && dto.getIdUser()!= null){
+                    LivingSpaceTypeEntity type =  repoType.findById(dto.getIdLivingSpace())
+                            .orElseThrow(()-> new IllegalArgumentException("Can't find the living space id"));
+                    UserEntity user = repoUser.findById(dto.getIdUser())
+                            .orElseThrow(()-> new IllegalArgumentException("Can't find the user id"));
 
-                entity.setIdLivingSpaceType(repoType.getReferenceById(dto.getIdLivingSpaceType()));
-                entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
+                    entity.setLivingSpaceType(type);
+                    entity.setIdUser(user);
+                }
 
                 LivingSpaceEntity savedEntity = repo.save(entity);
                 return livingSpaceToDTO(savedEntity);
@@ -81,17 +89,27 @@ public class LivingSpaceService {
         LivingSpaceDTO dto = new LivingSpaceDTO();
 
         dto.setIdLivingSpace(entity.getIdLivingSpace());
-        dto.setIdLivingSpaceType(entity.getIdLivingSpaceType().getIdLivingSpaceType());
-        dto.setIdUser(entity.getIdUser().getIdUser());
-
+       if(entity.getLivingSpaceType()!= null && entity.getIdUser()!= null){
+           dto.setLivingSpaceTypeName(entity.getLivingSpaceType().getNameLivingSpaceType());
+           dto.setIdLivingSpaceType(entity.getLivingSpaceType().getIdLivingSpaceType());
+           dto.setUserName(entity.getIdUser().getUserName());
+           dto.setIdUser(entity.getIdUser().getIdUser());
+       }
         return dto;
     }
 
     private LivingSpaceEntity DTOToLivingSpace(LivingSpaceDTO dto){
         LivingSpaceEntity entity = new LivingSpaceEntity();
         entity.setIdLivingSpace(dto.getIdLivingSpace());
-        entity.setIdLivingSpaceType(repoType.getReferenceById(dto.getIdLivingSpaceType()));
-        entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
+        if(dto.getIdLivingSpace()!= null && dto.getIdUser()!= null){
+            LivingSpaceTypeEntity type =  repoType.findById(dto.getIdLivingSpace())
+                    .orElseThrow(()-> new IllegalArgumentException("Can't find the living space id"));
+            UserEntity user = repoUser.findById(dto.getIdUser())
+                    .orElseThrow(()-> new IllegalArgumentException("Can't find the user id"));
+
+            entity.setLivingSpaceType(type);
+            entity.setIdUser(user);
+        }
 
         return entity;
     }

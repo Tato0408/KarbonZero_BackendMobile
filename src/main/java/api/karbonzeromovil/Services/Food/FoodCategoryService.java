@@ -1,11 +1,15 @@
 package api.karbonzeromovil.Services.Food;
 
 import api.karbonzeromovil.Entities.Food.FoodCategoryEntity;
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
 import api.karbonzeromovil.Repositories.Food.FoodCategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +21,11 @@ public class FoodCategoryService {
     @Autowired
     FoodCategoryRepository repo;
 
-    public List<FoodCategoryDTO> getAllCategories(){
-        List<FoodCategoryEntity> category = repo.findAll();
-        return category.stream()
-                .map(this::categoryToDTO)
-                .collect(Collectors.toList());
+    public Page<FoodCategoryDTO> getAllCategories(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FoodCategoryEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::categoryToDTO);
     }
 
     public FoodCategoryDTO insertCategory(FoodCategoryDTO dto){

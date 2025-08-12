@@ -7,6 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,6 +28,6 @@ public class LivingSpaceTypeEntity {
     @Column(name = "CARBONFOOTPRINT")
     private Double carbonFootPrint;
 
-    @OneToMany(mappedBy = "idLivingSpaceType")
-    private Set<LivingSpaceEntity> livingSpaceSet;
+    @OneToMany(mappedBy = "livingSpaceType")
+    private List<LivingSpaceEntity> livingSpace = new ArrayList<>();
 }

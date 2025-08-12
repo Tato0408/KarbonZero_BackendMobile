@@ -10,7 +10,9 @@ import api.karbonzeromovil.Services.Food.FoodConsumptionService;
 import api.karbonzeromovil.Services.Food.FoodService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -34,16 +36,80 @@ public class FoodController {
     private FoodConsumptionFoodService serviceFoodConsumption;
 
     @GetMapping("/getAllFoods")
-    public List<FoodDTO> getAllFoods(){return service.getAllFood();}
+    public ResponseEntity<Page<FoodDTO>> getAllFoods(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<FoodDTO> dto = service.getAllFood(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
 
     @GetMapping("/getAllFoodCategories")
-    public List<FoodCategoryDTO> getAllFoodCategories(){return serviceCategory.getAllCategories();}
+    public ResponseEntity<Page<FoodCategoryDTO>> getAllFoodCategories(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<FoodCategoryDTO> dto = serviceCategory.getAllCategories(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
 
     @GetMapping("/getAllFoodConsumptions")
-    public List<FoodConsumptionDTO> getAllFoodConsumptions(){return serviceConsumption.getAllFoodConsumption(); }
+    public ResponseEntity<Page<FoodConsumptionDTO>> getAllFoodConsumptions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<FoodConsumptionDTO> dto = serviceConsumption.getAllFoodConsumption(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
 
     @GetMapping("/getAllFoodConsumptionFoods")
-    public List<FoodConsumptionFoodDTO> getAllFoodConsumptionFoods(){return serviceFoodConsumption.getAllFoodConsumptionFoods(); }
+    public ResponseEntity<Page<FoodConsumptionFoodDTO>> getAllFoodConsumptionFoods(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<FoodConsumptionFoodDTO> dto = serviceFoodConsumption.getAllFoodConsumptionFoods(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
 
     @PostMapping("/insertFood")
     public ResponseEntity<Map<String, Object >> insertFood(@Valid @RequestBody FoodDTO dto, HttpServletRequest request){
