@@ -1,8 +1,10 @@
 package api.karbonzeromovil.Services.LivingSpace;
 
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceTypeEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceRepository;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceTypeRepository;
@@ -10,6 +12,9 @@ import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,11 +29,18 @@ public class LivingSpaceService {
     private LivingSpaceTypeRepository repoType;
     @Autowired
     private UserRepository repoUser;
-    public List<LivingSpaceDTO> getAllLivingSpace (){
-        List<LivingSpaceEntity> livingSpace = repo.findAll();
-        return livingSpace.stream()
-                .map(this::livingSpaceToDTO)
-                .collect(Collectors.toList());
+    public Page<LivingSpaceDTO> getAllLivingSpace (int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LivingSpaceEntity> entity = repo.findAll(pageable);
+        return entity.map(this::livingSpaceToDTO);
+    }
+
+    public LivingSpaceDTO getLivingSpaceById(String id){
+        if(repo.existsById(id)){
+            LivingSpaceEntity entity = repo.getReferenceById(id);
+            return livingSpaceToDTO(entity);
+        }
+        return null;
     }
 
     public LivingSpaceDTO insertLivingSpace(LivingSpaceDTO dto){

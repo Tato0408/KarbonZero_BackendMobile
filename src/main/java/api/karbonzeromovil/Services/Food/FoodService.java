@@ -31,6 +31,14 @@ public class FoodService {
         return entity.map(this::foodToDTO);
     }
 
+    public FoodDTO getFoodById(String id){
+        if(repo.existsById(id)){
+            FoodEntity entity = repo.getReferenceById(id);
+            return foodToDTO(entity);
+        }
+        return null;
+    }
+
     public FoodDTO insertFood(FoodDTO dto){
         if (dto == null){
             throw new IllegalArgumentException("Food can't be null or empty");

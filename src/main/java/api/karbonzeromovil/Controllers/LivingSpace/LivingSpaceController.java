@@ -1,12 +1,15 @@
 package api.karbonzeromovil.Controllers.LivingSpace;
 
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceTypeDTO;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceService;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceTypeService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +29,52 @@ public class LivingSpaceController {
     private LivingSpaceService serviceLivingSpace;
 
     @GetMapping("/getAllLivingSpaceTypes")
-    public List<LivingSpaceTypeDTO> getAllLivingSpaceTypes(){return serviceLivingSpaceType.getAllLivingSpaceType();}
+    public ResponseEntity<Page<LivingSpaceTypeDTO>> getAllLivingSpaceTypes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        if(size<= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser entre 1 y 50"
+            ));
+            return ResponseEntity.ok(null);
+        }
+        Page<LivingSpaceTypeDTO> dto = serviceLivingSpaceType.getAllLivingSpaceType(page,size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+
+        }
+        return ResponseEntity.ok(dto);
+    }
 
     @GetMapping("/getAllLivingSpaces")
-    public List<LivingSpaceDTO> getAllLivingSpaces(){return serviceLivingSpace.getAllLivingSpace(); }
+    public ResponseEntity<Page<LivingSpaceDTO>> getAllLivingSpace(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        if(size<= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser entre 1 y 50"
+            ));
+            return ResponseEntity.ok(null);
+        }
+        Page<LivingSpaceDTO> dto = serviceLivingSpace.getAllLivingSpace(page,size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/getLivingSpaceById/{id}")
+    public LivingSpaceDTO getLivingSpaceById(@PathVariable String id) {return serviceLivingSpace.getLivingSpaceById(id);}
+
+    @GetMapping("/getLivingSpaceTypeById/{id}")
+    public LivingSpaceTypeDTO getLivingSpaceTypeById(@PathVariable String id) {return serviceLivingSpaceType.getLivingSpaceTypeById(id);}
 
     @PostMapping("/insertLivingSpaceType")
     public ResponseEntity<Map<String, Object>> insertLivingSpaceType(@Valid @RequestBody LivingSpaceTypeDTO dto, HttpServletRequest request){

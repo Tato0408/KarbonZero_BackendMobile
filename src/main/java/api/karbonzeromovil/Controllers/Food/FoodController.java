@@ -111,6 +111,18 @@ public class FoodController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/getFoodById/{id}")
+    public FoodDTO getFoodById(@PathVariable String id) {return service.getFoodById(id);}
+
+    @GetMapping("/getFoodCategoryById/{id}")
+    public FoodCategoryDTO getFoodCategoryById(@PathVariable String id){return serviceCategory.getFoodCategoryById(id);}
+
+    @GetMapping("/getFoodConsumptionById/{id}")
+    public FoodConsumptionDTO getFoodConsumptionById(@PathVariable String id){return serviceConsumption.getFoodConsumptionById(id);}
+
+    @GetMapping("/getFoodConsumptionFoodById/{id}")
+    public FoodConsumptionFoodDTO getFoodConsumptionFoodById(@PathVariable String id){ return serviceFoodConsumption.getFoodConsumptionFoodById(id);}
+
     @PostMapping("/insertFood")
     public ResponseEntity<Map<String, Object >> insertFood(@Valid @RequestBody FoodDTO dto, HttpServletRequest request){
         try{

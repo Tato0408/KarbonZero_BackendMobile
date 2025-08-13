@@ -5,6 +5,7 @@ import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,14 @@ public class FoodConsumptionService {
         Page<FoodConsumptionEntity> entity = repo.findAll(pageable);
 
         return entity.map(this::foodConsumptionToDTO);
+    }
+
+    public FoodConsumptionDTO getFoodConsumptionById(String id){
+        if(repo.existsById(id)){
+            FoodConsumptionEntity entity = repo.getReferenceById(id);
+            return foodConsumptionToDTO(entity);
+        }
+        return null;
     }
 
     public FoodConsumptionDTO insertFooConsumption(FoodConsumptionDTO dto){
