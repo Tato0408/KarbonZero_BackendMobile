@@ -1,8 +1,10 @@
 package api.karbonzeromovil.Services.Pet;
 
 import api.karbonzeromovil.Entities.Measure.MeasureEntity;
+import api.karbonzeromovil.Entities.Pet.PetTypeEntity;
 import api.karbonzeromovil.Entities.Pet.UserPetEntity;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
+import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Repositories.Pet.PetTypeRepository;
 import api.karbonzeromovil.Repositories.Pet.UserPetRepository;
@@ -34,6 +36,13 @@ public class UserPetService {
         return entity.map(this::UserPetToDTO);
     }
 
+    public UserPetDTO getUserPetById(String id){
+        if(repo.existsById(id)){
+            UserPetEntity entity = repo.getReferenceById(id);
+            return UserPetToDTO(entity);
+        }
+        return null;
+    }
     public UserPetDTO insertUserPet(UserPetDTO dto){
         if(dto == null){
             throw new IllegalArgumentException("Pet user can't be null or empty");
@@ -78,7 +87,7 @@ public class UserPetService {
             throw new EmptyResultDataAccessException("The Pet User with the id: " + id +" doesn't exist",1);
         }
     }
-    private UserPetDTO UserPetToDTO(UserPetEntity entity){
+    public UserPetDTO UserPetToDTO(UserPetEntity entity){
         UserPetDTO dto = new UserPetDTO();
 
         dto.setIdUserPet(entity.getIdUserPet());

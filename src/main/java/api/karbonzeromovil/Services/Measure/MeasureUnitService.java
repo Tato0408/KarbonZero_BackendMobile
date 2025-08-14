@@ -1,8 +1,10 @@
 package api.karbonzeromovil.Services.Measure;
 
 import api.karbonzeromovil.Entities.Food.FoodEntity;
+import api.karbonzeromovil.Entities.Measure.MeasureEntity;
 import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
+import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureRepository;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
@@ -29,6 +31,14 @@ public class MeasureUnitService {
         Pageable pageable = PageRequest.of(page, size);
         Page<MeasureUnitEntity> entity = repo.findAll(pageable);
         return entity.map(this::MeasureUnitToDTO);
+    }
+
+    public MeasureUnitDTO getMeasureUnitById(String id){
+        if(repo.existsById(id)){
+            MeasureUnitEntity entity = repo.getReferenceById(id);
+            return MeasureUnitToDTO(entity);
+        }
+        return null;
     }
 
     public MeasureUnitDTO insertMeasureUnit(MeasureUnitDTO dto){

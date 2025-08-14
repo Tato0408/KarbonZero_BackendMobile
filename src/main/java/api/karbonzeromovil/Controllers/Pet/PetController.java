@@ -1,6 +1,5 @@
 package api.karbonzeromovil.Controllers.Pet;
 
-import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Services.Pet.PetTypeService;
@@ -12,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
@@ -66,6 +63,12 @@ public class PetController {
         }
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/getUserPetById/{id}")
+    public UserPetDTO getUserPetById(@PathVariable String id) {return serviceUserPet.getUserPetById(id);}
+
+    @GetMapping("/getPetTypeById/{id}")
+    public PetTypeDTO getPetTypeById(@PathVariable String id) {return servicePetType.getPetTypeById(id);}
 
 
     @PostMapping("/insertUserPet")

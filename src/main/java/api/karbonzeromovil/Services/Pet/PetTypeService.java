@@ -1,9 +1,7 @@
 package api.karbonzeromovil.Services.Pet;
 
 import api.karbonzeromovil.Entities.Pet.PetTypeEntity;
-import api.karbonzeromovil.Entities.Pet.UserPetEntity;
 import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
-import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Repositories.Pet.PetTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,14 @@ public class PetTypeService {
         Pageable pageable = PageRequest.of(page, size);
         Page<PetTypeEntity> entity = repo.findAll(pageable);
         return entity.map(this::PetTypeToDTO);
+    }
+
+    public PetTypeDTO getPetTypeById(String id){
+        if(repo.existsById(id)){
+            PetTypeEntity entity = repo.getReferenceById(id);
+            return PetTypeToDTO(entity);
+        }
+        return null;
     }
 
     public PetTypeDTO insertPetType(PetTypeDTO dto){

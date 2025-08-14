@@ -1,6 +1,5 @@
 package api.karbonzeromovil.Controllers.Measure;
 
-import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Services.Measure.MeasureService;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
@@ -62,6 +60,12 @@ public class MeasureController {
         }
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/getMeasureById/{id}")
+    public MeasureDTO getMeasureById(@PathVariable String id) {return serviceMeasure.getMeasureById(id);}
+
+    @GetMapping("/getMeasureUnitById/{id}")
+    public MeasureUnitDTO getMeasureUnitById(@PathVariable String id) {return serviceMeasureUnit.getMeasureUnitById(id);}
 
 
     @PostMapping("/insertMeasureUnit")

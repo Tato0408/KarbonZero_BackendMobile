@@ -1,9 +1,7 @@
 package api.karbonzeromovil.Services.Measure;
 
 import api.karbonzeromovil.Entities.Measure.MeasureEntity;
-import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
-import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,6 +21,14 @@ public class MeasureService {
         Pageable pageable = PageRequest.of(page, size);
         Page<MeasureEntity> entity = repo.findAll(pageable);
         return entity.map(this::MeasureToDTO);
+    }
+
+    public MeasureDTO getMeasureById(String id){
+        if(repo.existsById(id)){
+            MeasureEntity entity = repo.getReferenceById(id);
+            return MeasureToDTO(entity);
+        }
+        return null;
     }
 
     public MeasureDTO insertMeasure(MeasureDTO dto){
