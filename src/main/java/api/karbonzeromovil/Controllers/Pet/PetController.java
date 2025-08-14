@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Controllers.Pet;
 
+import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Services.Pet.PetTypeService;
@@ -7,6 +8,7 @@ import api.karbonzeromovil.Services.Pet.UserPetService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +30,43 @@ public class PetController {
     private UserPetService serviceUserPet;
 
     @GetMapping("/getAllUserPets")
-    public List<UserPetDTO> dataUserPet(){return serviceUserPet.getAllUserPet();}
-    @GetMapping("/getAllPetTypes")
-    public List<PetTypeDTO> dataPetType(){return servicePetType.getAllPetType();}
+    public ResponseEntity<Page<UserPetDTO>> getAllUserPets(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<UserPetDTO> dto = serviceUserPet.getAllUserPets (page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/getAllPetType")
+    public ResponseEntity<Page<PetTypeDTO>> getAllPetType(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<PetTypeDTO> dto = servicePetType.getAllPetType (page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
+
 
     @PostMapping("/insertUserPet")
     public ResponseEntity<Map<String, Object>> insertUserPet(@Valid @RequestBody UserPetDTO dto, HttpServletRequest request){

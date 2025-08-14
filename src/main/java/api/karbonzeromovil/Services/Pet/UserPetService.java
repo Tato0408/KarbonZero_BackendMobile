@@ -1,6 +1,8 @@
 package api.karbonzeromovil.Services.Pet;
 
+import api.karbonzeromovil.Entities.Measure.MeasureEntity;
 import api.karbonzeromovil.Entities.Pet.UserPetEntity;
+import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Repositories.Pet.PetTypeRepository;
 import api.karbonzeromovil.Repositories.Pet.UserPetRepository;
@@ -8,6 +10,9 @@ import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +28,10 @@ public class UserPetService {
     @Autowired
     private UserRepository repoUser;
 
-    public List<UserPetDTO> getAllUserPet (){
-        List<UserPetEntity> userPet = repo.findAll();
-        return userPet.stream()
-                .map(this::UserPetToDTO)
-                .collect(Collectors.toList());
+    public Page<UserPetDTO> getAllUserPets (int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserPetEntity> entity = repo.findAll(pageable);
+        return entity.map(this::UserPetToDTO);
     }
 
     public UserPetDTO insertUserPet(UserPetDTO dto){

@@ -1,11 +1,16 @@
 package api.karbonzeromovil.Services.Measure;
 
 import api.karbonzeromovil.Entities.Measure.MeasureEntity;
+import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
+import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +22,10 @@ public class MeasureService {
     @Autowired
     private MeasureRepository repo;
 
-    public List<MeasureDTO> getAllMeasure (){
-        List<MeasureEntity> measure = repo.findAll();
-        return measure.stream()
-                .map(this::MeasureToDTO)
-                .collect(Collectors.toList());
+    public Page<MeasureDTO> getAllMeasures (int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureEntity> entity = repo.findAll(pageable);
+        return entity.map(this::MeasureToDTO);
     }
 
     public MeasureDTO insertMeasure(MeasureDTO dto){
