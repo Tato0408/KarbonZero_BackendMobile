@@ -1,12 +1,19 @@
 package api.karbonzeromovil.Services.LivingSpace;
 
+import api.karbonzeromovil.Entities.Food.FoodEntity;
+import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceTypeEntity;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
+import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceTypeDTO;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.source.MutuallyExclusiveConfigurationPropertiesException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +25,18 @@ public class LivingSpaceTypeService {
     @Autowired
     private LivingSpaceTypeRepository repo;
 
-    public List<LivingSpaceTypeDTO> getAllLivingSpaceType (){
-        List<LivingSpaceTypeEntity> livingSpaceType = repo.findAll();
-        return livingSpaceType.stream()
-                .map(this::livingSpaceTypeToDTO)
-                .collect(Collectors.toList());
+    public Page<LivingSpaceTypeDTO> getAllLivingSpaceType (int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LivingSpaceTypeEntity> entity = repo.findAll(pageable);
+        return entity.map(this::livingSpaceTypeToDTO);
+    }
+
+    public LivingSpaceTypeDTO getLivingSpaceTypeById(String id){
+        if(repo.existsById(id)){
+            LivingSpaceTypeEntity entity = repo.getReferenceById(id);
+            return livingSpaceTypeToDTO(entity);
+        }
+        return null;
     }
 
     public LivingSpaceTypeDTO insertLivingSpaceType(LivingSpaceTypeDTO dto){

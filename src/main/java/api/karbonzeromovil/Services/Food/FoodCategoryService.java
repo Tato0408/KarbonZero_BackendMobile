@@ -3,6 +3,7 @@ package api.karbonzeromovil.Services.Food;
 import api.karbonzeromovil.Entities.Food.FoodCategoryEntity;
 import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Repositories.Food.FoodCategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,14 @@ public class FoodCategoryService {
         Page<FoodCategoryEntity> entity = repo.findAll(pageable);
 
         return entity.map(this::categoryToDTO);
+    }
+
+    public FoodCategoryDTO getFoodCategoryById(String id){
+        if(repo.existsById(id)){
+            FoodCategoryEntity entity = repo.getReferenceById(id);
+            return categoryToDTO(entity);
+        }
+        return null;
     }
 
     public FoodCategoryDTO insertCategory(FoodCategoryDTO dto){
