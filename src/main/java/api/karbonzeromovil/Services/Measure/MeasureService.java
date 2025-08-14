@@ -6,10 +6,10 @@ import api.karbonzeromovil.Repositories.Measure.MeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -17,11 +17,18 @@ public class MeasureService {
     @Autowired
     private MeasureRepository repo;
 
-    public List<MeasureDTO> getAllMeasure (){
-        List<MeasureEntity> measure = repo.findAll();
-        return measure.stream()
-                .map(this::MeasureToDTO)
-                .collect(Collectors.toList());
+    public Page<MeasureDTO> getAllMeasures (int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureEntity> entity = repo.findAll(pageable);
+        return entity.map(this::MeasureToDTO);
+    }
+
+    public MeasureDTO getMeasureById(String id){
+        if(repo.existsById(id)){
+            MeasureEntity entity = repo.getReferenceById(id);
+            return MeasureToDTO(entity);
+        }
+        return null;
     }
 
     public MeasureDTO insertMeasure(MeasureDTO dto){

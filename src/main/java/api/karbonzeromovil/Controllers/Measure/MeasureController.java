@@ -7,10 +7,10 @@ import api.karbonzeromovil.Services.Measure.MeasureUnitService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
@@ -23,10 +23,50 @@ public class MeasureController {
     @Autowired
     private MeasureService serviceMeasure;
 
-    @GetMapping("/getAllMeasureUnits")
-    public List<MeasureUnitDTO> dataMeasureUnit(){return serviceMeasureUnit.getAllMeasureUnit();}
+    @GetMapping("/getAllMeasureUnit")
+    public ResponseEntity<Page<MeasureUnitDTO>> getAllMeasureUnit(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<MeasureUnitDTO> dto = serviceMeasureUnit.getAllMeasureUnit(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
+
     @GetMapping("/getAllMeasures")
-    public List<MeasureDTO> dataMeasure(){return serviceMeasure.getAllMeasure();}
+    public ResponseEntity<Page<MeasureDTO>> getAllMeasures(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<MeasureDTO> dto = serviceMeasure.getAllMeasures(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/getMeasureById/{id}")
+    public MeasureDTO getMeasureById(@PathVariable String id) {return serviceMeasure.getMeasureById(id);}
+
+    @GetMapping("/getMeasureUnitById/{id}")
+    public MeasureUnitDTO getMeasureUnitById(@PathVariable String id) {return serviceMeasureUnit.getMeasureUnitById(id);}
+
 
     @PostMapping("/insertMeasureUnit")
     public ResponseEntity<Map<String, Object>> insertMeasureUnit(@Valid @RequestBody MeasureUnitDTO dto, HttpServletRequest request){

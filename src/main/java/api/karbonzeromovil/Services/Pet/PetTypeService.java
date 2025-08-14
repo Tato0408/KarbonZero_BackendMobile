@@ -6,6 +6,9 @@ import api.karbonzeromovil.Repositories.Pet.PetTypeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +20,18 @@ public class PetTypeService {
     @Autowired
     private PetTypeRepository repo;
 
-    public List<PetTypeDTO> getAllPetType (){
-        List<PetTypeEntity> petType = repo.findAll();
-        return petType.stream()
-                .map(this::PetTypeToDTO)
-                .collect(Collectors.toList());
+    public Page<PetTypeDTO> getAllPetType (int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PetTypeEntity> entity = repo.findAll(pageable);
+        return entity.map(this::PetTypeToDTO);
+    }
+
+    public PetTypeDTO getPetTypeById(String id){
+        if(repo.existsById(id)){
+            PetTypeEntity entity = repo.getReferenceById(id);
+            return PetTypeToDTO(entity);
+        }
+        return null;
     }
 
     public PetTypeDTO insertPetType(PetTypeDTO dto){

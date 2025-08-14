@@ -1,12 +1,19 @@
 package api.karbonzeromovil.Services.Measure;
 
+import api.karbonzeromovil.Entities.Food.FoodEntity;
+import api.karbonzeromovil.Entities.Measure.MeasureEntity;
 import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
+import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureRepository;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +27,18 @@ public class MeasureUnitService {
     @Autowired
     private MeasureRepository measureRepo;
 
-    public List<MeasureUnitDTO> getAllMeasureUnit (){
-        List<MeasureUnitEntity> measureUnit = repo.findAll();
-        return measureUnit.stream()
-                .map(this::MeasureUnitToDTO)
-                .collect(Collectors.toList());
+    public Page<MeasureUnitDTO> getAllMeasureUnit (int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureUnitEntity> entity = repo.findAll(pageable);
+        return entity.map(this::MeasureUnitToDTO);
+    }
+
+    public MeasureUnitDTO getMeasureUnitById(String id){
+        if(repo.existsById(id)){
+            MeasureUnitEntity entity = repo.getReferenceById(id);
+            return MeasureUnitToDTO(entity);
+        }
+        return null;
     }
 
     public MeasureUnitDTO insertMeasureUnit(MeasureUnitDTO dto){
