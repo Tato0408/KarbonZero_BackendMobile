@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Entities.Car;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,11 +17,17 @@ public class CarEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")
+
     @Column(name="IDCAR")
     private String idCar;
-    @Column(name = "IDUSER",nullable = false)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IDUSER",nullable = false)
+    @JsonIgnore
     private String idUser;
-    @Column(name = "IDCARSIZE",nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "IDCARSIZE",nullable = false)
     private String idCarSize;
 
     @OneToMany(mappedBy = "idCar")

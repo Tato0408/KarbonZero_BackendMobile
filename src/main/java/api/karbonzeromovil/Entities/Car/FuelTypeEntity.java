@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Entities.Car;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,10 +19,15 @@ public class FuelTypeEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDFUELTYPE")
     private String idFuelType;
-    @Column(name = "IDMEASUREUNIT", nullable = true)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IDMEASUREUNIT", nullable = true)
+    @JsonIgnore
     private String idMeasureUnit;
+
     @Column(name = "NAME", nullable = true, unique = true)
     private String name;
+
     @Column(name = "CARBONFOOTPRINT", nullable = true)
     private Double carbonFooTprint;
 

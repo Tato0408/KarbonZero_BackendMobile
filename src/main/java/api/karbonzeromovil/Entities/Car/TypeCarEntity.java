@@ -18,8 +18,11 @@ public class TypeCarEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDTYPECAR")
     private String idTypeCar;
-    @Column(name = "IDCAR", nullable = true)
+
+    @ManyToOne
+    @JoinColumn(name = "IDCAR", nullable = true)
     private String idCar;
+
     @Column(name = "IDFUELTYPE", nullable = true)
     private String idFuelType;
 
