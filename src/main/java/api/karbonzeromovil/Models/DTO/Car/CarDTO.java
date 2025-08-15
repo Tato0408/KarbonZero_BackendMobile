@@ -1,5 +1,8 @@
 package api.karbonzeromovil.Models.DTO.Car;
 
+import api.karbonzeromovil.Entities.Car.CarEntity;
+import api.karbonzeromovil.Entities.Car.CarSizeEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.EqualsAndHashCode;
@@ -13,8 +16,8 @@ public class CarDTO {
     private String idCar;
 
     @NotNull
-    private String idUser;
+    private UserEntity idUser;
 
     @NotNull
-    private String idCarSize;
+    private CarSizeEntity idCarSize;
 }

@@ -17,6 +17,7 @@ public class CarSizeEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDCARSIZE")
     private String idCarSize;
+
     @Column(name = "NAME", nullable = true, unique = true)
     private String name;
 

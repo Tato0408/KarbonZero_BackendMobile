@@ -21,11 +21,11 @@ public class ChannelUserEntity {
     private String idChannelUser;
 
     @ManyToOne
-    @JoinColumn(name = "IDCHANNEL")
+    @JoinColumn(name = "IDCHANNEL", referencedColumnName = "IDCHANNEL")
     private ChannelEntity idChannel;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IDUSER")
+    @JoinColumn(name = "IDUSER", referencedColumnName = "IDUSER")
     @JsonIgnore
     private UserEntity idUser;
 }

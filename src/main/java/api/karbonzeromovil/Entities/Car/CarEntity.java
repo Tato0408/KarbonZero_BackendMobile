@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Entities.Car;
 
+import api.karbonzeromovil.Entities.User.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -21,13 +22,14 @@ public class CarEntity {
     @Column(name="IDCAR")
     private String idCar;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IDUSER",nullable = false)
+    @JoinColumn(name = "IDUSER",nullable = false, referencedColumnName = "IDUSER")
     @JsonIgnore
-    private String idUser;
+    private UserEntity idUser;
 
     @ManyToOne
-    @JoinColumn(name = "IDCARSIZE",nullable = false)
+    @JoinColumn(name = "IDCARSIZE",nullable = false, referencedColumnName = "IDCARSIZE")
     private CarSizeEntity idCarSize;
 
     @OneToMany(mappedBy = "idCar")

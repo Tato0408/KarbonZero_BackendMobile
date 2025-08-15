@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Models.DTO.Car;
 
+import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,7 +16,7 @@ public class FuelTypeDTO {
     private String idFuelType;
 
     @NotNull
-    private String idMeasureUnit;
+    private MeasureUnitEntity idMeasureUnit;
 
     @NotBlank @Size (max = 200)
     private String name;

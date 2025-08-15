@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.CarEntity;
+import api.karbonzeromovil.Entities.Car.CarSizeEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Repositories.Car.CarRepository;
 import lombok.extern.slf4j.Slf4j;
