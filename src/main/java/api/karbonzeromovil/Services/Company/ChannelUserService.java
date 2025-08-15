@@ -25,6 +25,14 @@ public class ChannelUserService {
                 .collect(Collectors.toList());
     }
 
+    public ChannelUserDTO getChannelUserById(String id){
+        if(repo.existsById(id)){
+            ChannelUserEntity entity = repo.getReferenceById(id);
+            return ChannelUserToDTO(entity);
+        }
+        return null;
+    }
+
     public ChannelUserDTO insertChannelUser(ChannelUserDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Channel user cannot be null or empty");

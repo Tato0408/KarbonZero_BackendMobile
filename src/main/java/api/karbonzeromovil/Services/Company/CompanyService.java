@@ -24,6 +24,14 @@ public class CompanyService {
                 .collect(Collectors.toList());
     }
 
+    public CompanyDTO getCompanyById(String id){
+        if(repo.existsById(id)){
+            CompanyEntity entity = repo.getReferenceById(id);
+            return CompanyToDTO(entity);
+        }
+        return null;
+    }
+
     public CompanyDTO insertCompany(CompanyDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Company cannot be null or empty");
