@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Controllers.Car;
 
+import api.karbonzeromovil.Entities.Car.FuelConsumptionEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Car.CarSizeDTO;
 import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
@@ -58,6 +59,30 @@ public class CarController {
     public List<FuelConsumptionDTO> dataFuelConsumption(){return serviceFuelConsumption.getAllFuelConsumption();}
 
 
+    @GetMapping("/getCarById/{id}")
+    public CarDTO getCarById(@PathVariable String id){
+        return serviceCar.getCarById(id);
+    }
+
+    @GetMapping("getCarSizeById/{id}")
+    public CarSizeDTO getCarSizeById(@PathVariable String id){
+        return serviceSizeCar.getCarSizeById(id);
+    }
+
+    @GetMapping("/getTypeCarById/{id}")
+    public TypeCarDTO getTypeCarById(@PathVariable String id){
+        return serviceTypeCar.getTypeCarById(id);
+    }
+
+    @GetMapping("/getFuelTypeById/{id}")
+    public FuelTypeDTO getFuelTypeById(@PathVariable String id){
+        return serviceFuelType.getFuelTypeById(id);
+    }
+
+    @GetMapping("/getFuelConsumptionById/{id}")
+    public FuelConsumptionDTO getFuelConsumptionById(@PathVariable String id){
+        return serviceFuelConsumption.getFuelConsumptionById(id);
+    }
 
 
     //Metodos POST para insertar cada cosa relacionada con la tabla carro

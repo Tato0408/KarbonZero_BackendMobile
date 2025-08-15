@@ -26,6 +26,14 @@ public class FuelConsumptionService {
                 .collect(Collectors.toList());
     }
 
+    public FuelConsumptionDTO getFuelConsumptionById (String id){
+        if(repo.existsById(id)){
+            FuelConsumptionEntity entity = repo.getReferenceById(id);
+            return FuelConsumptionToDTO(entity);
+        }
+        return null;
+    }
+
     public FuelConsumptionDTO insertFuelConsumption(FuelConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Fuel Consumption size cannot be null or empty");

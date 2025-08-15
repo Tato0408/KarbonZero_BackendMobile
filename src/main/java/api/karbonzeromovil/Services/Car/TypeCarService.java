@@ -25,6 +25,14 @@ public class TypeCarService {
                 .collect(Collectors.toList());
     }
 
+    public TypeCarDTO getTypeCarById(String id){
+        if(repo.existsById(id)){
+            TypeCarEntity entity = repo.getReferenceById(id);
+            return TypeCarToDTO(entity);
+        }
+        return null;
+    }
+
     public TypeCarDTO insertTypeCar(TypeCarDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Car type cannot be null or empty");

@@ -25,6 +25,14 @@ public class FuelTypeService {
                 .collect(Collectors.toList());
     }
 
+    public FuelTypeDTO getFuelTypeById (String id) {
+        if(repo.existsById(id)){
+            FuelTypeEntity entity = repo.getReferenceById(id);
+            return FuelTypeToDTO(entity);
+        }
+        return null;
+    }
+
     public FuelTypeDTO insertFuelType(FuelTypeDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Fuel type cannot be null or empty");

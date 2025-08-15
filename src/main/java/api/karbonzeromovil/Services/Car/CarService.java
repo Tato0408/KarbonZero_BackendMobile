@@ -26,6 +26,14 @@ public class CarService {
                 .collect(Collectors.toList());
     }
 
+    public CarDTO getCarById(String id){
+        if(repo.existsById(id)){
+            CarEntity entity = repo.getReferenceById(id);
+            return CarsToDTO(entity);
+        }
+        return null;
+    }
+
     public CarDTO insertCar(CarDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Car cannot be null or empty");
