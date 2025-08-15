@@ -22,6 +22,6 @@ public class ChannelEntity {
     @Column(name = "NAME", unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "idChannel")
-    private List<ChannelUserEntity> idChannelUserList;
+    @OneToOne(mappedBy = "idChannel")
+    private ChannelUserEntity idChannelUserList;
 }

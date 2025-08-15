@@ -28,7 +28,7 @@ public class CarEntity {
 
     @ManyToOne
     @JoinColumn(name = "IDCARSIZE",nullable = false)
-    private String idCarSize;
+    private CarSizeEntity idCarSize;
 
     @OneToMany(mappedBy = "idCar")
     private List<TypeCarEntity> TypeCarList;

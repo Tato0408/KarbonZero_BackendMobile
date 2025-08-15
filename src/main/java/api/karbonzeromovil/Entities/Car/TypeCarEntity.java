@@ -17,11 +17,11 @@ public class TypeCarEntity {
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDTYPECAR")
-    private String idTypeCar;
+    private TypeCarEntity idTypeCar;
 
     @ManyToOne
     @JoinColumn(name = "IDCAR", nullable = true)
-    private String idCar;
+    private CarEntity idCar;
 
     @Column(name = "IDFUELTYPE", nullable = true)
     private String idFuelType;

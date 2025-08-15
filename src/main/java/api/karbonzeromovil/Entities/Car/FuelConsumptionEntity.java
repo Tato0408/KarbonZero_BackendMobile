@@ -22,7 +22,7 @@ public class FuelConsumptionEntity {
 
     @ManyToOne
     @JoinColumn(name = "IDTYPECAR", nullable = false)
-    private String idTypeCar;
+    private TypeCarEntity idTypeCar;
 
     @Column(name = "QUANTITY", nullable = false)
     private Double quantity;
