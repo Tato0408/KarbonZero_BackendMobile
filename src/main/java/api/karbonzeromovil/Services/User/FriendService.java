@@ -1,12 +1,16 @@
 package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Entities.User.FriendEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Repositories.User.FriendRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +24,22 @@ public class FriendService {
     @Autowired
     private UserRepository userRepo;
 
-    public List<FriendDTO> getAllFriends(){
-        List<FriendEntity> friends = repo.findAll();
-        return friends.stream()
-                .map(this::FriendToDTO)
-                .collect(Collectors.toList());
+    public Page<FriendDTO> getAllFriends(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FriendEntity> friends = repo.findAll(pageable);
+        return friends.map(this::FriendToDTO);
+    }
+    public  FriendDTO getFriendById(String id){
+        try{
+            if(repo.existsById(id)){
+                FriendEntity entity = repo.getReferenceById(id);
+                return FriendToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Friend with the id: "+id+" does not exist, check if it exist");
+
+        }catch (Exception err){
+            throw new RuntimeException("The Friend could not be found" + err.getMessage());
+        }
     }
     public FriendDTO insertFriend(FriendDTO dto)throws IllegalAccessException{
         if (dto ==null){
@@ -42,8 +57,8 @@ public class FriendService {
         try{
             if (repo.existsById(id)){
                 FriendEntity entity = repo.getReferenceById(id);
-                entity.setUser1(dto.getUser1());
-                entity.setUser2(dto.getUser2());
+                entity.setUser1(userRepo.getReferenceById(dto.getUser1()));
+                entity.setUser2(userRepo.getReferenceById(dto.getUser2()));
 
                 FriendEntity savedFriend = repo.save(entity);
                 return FriendToDTO(savedFriend);
@@ -65,18 +80,31 @@ public class FriendService {
             throw new EmptyResultDataAccessException("The bound with the ID : " + id + " doesn't exists", 1);
         }
     }
-    private FriendDTO FriendToDTO(FriendEntity entity){
+    public FriendDTO FriendToDTO(FriendEntity entity){
         FriendDTO dto = new FriendDTO();
         dto.setIdFriend(entity.getIdFriend());
-        dto.setUser1(entity.getUser1());
-        dto.setUser2(entity.getUser2());
+        if(entity.getUser1() != null && entity.getUser2() != null){
+            dto.setUser1(entity.getUser1().getIdUser());
+            dto.setUser2(entity.getUser2().getIdUser());
+            dto.setFriendName1(entity.getUser1().getUserName());
+            dto.setFriendName2(entity.getUser2().getUserName());
+        }else{
+            dto.setUser1(null);
+            dto.setUser2(null);
+            dto.setFriendName1("No hay un usuario asociado");
+            dto.setFriendName2("No hay un usuario asociado");
+        }
         return dto;
     }
-    private FriendEntity DTOToFriend(FriendDTO dto){
+    public FriendEntity DTOToFriend(FriendDTO dto){
         FriendEntity entity = new FriendEntity();
         entity.setIdFriend(dto.getIdFriend());
-        entity.setUser1(dto.getUser1());
-        entity.setUser2(dto.getUser2());
+        if(dto.getUser1() != null && dto.getUser2() != null){
+            UserEntity user1 = userRepo.findById(dto.getUser1()).orElseThrow(()->new IllegalArgumentException("No hay un usuario con ese id "+dto.getUser1()));
+            UserEntity user2 = userRepo.findById(dto.getUser1()).orElseThrow(()->new IllegalArgumentException("No hay un usuario con ese id "+dto.getUser2()));
+            entity.setUser1(user1);
+            entity.setUser2(user2);
+        }
         return entity;
     }
 }

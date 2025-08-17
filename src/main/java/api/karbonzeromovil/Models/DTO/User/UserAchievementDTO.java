@@ -15,6 +15,7 @@ public class UserAchievementDTO {
     private String idAchievement;
     @NotBlank
     private String idUser;
+    private String username;
     @NotBlank
     @Size(max = 100)
     private String achievementName;

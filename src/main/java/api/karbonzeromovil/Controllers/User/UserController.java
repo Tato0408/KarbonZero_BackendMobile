@@ -1,5 +1,8 @@
 package api.karbonzeromovil.Controllers.User;
 
+import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
@@ -11,6 +14,7 @@ import api.karbonzeromovil.Services.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,21 +36,103 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @GetMapping("/getAllCountries")
-    public List<CountryDTO> getAllCountries(){
-        return countryService.getAllCountries();
+    public ResponseEntity<Page<CountryDTO>> getAllCountries(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size){
+        if(size <=0 || size >50){
+            ResponseEntity.badRequest().body(Map.of("status", "el tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<CountryDTO> countries = countryService.getAllCountries(page,size);
+        if(countries == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados"));
+        }
+        return ResponseEntity.ok(countries);
+
+    }
+    @GetMapping("/getCountryById/{id}")
+    public CountryDTO getCountryById(@PathVariable String id){
+        return countryService.getCountryById(id);
     }
 
     @GetMapping("/getAllFriends")
-    public List<FriendDTO> getAllFriends(){return friendService.getAllFriends();}
-
-    @GetMapping("/getAllAchievements")
-    public List<UserAchievementDTO> getAllAchievements(){
-        return userAchievementService.getAllAchievements();
+    public ResponseEntity<Page<FriendDTO>> getAllFriends(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10") int size){
+        if(size <=0 || size >50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<FriendDTO> friends = friendService.getAllFriends(page, size);
+        if(friends == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay amigos registrados "));
+        }
+        return ResponseEntity.ok(friends);
     }
 
+    @GetMapping("/getFriendById/{id}")
+    public FriendDTO getFriendById(@PathVariable String id){
+        return friendService.getFriendById(id);
+    }
+
+    @GetMapping("/getAllAchievements")
+    public ResponseEntity<Page<UserAchievementDTO>> getAllAchievements(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<UserAchievementDTO> achievements = userAchievementService.getAllAchievements(page, size);
+        if(achievements ==null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados "));
+        }
+        return ResponseEntity.ok(achievements);
+    }
+    @GetMapping("/getAchievementById/{id}")
+    public UserAchievementDTO getAchievementById(@PathVariable String id){
+        return userAchievementService.getAchievementById(id);
+    }
     @GetMapping("/getAllUsers")
-    public List<UserDTO> getAllUsers(){return userService.getAllUsers();}
+    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<UserDTO> users = userService.getAllUsers(page, size);
+        if(users == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
+
+        return ResponseEntity.ok(users);
+    }
+    @GetMapping("/getUserById/{id}")
+    public UserDTO getUserById(@PathVariable String id){
+        return userService.getUserById(id);
+    }
+
+    /// Aca van los oneToMany genericos
+
+    @GetMapping("/getAllAchievementsByUser/{id}")
+    public List<UserAchievementDTO> getAllAchivementsByUser( @PathVariable String id){
+        return userService.getAllUserAchievements(id);
+    }
+    @GetMapping("/getFriendsByMainUser/{id}")
+    public List<FriendDTO> getFriendsByMaiNuSER( @PathVariable String id){
+        return userService.getAllFriendsMainUser(id);
+    }
+    @GetMapping("/getFriendsBySecondaryUser/{id}")
+    public List<FriendDTO> getFriendsBySecondaryUser( @PathVariable String id){
+        return userService.getAllFriendsSecondaryUser(id);
+    }
+
+    /// ACA VAN TODAS LAS BUSQUEDAS DE LOS CONSUMOS POR EL ID DE X USUARIO
+    /// Inicio con viviendas
+    @GetMapping("/getAllUserLivingConsumptions/{id}")
+    public List<LivingSpaceDTO>getAllUserLivingConsumptions(@PathVariable String id){
+        return userService.getAllLivingSpacesUser(id);
+    }
+
+    @GetMapping("/getAllUserFoodConsumptions/{id}")
+    public List<FoodConsumptionDTO>getAllUserFoodConsumptions(@PathVariable String id){
+        return userService.getAllFoodConsumptionsUser(id);
+    }
 
     @PostMapping("/insertCountry")
     public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody CountryDTO dto, HttpServletRequest request){
