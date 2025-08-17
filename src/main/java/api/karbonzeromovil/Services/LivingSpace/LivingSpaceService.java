@@ -97,7 +97,7 @@ public class LivingSpaceService {
         }
     }
 
-    private LivingSpaceDTO livingSpaceToDTO(LivingSpaceEntity entity){
+    public LivingSpaceDTO livingSpaceToDTO(LivingSpaceEntity entity){
         LivingSpaceDTO dto = new LivingSpaceDTO();
 
         dto.setIdLivingSpace(entity.getIdLivingSpace());
@@ -110,7 +110,7 @@ public class LivingSpaceService {
         return dto;
     }
 
-    private LivingSpaceEntity DTOToLivingSpace(LivingSpaceDTO dto){
+    public LivingSpaceEntity DTOToLivingSpace(LivingSpaceDTO dto){
         LivingSpaceEntity entity = new LivingSpaceEntity();
         entity.setIdLivingSpace(dto.getIdLivingSpace());
         if(dto.getIdLivingSpace()!= null && dto.getIdUser()!= null){

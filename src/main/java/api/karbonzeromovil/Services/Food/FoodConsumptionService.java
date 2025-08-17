@@ -93,7 +93,7 @@ public class FoodConsumptionService {
          }
     }
 
-    private FoodConsumptionDTO foodConsumptionToDTO(FoodConsumptionEntity consumption){
+    public FoodConsumptionDTO foodConsumptionToDTO(FoodConsumptionEntity consumption){
         FoodConsumptionDTO dto = new FoodConsumptionDTO();
 
         dto.setIdFoodConsumption(consumption.getIdFoodConsumption());
@@ -108,7 +108,7 @@ public class FoodConsumptionService {
         return dto;
     }
 
-    private FoodConsumptionEntity DTOToFoodConsumption(FoodConsumptionDTO dto){
+    public FoodConsumptionEntity DTOToFoodConsumption(FoodConsumptionDTO dto){
         FoodConsumptionEntity entity = new FoodConsumptionEntity();
 
         entity.setIdFoodConsumption(dto.getIdFoodConsumption());
