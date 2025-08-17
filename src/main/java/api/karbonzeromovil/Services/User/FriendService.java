@@ -29,6 +29,18 @@ public class FriendService {
         Page<FriendEntity> friends = repo.findAll(pageable);
         return friends.map(this::FriendToDTO);
     }
+    public  FriendDTO getFriendById(String id){
+        try{
+            if(repo.existsById(id)){
+                FriendEntity entity = repo.getReferenceById(id);
+                return FriendToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Friend with the id: "+id+" does not exist, check if it exist");
+
+        }catch (Exception err){
+            throw new RuntimeException("The Friend could not be found" + err.getMessage());
+        }
+    }
     public FriendDTO insertFriend(FriendDTO dto)throws IllegalAccessException{
         if (dto ==null){
             throw new IllegalAccessException("Friend cannot be null");
@@ -68,7 +80,7 @@ public class FriendService {
             throw new EmptyResultDataAccessException("The bound with the ID : " + id + " doesn't exists", 1);
         }
     }
-    private FriendDTO FriendToDTO(FriendEntity entity){
+    public FriendDTO FriendToDTO(FriendEntity entity){
         FriendDTO dto = new FriendDTO();
         dto.setIdFriend(entity.getIdFriend());
         if(entity.getUser1() != null && entity.getUser2() != null){
@@ -84,7 +96,7 @@ public class FriendService {
         }
         return dto;
     }
-    private FriendEntity DTOToFriend(FriendDTO dto){
+    public FriendEntity DTOToFriend(FriendDTO dto){
         FriendEntity entity = new FriendEntity();
         entity.setIdFriend(dto.getIdFriend());
         if(dto.getUser1() != null && dto.getUser2() != null){

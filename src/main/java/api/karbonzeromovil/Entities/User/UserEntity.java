@@ -1,11 +1,16 @@
 package api.karbonzeromovil.Entities.User;
 
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
+import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "TBUSERS")
@@ -34,4 +39,19 @@ public class UserEntity {
     private String passwordUser;
     @Column(name = "IMAGEPATH", nullable = true)
     private String imagePath;
+
+    @OneToMany(mappedBy = "idUser")
+    private List<LivingSpaceEntity> livingSpacesUser = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idUser")
+    private List<FoodConsumptionEntity> foodConsumpionsUser = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user1")
+    private List<FriendEntity> friendsByMainUser = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user2")
+    private List<FriendEntity> friendsBySecondaryUser = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idUser")
+    private List<UserAchievementEntity> allUserAchievements = new ArrayList<>();
 }

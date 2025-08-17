@@ -25,6 +25,17 @@ public class CountryService {
         Page<CountryEntity> countries = repo.findAll(pageable);
         return countries.map(this::CountryToDTO);
     }
+    public CountryDTO getCountryById (String id){
+        try {
+            if(repo.existsById(id)){
+                CountryEntity entity = repo.getReferenceById(id);
+                return CountryToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Country with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err){
+            throw new RuntimeException("The Country could not be found" + err.getMessage());
+        }
+    }
     public CountryDTO insertCountry(CountryDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Country cannot be null or empty");

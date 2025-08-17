@@ -30,6 +30,18 @@ public class UserAchievementService {
         Page<UserAchievementEntity> achievements = repo.findAll(pageable);
         return achievements.map(this ::AchievementToDTO);
     }
+    public UserAchievementDTO getAchievementById(String id){
+        try{
+            if(repo.existsById(id)){
+                UserAchievementEntity entity = repo.getReferenceById(id);
+                return AchievementToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Achievement with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err){
+            throw new RuntimeException("The Achievement could not be found" + err.getMessage());
+
+        }
+    }
     public UserAchievementDTO insertAchievement(UserAchievementDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Achievement cannot be null or empty");
@@ -69,7 +81,7 @@ public class UserAchievementService {
             throw new EmptyResultDataAccessException("The achievement with the ID : " + id + " doesn't exists", 1);
         }
     }
-    private UserAchievementDTO AchievementToDTO(UserAchievementEntity entity){
+    public UserAchievementDTO AchievementToDTO(UserAchievementEntity entity){
         UserAchievementDTO dto = new UserAchievementDTO();
         dto.setIdAchievement(entity.getIdAchievement());
         dto.setAchievementName(entity.getAchievementName());
@@ -82,7 +94,7 @@ public class UserAchievementService {
         }
         return dto;
     }
-    private UserAchievementEntity DTOToAchievement(UserAchievementDTO dto){
+    public UserAchievementEntity DTOToAchievement(UserAchievementDTO dto){
         UserAchievementEntity entity = new UserAchievementEntity();
         entity.setIdAchievement(dto.getIdAchievement());
         entity.setAchievementName(dto.getAchievementName());

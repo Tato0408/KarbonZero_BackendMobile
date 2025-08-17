@@ -1,5 +1,8 @@
 package api.karbonzeromovil.Controllers.User;
 
+import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
@@ -47,6 +50,10 @@ public class UserController {
         return ResponseEntity.ok(countries);
 
     }
+    @GetMapping("/getCountryById/{id}")
+    public CountryDTO getCountryById(@PathVariable String id){
+        return countryService.getCountryById(id);
+    }
 
     @GetMapping("/getAllFriends")
     public ResponseEntity<Page<FriendDTO>> getAllFriends(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10") int size){
@@ -61,6 +68,11 @@ public class UserController {
         return ResponseEntity.ok(friends);
     }
 
+    @GetMapping("/getFriendById/{id}")
+    public FriendDTO getFriendById(@PathVariable String id){
+        return friendService.getFriendById(id);
+    }
+
     @GetMapping("/getAllAchievements")
     public ResponseEntity<Page<UserAchievementDTO>> getAllAchievements(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size <=0 || size>50){
@@ -73,7 +85,10 @@ public class UserController {
         }
         return ResponseEntity.ok(achievements);
     }
-
+    @GetMapping("/getAchievementById/{id}")
+    public UserAchievementDTO getAchievementById(@PathVariable String id){
+        return userAchievementService.getAchievementById(id);
+    }
     @GetMapping("/getAllUsers")
     public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size<=0 || size>50){
@@ -87,6 +102,38 @@ public class UserController {
 
         return ResponseEntity.ok(users);
     }
+    @GetMapping("/getUserById/{id}")
+    public UserDTO getUserById(@PathVariable String id){
+        return userService.getUserById(id);
+    }
+
+    /// Aca van los oneToMany genericos
+
+    @GetMapping("/getAllAchievementsByUser/{id}")
+    public List<UserAchievementDTO> getAllAchivementsByUser( @PathVariable String id){
+        return userService.getAllUserAchievements(id);
+    }
+    @GetMapping("/getFriendsByMainUser/{id}")
+    public List<FriendDTO> getFriendsByMaiNuSER( @PathVariable String id){
+        return userService.getAllFriendsMainUser(id);
+    }
+    @GetMapping("/getFriendsBySecondaryUser/{id}")
+    public List<FriendDTO> getFriendsBySecondaryUser( @PathVariable String id){
+        return userService.getAllFriendsSecondaryUser(id);
+    }
+
+    /// ACA VAN TODAS LAS BUSQUEDAS DE LOS CONSUMOS POR EL ID DE X USUARIO
+    /// Inicio con viviendas
+    @GetMapping("/getAllUserLivingConsumptions/{id}")
+    public List<LivingSpaceDTO>getAllUserLivingConsumptions(@PathVariable String id){
+        return userService.getAllLivingSpacesUser(id);
+    }
+
+    @GetMapping("/getAllUserFoodConsumptions/{id}")
+    public List<FoodConsumptionDTO>getAllUserFoodConsumptions(@PathVariable String id){
+        return userService.getAllFoodConsumptionsUser(id);
+    }
+
     @PostMapping("/insertCountry")
     public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody CountryDTO dto, HttpServletRequest request){
         try {
