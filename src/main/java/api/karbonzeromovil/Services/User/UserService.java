@@ -8,6 +8,8 @@ import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
+import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
+import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
@@ -18,6 +20,8 @@ import api.karbonzeromovil.Repositories.User.UserRepository;
 import api.karbonzeromovil.Services.Food.FoodConsumptionFoodService;
 import api.karbonzeromovil.Services.Food.FoodConsumptionService;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceService;
+import api.karbonzeromovil.Services.Pet.UserPetService;
+import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.hibernate.boot.model.internal.CreateKeySecondPass;
@@ -90,6 +94,18 @@ public class UserService {
         return user.getFoodConsumpionsUser().stream()
                 .map(new FoodConsumptionService()::foodConsumptionToDTO).collect(Collectors.toList());
     }
+
+    public List<UserPetDTO> getAllUserPets (String id){
+        UserEntity user = repo.getReferenceById(id);
+        return user.getAllUserPets().stream().map(new UserPetService()::UserPetToDTO).collect(Collectors.toList());
+    }
+
+//    public List<ServiceConsumptionDTO> getAllUserServiceConsumptions(String id){
+//        UserEntity user = repo.getReferenceById(id);
+//        return  user.getAllUserServiceConsumption().stream().map(new ServiceConsumptionService()::ServiceConsumptionToDTO).collect(Collectors.toList());
+//    }
+
+
     public UserDTO insertUser(UserDTO dto) throws IllegalAccessException {
         if(dto == null || dto.getPasswordUser() == null || dto.getPasswordUser().isEmpty()){
             throw new IllegalAccessException("User cannot be null or empty");
