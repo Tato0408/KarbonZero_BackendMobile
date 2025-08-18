@@ -3,6 +3,8 @@ package api.karbonzeromovil.Entities.User;
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
+import api.karbonzeromovil.Entities.Pet.UserPetEntity;
+import api.karbonzeromovil.Entities.Service.ServiceConsumptionEntity;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -54,4 +56,10 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "idUser")
     private List<UserAchievementEntity> allUserAchievements = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idUser")
+    private List<UserPetEntity> allUserPets = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idUser")
+    private List<ServiceConsumptionEntity> allUserServiceConsumption = new ArrayList<>();
 }

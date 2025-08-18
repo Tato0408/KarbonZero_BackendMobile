@@ -3,6 +3,8 @@ package api.karbonzeromovil.Controllers.User;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
+import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
+import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
@@ -36,24 +38,68 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
-    @GetMapping("/getAllCountries")
-    public ResponseEntity<Page<CountryDTO>> getAllCountries(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size){
-        if(size <=0 || size >50){
-            ResponseEntity.badRequest().body(Map.of("status", "el tamaño de la pagina debe de estar entre 1 y 50"));
+    //region Summary: USERCRUD
+    @GetMapping("/getAllUsers")
+    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
             return ResponseEntity.ok(null);
         }
-        Page<CountryDTO> countries = countryService.getAllCountries(page,size);
-        if(countries == null){
-            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados"));
+        Page<UserDTO> users = userService.getAllUsers(page, size);
+        if(users == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
         }
-        return ResponseEntity.ok(countries);
 
+        return ResponseEntity.ok(users);
     }
-    @GetMapping("/getCountryById/{id}")
-    public CountryDTO getCountryById(@PathVariable String id){
-        return countryService.getCountryById(id);
+
+    @GetMapping("/getUserById/{id}")
+    public UserDTO getUserById(@PathVariable String id){
+        return userService.getUserById(id);
     }
+
+    @PostMapping("/insertUser")
+    public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody UserDTO dto, HttpServletRequest request){
+        try {
+            UserDTO answer = userService.insertUser(dto);
+            if (answer == null){
+                return responseBadRequest("Invalid data to create an User object");
+            }
+            return responseCreated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot create user object");
+        }
+    }
+
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<?>updateUser(@PathVariable String id, @Valid @RequestBody UserDTO dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+        try {
+            UserDTO answer = userService.updateUser(id,dto);
+            if (answer== null){
+                return responseBadRequest("Invalid data to update an user object");
+            }
+            return responseUpdated(answer);
+        }catch (Exception e){
+            return responseServerError(e, "Cannot update an user object");
+        }
+    }
+
+    @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable String id) {
+        try {
+            if(!userService.deleteUser(id)){
+                return responseNotFound("user not found");
+            }
+            return responseOK("user deleted with success");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot delete the user with the User Object");
+        }
+    }
+    //endregion
+    //region Summary: FRIENDCRUD
 
     @GetMapping("/getAllFriends")
     public ResponseEntity<Page<FriendDTO>> getAllFriends(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10") int size){
@@ -73,79 +119,6 @@ public class UserController {
         return friendService.getFriendById(id);
     }
 
-    @GetMapping("/getAllAchievements")
-    public ResponseEntity<Page<UserAchievementDTO>> getAllAchievements(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-        if(size <=0 || size>50){
-            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
-            return ResponseEntity.ok(null);
-        }
-        Page<UserAchievementDTO> achievements = userAchievementService.getAllAchievements(page, size);
-        if(achievements ==null){
-            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados "));
-        }
-        return ResponseEntity.ok(achievements);
-    }
-    @GetMapping("/getAchievementById/{id}")
-    public UserAchievementDTO getAchievementById(@PathVariable String id){
-        return userAchievementService.getAchievementById(id);
-    }
-    @GetMapping("/getAllUsers")
-    public ResponseEntity<Page<UserDTO>> getAllUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-        if(size<=0 || size>50){
-            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
-            return ResponseEntity.ok(null);
-        }
-        Page<UserDTO> users = userService.getAllUsers(page, size);
-        if(users == null){
-            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
-        }
-
-        return ResponseEntity.ok(users);
-    }
-    @GetMapping("/getUserById/{id}")
-    public UserDTO getUserById(@PathVariable String id){
-        return userService.getUserById(id);
-    }
-
-    /// Aca van los oneToMany genericos
-
-    @GetMapping("/getAllAchievementsByUser/{id}")
-    public List<UserAchievementDTO> getAllAchivementsByUser( @PathVariable String id){
-        return userService.getAllUserAchievements(id);
-    }
-    @GetMapping("/getFriendsByMainUser/{id}")
-    public List<FriendDTO> getFriendsByMaiNuSER( @PathVariable String id){
-        return userService.getAllFriendsMainUser(id);
-    }
-    @GetMapping("/getFriendsBySecondaryUser/{id}")
-    public List<FriendDTO> getFriendsBySecondaryUser( @PathVariable String id){
-        return userService.getAllFriendsSecondaryUser(id);
-    }
-
-    /// ACA VAN TODAS LAS BUSQUEDAS DE LOS CONSUMOS POR EL ID DE X USUARIO
-    /// Inicio con viviendas
-    @GetMapping("/getAllUserLivingConsumptions/{id}")
-    public List<LivingSpaceDTO>getAllUserLivingConsumptions(@PathVariable String id){
-        return userService.getAllLivingSpacesUser(id);
-    }
-
-    @GetMapping("/getAllUserFoodConsumptions/{id}")
-    public List<FoodConsumptionDTO>getAllUserFoodConsumptions(@PathVariable String id){
-        return userService.getAllFoodConsumptionsUser(id);
-    }
-
-    @PostMapping("/insertCountry")
-    public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody CountryDTO dto, HttpServletRequest request){
-        try {
-            CountryDTO answer = countryService.insertCountry(dto);
-            if (answer == null){
-                return responseBadRequest("Invalid data to create a country object");
-            }
-            return responseCreated(answer);
-        } catch (Exception e) {
-            return responseServerError(e, "Cannot create country object");
-        }
-    }
     @PostMapping("/insertFriend")
     public ResponseEntity<Map<String,Object>> insertFriend(@Valid @RequestBody FriendDTO dto, HttpServletRequest request){
         try {
@@ -158,6 +131,55 @@ public class UserController {
             return responseServerError(e, "Cannot create friend object");
         }
     }
+
+    @PutMapping("/updateFriend/{id}")
+    public ResponseEntity<?>updateFriend(@PathVariable String id, @Valid @RequestBody FriendDTO dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+        try {
+            FriendDTO answer = friendService.updateFriend(id,dto);
+            if (answer== null){
+                return responseBadRequest("Invalid data to update a friend object");
+            }
+            return responseUpdated(answer);
+        }catch (Exception e){
+            return responseServerError(e, "Cannot update a friend object");
+        }
+    }
+
+    @DeleteMapping("/deleteFriend/{id}")
+    public ResponseEntity<Map<String, Object>> deleteFriend(@PathVariable String id) {
+        try {
+            if(!friendService.deleteFriend(id)){
+                return responseNotFound("friend not found");
+            }
+            return responseOK("friend deleted with success");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot delete the friend with the friend Object");
+        }
+    }
+    //endregion
+    //region Summary: ACHIEVEMENTSCRUD
+
+    @GetMapping("/getAllAchievements")
+    public ResponseEntity<Page<UserAchievementDTO>> getAllAchievements(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<UserAchievementDTO> achievements = userAchievementService.getAllAchievements(page, size);
+        if(achievements ==null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados "));
+        }
+        return ResponseEntity.ok(achievements);
+    }
+
+    @GetMapping("/getAchievementById/{id}")
+    public UserAchievementDTO getAchievementById(@PathVariable String id){
+        return userAchievementService.getAchievementById(id);
+    }
+
     @PostMapping("/insertAchievement")
     public ResponseEntity<Map<String,Object>> insertAchievement(@Valid @RequestBody UserAchievementDTO dto, HttpServletRequest request){
         try {
@@ -170,16 +192,66 @@ public class UserController {
             return responseServerError(e, "Cannot create achievement object");
         }
     }
-    @PostMapping("/insertUser")
-    public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody UserDTO dto, HttpServletRequest request){
+
+    @PutMapping("/updateAchievement/{id}")
+    public ResponseEntity<?>updateAchievement(@PathVariable String id, @Valid @RequestBody UserAchievementDTO dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
         try {
-            UserDTO answer = userService.insertUser(dto);
+            UserAchievementDTO answer = userAchievementService.updateAchievement(id,dto);
+            if (answer== null){
+                return responseBadRequest("Invalid data to update an achievement object");
+            }
+            return responseUpdated(answer);
+        }catch (Exception e){
+            return responseServerError(e, "Cannot update an achievement object");
+        }
+    }
+
+    @DeleteMapping("/deleteAchievement/{id}")
+    public ResponseEntity<Map<String, Object>> deleteAchievement(@PathVariable String id) {
+        try {
+            if(!userAchievementService.deleteAchievement(id)){
+                return responseNotFound("Achievement not found");
+            }
+            return responseOK("Achievement deleted with success");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot delete the Achievement with the achievement Object");
+        }
+    }
+    //endregion
+    //region Summary: COUNTRIESCRUD
+
+    @GetMapping("/getAllCountries")
+    public ResponseEntity<Page<CountryDTO>> getAllCountries(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")int size){
+        if(size <=0 || size >50){
+            ResponseEntity.badRequest().body(Map.of("status", "el tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<CountryDTO> countries = countryService.getAllCountries(page,size);
+        if(countries == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados"));
+        }
+        return ResponseEntity.ok(countries);
+
+    }
+
+    @GetMapping("/getCountryById/{id}")
+    public CountryDTO getCountryById(@PathVariable String id){
+        return countryService.getCountryById(id);
+    }
+
+    @PostMapping("/insertCountry")
+    public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody CountryDTO dto, HttpServletRequest request){
+        try {
+            CountryDTO answer = countryService.insertCountry(dto);
             if (answer == null){
-                return responseBadRequest("Invalid data to create an User object");
+                return responseBadRequest("Invalid data to create a country object");
             }
             return responseCreated(answer);
         } catch (Exception e) {
-            return responseServerError(e, "Cannot create user object");
+            return responseServerError(e, "Cannot create country object");
         }
     }
     @PutMapping("/updateCountry/{id}")
@@ -197,51 +269,7 @@ public class UserController {
             return responseServerError(e, "Cannot update a country object");
         }
     }
-    @PutMapping("/updateFriend/{id}")
-    public ResponseEntity<?>updateFriend(@PathVariable String id, @Valid @RequestBody FriendDTO dto, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            return responseBadRequestBinding(bindingResult);
-        }
-        try {
-            FriendDTO answer = friendService.updateFriend(id,dto);
-            if (answer== null){
-                return responseBadRequest("Invalid data to update a friend object");
-            }
-            return responseUpdated(answer);
-        }catch (Exception e){
-            return responseServerError(e, "Cannot update a friend object");
-        }
-    }
-    @PutMapping("/updateAchievement/{id}")
-    public ResponseEntity<?>updateAchievement(@PathVariable String id, @Valid @RequestBody UserAchievementDTO dto, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            return responseBadRequestBinding(bindingResult);
-        }
-        try {
-            UserAchievementDTO answer = userAchievementService.updateAchievement(id,dto);
-            if (answer== null){
-                return responseBadRequest("Invalid data to update an achievement object");
-            }
-            return responseUpdated(answer);
-        }catch (Exception e){
-            return responseServerError(e, "Cannot update an achievement object");
-        }
-    }
-    @PutMapping("/updateUser/{id}")
-    public ResponseEntity<?>updateUser(@PathVariable String id, @Valid @RequestBody UserDTO dto, BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            return responseBadRequestBinding(bindingResult);
-        }
-        try {
-            UserDTO answer = userService.updateUser(id,dto);
-            if (answer== null){
-                return responseBadRequest("Invalid data to update an user object");
-            }
-            return responseUpdated(answer);
-        }catch (Exception e){
-            return responseServerError(e, "Cannot update an user object");
-        }
-    }
+
     @DeleteMapping("/deleteCountry/{id}")
     public ResponseEntity<Map<String, Object>> deleteCountry(@PathVariable String id) {
         try {
@@ -253,37 +281,42 @@ public class UserController {
             return responseServerError(e, "Cannot delete the country with the country Object");
         }
     }
-    @DeleteMapping("/deleteFriend/{id}")
-    public ResponseEntity<Map<String, Object>> deleteFriend(@PathVariable String id) {
-        try {
-            if(!friendService.deleteFriend(id)){
-                return responseNotFound("friend not found");
-            }
-            return responseOK("friend deleted with success");
-        } catch (Exception e) {
-            return responseServerError(e, "Cannot delete the friend with the friend Object");
-        }
+    //endregion
+    //region SUMMARY: All oneToManyGets
+
+    @GetMapping("/getAllAchievementsByUser/{id}")
+    public List<UserAchievementDTO> getAllAchivementsByUser( @PathVariable String id){
+        return userService.getAllUserAchievements(id);
     }
-    @DeleteMapping("/deleteAchievement/{id}")
-    public ResponseEntity<Map<String, Object>> deleteAchievement(@PathVariable String id) {
-        try {
-            if(!userAchievementService.deleteAchievement(id)){
-                return responseNotFound("Achievement not found");
-            }
-            return responseOK("Achievement deleted with success");
-        } catch (Exception e) {
-            return responseServerError(e, "Cannot delete the Achievement with the achievement Object");
-        }
+
+    @GetMapping("/getFriendsByMainUser/{id}")
+    public List<FriendDTO> getFriendsByMaiNuSER( @PathVariable String id){
+        return userService.getAllFriendsMainUser(id);
     }
-    @DeleteMapping("/deleteUser/{id}")
-    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable String id) {
-        try {
-            if(!userService.deleteUser(id)){
-                return responseNotFound("user not found");
-            }
-            return responseOK("user deleted with success");
-        } catch (Exception e) {
-            return responseServerError(e, "Cannot delete the user with the User Object");
-        }
+
+    @GetMapping("/getFriendsBySecondaryUser/{id}")
+    public List<FriendDTO> getFriendsBySecondaryUser( @PathVariable String id){
+        return userService.getAllFriendsSecondaryUser(id);
     }
+
+    @GetMapping("/getAllUserLivingConsumptions/{id}")
+    public List<LivingSpaceDTO>getAllUserLivingConsumptions(@PathVariable String id){
+        return userService.getAllLivingSpacesUser(id);
+    }
+
+    @GetMapping("/getAllUserFoodConsumptions/{id}")
+    public List<FoodConsumptionDTO>getAllUserFoodConsumptions(@PathVariable String id){
+        return userService.getAllFoodConsumptionsUser(id);
+    }
+
+    @GetMapping("/getAllPetsByUser/{id}")
+    public List<UserPetDTO> getAllUserPetsById(@PathVariable String id){
+        return userService.getAllUserPets(id);
+    }
+
+//    @GetMapping("/getAllUserServiceConsumption/{id}")
+//    public List<ServiceConsumptionDTO> getAllUserServiceConsumption(@PathVariable String id){
+//        return userService.getAllUserServiceConsumptions(id);
+//    }
+    //endregion
 }
