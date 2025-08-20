@@ -9,6 +9,7 @@ import api.karbonzeromovil.Services.Service.ServiceService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,12 +30,30 @@ public class ServiceController {
     private ServiceConsumptionService serviceConsumptionService;
 
     @GetMapping("/getAllServices")
-    public List<ServiceDTO> getAllServices(){
-        return serviceService.getAllServices();
+    public ResponseEntity<Page<ServiceDTO>> getAllServices(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<ServiceDTO> service = serviceService.getAllServices(page, size);
+        if(service == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
+
+        return ResponseEntity.ok(service);
     }
     @GetMapping("/getMeasureUnitService")
-    public List<MeasureUnitServiceDTO> getAllMeasureUnitService(){
-        return measureUnitServiceService.getAllMeasureUnitService();
+    public ResponseEntity<Page<MeasureUnitServiceDTO>> getAllMeasureUnitService(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<MeasureUnitServiceDTO> measureUnit = measureUnitServiceService.getAllMeasureUnitService(page, size);
+        if(measureUnit == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
+
+        return ResponseEntity.ok(measureUnit);
     }
     @GetMapping("/getServiceConsumption")
     public List<ServiceConsumptionDTO> getAllServiceConsumption(){

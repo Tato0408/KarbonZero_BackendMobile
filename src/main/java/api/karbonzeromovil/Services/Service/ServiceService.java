@@ -6,6 +6,9 @@ import api.karbonzeromovil.Repositories.Service.ServiceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +20,10 @@ public class ServiceService {
     @Autowired
     private ServiceRepository repo;
 
-    public List<ServiceDTO> getAllServices(){
-        List<ServiceEntity> countries = repo.findAll();
-        return countries.stream()
-                .map(this::ServiceToDTO)
-                .collect(Collectors.toList());
+    public Page<ServiceDTO> getAllServices(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<ServiceEntity> users = repo.findAll(pageable);
+        return users.map(this::ServiceToDTO);
     }
     public ServiceDTO insertService(ServiceDTO dto) throws IllegalAccessException {
         if(dto == null){
