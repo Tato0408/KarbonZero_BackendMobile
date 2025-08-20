@@ -6,6 +6,7 @@ import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceTypeEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceRepository;
 import api.karbonzeromovil.Repositories.LivingSpace.LivingSpaceTypeRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
@@ -48,6 +49,7 @@ public class LivingSpaceService {
             throw new IllegalArgumentException("Living space can't be null or empty");
         }
         try{
+            System.out.println(dto);
             LivingSpaceEntity entity =  DTOToLivingSpace(dto);
 
             LivingSpaceEntity savedEntity =  repo.save(entity);
@@ -62,12 +64,11 @@ public class LivingSpaceService {
         try{
             if(repo.existsById(id)){
                 LivingSpaceEntity entity =  repo.getReferenceById(id);
-                if(dto.getIdLivingSpace()!= null && dto.getIdUser()!= null){
+                if(dto.getIdLivingSpaceType()!= null && dto.getIdUser()!= null){
                     LivingSpaceTypeEntity type =  repoType.findById(dto.getIdLivingSpace())
                             .orElseThrow(()-> new IllegalArgumentException("Can't find the living space id"));
                     UserEntity user = repoUser.findById(dto.getIdUser())
                             .orElseThrow(()-> new IllegalArgumentException("Can't find the user id"));
-
                     entity.setLivingSpaceType(type);
                     entity.setIdUser(user);
                 }
@@ -97,24 +98,29 @@ public class LivingSpaceService {
         }
     }
 
-    public LivingSpaceDTO livingSpaceToDTO(LivingSpaceEntity entity){
+    public LivingSpaceDTO livingSpaceToDTO(LivingSpaceEntity entity) {
         LivingSpaceDTO dto = new LivingSpaceDTO();
 
         dto.setIdLivingSpace(entity.getIdLivingSpace());
-       if(entity.getLivingSpaceType()!= null && entity.getIdUser()!= null){
-           dto.setLivingSpaceTypeName(entity.getLivingSpaceType().getNameLivingSpaceType());
-           dto.setIdLivingSpaceType(entity.getLivingSpaceType().getIdLivingSpaceType());
-           dto.setUserName(entity.getIdUser().getUserName());
-           dto.setIdUser(entity.getIdUser().getIdUser());
-       }
+        if (entity.getLivingSpaceType() != null && entity.getIdUser() != null) {
+            dto.setIdLivingSpaceType(entity.getLivingSpaceType().getIdLivingSpaceType());
+            dto.setIdUser(entity.getIdUser().getIdUser());
+            dto.setLivingSpaceTypeName(entity.getLivingSpaceType().getNameLivingSpaceType());
+            dto.setUserName(entity.getIdUser().getUserName());
+
+        } else {
+            dto.setIdLivingSpaceType(null);
+            dto.setIdUser(null);
+            dto.setLivingSpaceTypeName("No hay un tipo de espacio habitale asignado");
+            dto.setUserName("No hay un usuario asignado");
+        }
         return dto;
     }
-
     public LivingSpaceEntity DTOToLivingSpace(LivingSpaceDTO dto){
         LivingSpaceEntity entity = new LivingSpaceEntity();
         entity.setIdLivingSpace(dto.getIdLivingSpace());
-        if(dto.getIdLivingSpace()!= null && dto.getIdUser()!= null){
-            LivingSpaceTypeEntity type =  repoType.findById(dto.getIdLivingSpace())
+        if(dto.getIdLivingSpaceType()!= null && dto.getIdUser()!= null){
+            LivingSpaceTypeEntity type =  repoType.findById(dto.getIdLivingSpaceType())
                     .orElseThrow(()-> new IllegalArgumentException("Can't find the living space id"));
             UserEntity user = repoUser.findById(dto.getIdUser())
                     .orElseThrow(()-> new IllegalArgumentException("Can't find the user id"));
@@ -125,4 +131,5 @@ public class LivingSpaceService {
 
         return entity;
     }
+
 }

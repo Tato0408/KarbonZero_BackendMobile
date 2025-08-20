@@ -13,9 +13,8 @@ public class LivingSpaceDTO {
     private String idLivingSpace;
     private String idLivingSpaceType;
     private String idUser;
-    @NotBlank
+
     private String livingSpaceTypeName;
 
-    @NotBlank
     private String userName;
 }
