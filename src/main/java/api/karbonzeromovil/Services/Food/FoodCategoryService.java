@@ -22,11 +22,18 @@ public class FoodCategoryService {
     @Autowired
     FoodCategoryRepository repo;
 
-    public Page<FoodCategoryDTO> getAllCategories(int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
-        Page<FoodCategoryEntity> entity = repo.findAll(pageable);
+    //public Page<FoodCategoryDTO> getAllCategories(int page, int //size){
+    //      Pageable pageable = PageRequest.of(page, size);
+//        Page<FoodCategoryEntity> entity = repo.findAll(pageable);
 
-        return entity.map(this::categoryToDTO);
+    //      return entity.map(this::categoryToDTO);
+//    }
+
+    public List<FoodCategoryDTO> getAllCategories(){
+        List<FoodCategoryEntity> entity = repo.findAll();
+        return entity.stream()
+                .map(this::categoryToDTO)
+                .collect(Collectors.toList());
     }
 
     public FoodCategoryDTO getFoodCategoryById(String id){
@@ -43,9 +50,9 @@ public class FoodCategoryService {
         }
         try{
             FoodCategoryEntity entity = DTOToCategory(dto);
-                FoodCategoryEntity savedEntity = repo.save(entity);
-                return categoryToDTO(savedEntity);
-            }catch(Exception e){
+            FoodCategoryEntity savedEntity = repo.save(entity);
+            return categoryToDTO(savedEntity);
+        }catch(Exception e){
             throw new RuntimeException("Can't create food" + e.getMessage());
         }
     }
@@ -58,8 +65,8 @@ public class FoodCategoryService {
                 category.setFoodCategoryName(dto.getFoodCategoryName());
                 category.setCarbonFootPrint(dto.getCarbonFootPrint());
 
-                    FoodCategoryEntity savedEntity =  repo.save(category);
-                    return categoryToDTO(savedEntity);
+                FoodCategoryEntity savedEntity =  repo.save(category);
+                return categoryToDTO(savedEntity);
             }
             throw new IllegalArgumentException("The category with de id: "+ id + "doesn't exist");
         }catch(Exception e){
@@ -96,6 +103,3 @@ public class FoodCategoryService {
         return category;
     }
 }
-
-
-

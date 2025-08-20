@@ -91,8 +91,12 @@ public class LivingSpaceController {
     }
 
     @PostMapping("/insertLivingSpace")
-    public ResponseEntity<Map<String, Object>> insertLivingSpace(@Valid @RequestBody LivingSpaceDTO dto, HttpServletRequest request){
+    public ResponseEntity<?> insertLivingSpace(
+            @Valid
+            @RequestBody LivingSpaceDTO dto,
+            HttpServletRequest request){
         try{
+            System.out.println("Data: " + dto);
             LivingSpaceDTO answer =  serviceLivingSpace.insertLivingSpace(dto);
             if(answer == null){
                 return responseBadRequest("Invalid data to create living space object");
@@ -107,7 +111,7 @@ public class LivingSpaceController {
     @PutMapping("/updateLivingSpaceType/{id}")
     public ResponseEntity<?> updateLivingSpaceType(@PathVariable String id, @Valid @RequestBody LivingSpaceTypeDTO dto, BindingResult bindingresult){
         if (bindingresult.hasErrors()){
-           return responseBadRequestBinding(bindingresult);
+            return responseBadRequestBinding(bindingresult);
         }
         try{
             LivingSpaceTypeDTO answer = serviceLivingSpaceType.updateLivingSpaceType(id, dto);

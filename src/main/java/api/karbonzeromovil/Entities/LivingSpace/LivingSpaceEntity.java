@@ -21,10 +21,10 @@ public class LivingSpaceEntity {
     private String idLivingSpace;
 
     @ManyToOne
-    @JoinColumn(name="IDLIVINGSPACETYPE", nullable = false, referencedColumnName = "IDLIVINGSPACETYPE")
+    @JoinColumn(name="IDLIVINGSPACETYPE", referencedColumnName = "IDLIVINGSPACETYPE")
     private LivingSpaceTypeEntity livingSpaceType;
 
     @ManyToOne
-    @JoinColumn(name="IDUSER", nullable = false, referencedColumnName = "IDUSER")
+    @JoinColumn(name="IDUSER", referencedColumnName = "IDUSER")
     private UserEntity idUser;
 }

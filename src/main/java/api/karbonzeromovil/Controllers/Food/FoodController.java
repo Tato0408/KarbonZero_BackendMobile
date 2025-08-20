@@ -22,6 +22,7 @@ import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/apiFood")
 public class FoodController {
@@ -55,23 +56,27 @@ public class FoodController {
     }
 
     @GetMapping("/getAllFoodCategories")
-    public ResponseEntity<Page<FoodCategoryDTO>> getAllFoodCategories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size)
-    {
-        if(size <= 0 || size > 50){
-            ResponseEntity.badRequest().body(Map.of(
-                    "status", "El tamaño de la página debe de ser de 1 a 50"
-            ));
-        }
-        Page<FoodCategoryDTO> dto = serviceCategory.getAllCategories(page, size);
-        if(dto == null){
-            ResponseEntity.badRequest().body(Map.of(
-                    "status", "No hay registros"
-            ));
-        }
-        return ResponseEntity.ok(dto);
+    public List<FoodCategoryDTO> getAllFoodCategories(){
+        return serviceCategory.getAllCategories();
     }
+    //@GetMapping("/getAllFoodCategories")
+    //public ResponseEntity<Page<FoodCategoryDTO>> getAllFoodCategories(
+    //         @RequestParam(defaultValue = "0") int page,
+    //       @RequestParam(defaultValue = "10") int size)
+    //{
+    //  if(size <= 0 || size > 50){
+    //     ResponseEntity.badRequest().body(Map.of(
+    //           "status", "El tamaño de la página debe de ser de 1 a 50"
+    //  ));
+    //}
+    //Page<FoodCategoryDTO> dto = serviceCategory.getAllCategories(page, size);
+    //if(dto == null){
+    //  ResponseEntity.badRequest().body(Map.of(
+    //   "status", "No hay registros"
+    //));
+    //}
+    //return ResponseEntity.ok(dto);
+    //}
 
     @GetMapping("/getAllFoodConsumptions")
     public ResponseEntity<Page<FoodConsumptionDTO>> getAllFoodConsumptions(
@@ -221,7 +226,7 @@ public class FoodController {
         try{
             FoodConsumptionDTO answer = serviceConsumption.updateFoodConsumption(id, dto);
             if(answer == null){
-               return responseBadRequest("Invalid data to update food consumption object");
+                return responseBadRequest("Invalid data to update food consumption object");
             }
             return responseUpdated(answer);
         }catch(Exception e){
@@ -236,10 +241,10 @@ public class FoodController {
         }
         try{
             FoodConsumptionFoodDTO answer = serviceFoodConsumption.updateFoodConsumptionFood(id, dto);
-                if(answer == null){
-                    return responseBadRequest("Invalid data to update a food consumption food object");
-                }
-                return responseUpdated(answer);
+            if(answer == null){
+                return responseBadRequest("Invalid data to update a food consumption food object");
+            }
+            return responseUpdated(answer);
         }catch(Exception e){
             return responseServerError(e,"Can't update a food consumption food object");
         }
@@ -270,7 +275,7 @@ public class FoodController {
         }
 
 
-        }
+    }
     @DeleteMapping("/deleteFoodConsumption/{id}")
     public ResponseEntity<Map<String, Object>> deleteFoodConsumption(@PathVariable String id){
         try{
@@ -295,4 +300,3 @@ public class FoodController {
         }
     }
 }
-
