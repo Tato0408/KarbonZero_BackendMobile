@@ -6,6 +6,9 @@ import api.karbonzeromovil.Repositories.Transport.TransportRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +20,22 @@ public class TransportService {
     @Autowired
     private TransportRepository repo;
 
-    public List<TransportDTO> getAllTransports(){
-        List<TransportEntity> countries = repo.findAll();
-        return countries.stream()
-                .map(this::TransportToDTO)
-                .collect(Collectors.toList());
+    public Page<TransportDTO> getAllTransports(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<TransportEntity> users = repo.findAll(pageable);
+        return users.map(this::TransportToDTO);
+    }
+    public TransportDTO getTransportById(String id){
+        try {
+            if(repo.existsById(id)){
+                TransportEntity entity = repo.getReferenceById(id);
+                return TransportToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Transport with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err) {
+            throw new RuntimeException("The Transport could not be found" + err.getMessage());
+
+        }
     }
     public TransportDTO insertTransport(TransportDTO dto) throws IllegalAccessException {
         if(dto == null){

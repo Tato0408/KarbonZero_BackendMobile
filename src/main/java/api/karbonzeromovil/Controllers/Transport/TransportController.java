@@ -2,11 +2,13 @@ package api.karbonzeromovil.Controllers.Transport;
 
 import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Transport.TransportDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Services.Transport.TransportConsumptionService;
 import api.karbonzeromovil.Services.Transport.TransportService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +27,38 @@ public class TransportController {
     private TransportConsumptionService transportConsumptionService;
 
     @GetMapping("/getAllTransports")
-    public List<TransportDTO> getAllTransports(){
+    public ResponseEntity<Page<TransportDTO>> getAllTransports(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<TransportDTO> transports = transportService.getAllTransports(page, size);
+        if(transports == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
 
-        return transportService.getAllTransports();
+        return ResponseEntity.ok(transports);
     }
     @GetMapping("/getTransportConsumption")
-    public List<TransportConsumptionDTO> getAllTransportConsumption(){
-        return transportConsumptionService.getAllTransportConsumption();
+    public ResponseEntity<Page<TransportConsumptionDTO>> getAllTransportConsumption(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<TransportConsumptionDTO> consumption = transportConsumptionService.getAllTransportConsumption(page, size);
+        if(consumption == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
+
+        return ResponseEntity.ok(consumption);
+    }
+    @GetMapping("/getTransportById/{id}")
+    public TransportDTO getTransportById(@PathVariable String id){
+        return transportService.getTransportById(id);
+    }
+    @GetMapping("/getTransportConsumptionById/{id}")
+    public TransportConsumptionDTO getConsumptionById(@PathVariable String id){
+        return transportConsumptionService.getTransportConsumptionById(id);
     }
     @PostMapping("/insertTransport")
     public ResponseEntity<Map<String,Object>> insertTransport(@Valid @RequestBody TransportDTO dto, HttpServletRequest request){

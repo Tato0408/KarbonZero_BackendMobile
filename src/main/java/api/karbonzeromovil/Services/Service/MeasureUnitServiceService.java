@@ -1,13 +1,18 @@
 package api.karbonzeromovil.Services.Service;
 
 import api.karbonzeromovil.Entities.Service.MeasureUnitServiceEntity;
+import api.karbonzeromovil.Entities.Service.ServiceEntity;
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
+import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
 import api.karbonzeromovil.Repositories.Service.MeasureUnitServiceRepository;
 import api.karbonzeromovil.Repositories.Service.ServiceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +28,22 @@ public class MeasureUnitServiceService {
     @Autowired
     private MeasureUnitRepository measureUnitRepo;
 
-    public List<MeasureUnitServiceDTO> getAllMeasureUnitService(){
-        List<MeasureUnitServiceEntity> achievements = repo.findAll();
-        return achievements.stream()
-                .map(this::MeasureUnitServiceToDTO)
-                .collect(Collectors.toList());
+    public Page<MeasureUnitServiceDTO> getAllMeasureUnitService(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<MeasureUnitServiceEntity> users = repo.findAll(pageable);
+        return users.map(this::MeasureUnitServiceToDTO);
+    }
+    public MeasureUnitServiceDTO getMeasureUnitServiceById(String id){
+        try {
+            if(repo.existsById(id)){
+                MeasureUnitServiceEntity entity = repo.getReferenceById(id);
+                return MeasureUnitServiceToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Measure with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err) {
+            throw new RuntimeException("The Measure could not be found" + err.getMessage());
+
+        }
     }
     public MeasureUnitServiceDTO insertMeasureUnitService(MeasureUnitServiceDTO dto) throws IllegalAccessException {
         if(dto == null){

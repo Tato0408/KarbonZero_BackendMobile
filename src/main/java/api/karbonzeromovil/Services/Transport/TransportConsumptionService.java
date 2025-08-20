@@ -8,6 +8,9 @@ import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +26,22 @@ public class TransportConsumptionService {
     @Autowired
     private TransportRepository repoTransport;
 
-    public List<TransportConsumptionDTO> getAllTransportConsumption(){
-        List<TransportConsumptionEntity> achievements = repo.findAll();
-        return achievements.stream()
-                .map(this::TransportConsumptionToDTO)
-                .collect(Collectors.toList());
+    public Page<TransportConsumptionDTO> getAllTransportConsumption(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<TransportConsumptionEntity> users = repo.findAll(pageable);
+        return users.map(this::TransportConsumptionToDTO);
+    }
+    public TransportConsumptionDTO getTransportConsumptionById(String id){
+        try {
+            if(repo.existsById(id)){
+                TransportConsumptionEntity entity = repo.getReferenceById(id);
+                return TransportConsumptionToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Consumption with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err) {
+            throw new RuntimeException("The Consumption could not be found" + err.getMessage());
+
+        }
     }
     public TransportConsumptionDTO insertTransportConsumption(TransportConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){
