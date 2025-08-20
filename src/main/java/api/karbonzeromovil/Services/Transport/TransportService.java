@@ -25,6 +25,18 @@ public class TransportService {
         Page<TransportEntity> users = repo.findAll(pageable);
         return users.map(this::TransportToDTO);
     }
+    public TransportDTO getTransportById(String id){
+        try {
+            if(repo.existsById(id)){
+                TransportEntity entity = repo.getReferenceById(id);
+                return TransportToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Transport with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err) {
+            throw new RuntimeException("The Transport could not be found" + err.getMessage());
+
+        }
+    }
     public TransportDTO insertTransport(TransportDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Transport cannot be null or empty");

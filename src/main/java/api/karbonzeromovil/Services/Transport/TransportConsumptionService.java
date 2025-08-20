@@ -1,9 +1,7 @@
 package api.karbonzeromovil.Services.Transport;
 
 import api.karbonzeromovil.Entities.Transport.TransportConsumptionEntity;
-import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
-import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.Transport.TransportConsumptionRepository;
 import api.karbonzeromovil.Repositories.Transport.TransportRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
@@ -28,16 +26,22 @@ public class TransportConsumptionService {
     @Autowired
     private TransportRepository repoTransport;
 
-    //public List<TransportConsumptionDTO> getAllTransportConsumption(){
-      //  List<TransportConsumptionEntity> achievements = repo.findAll();
-       // return achievements.stream()
-         //       .map(this::TransportConsumptionToDTO)
-           //     .collect(Collectors.toList());
-    //}
     public Page<TransportConsumptionDTO> getAllTransportConsumption(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
         Page<TransportConsumptionEntity> users = repo.findAll(pageable);
         return users.map(this::TransportConsumptionToDTO);
+    }
+    public TransportConsumptionDTO getTransportConsumptionById(String id){
+        try {
+            if(repo.existsById(id)){
+                TransportConsumptionEntity entity = repo.getReferenceById(id);
+                return TransportConsumptionToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Consumption with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err) {
+            throw new RuntimeException("The Consumption could not be found" + err.getMessage());
+
+        }
     }
     public TransportConsumptionDTO insertTransportConsumption(TransportConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){

@@ -2,6 +2,7 @@ package api.karbonzeromovil.Controllers.Transport;
 
 import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Transport.TransportDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Services.Transport.TransportConsumptionService;
 import api.karbonzeromovil.Services.Transport.TransportService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,10 +39,6 @@ public class TransportController {
 
         return ResponseEntity.ok(transports);
     }
-    //@GetMapping("/getTransportConsumption")
-    //public List<TransportConsumptionDTO> getAllTransportConsumption(){
-      //  return transportConsumptionService.getAllTransportConsumption();
-    //}
     @GetMapping("/getTransportConsumption")
     public ResponseEntity<Page<TransportConsumptionDTO>> getAllTransportConsumption(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size<=0 || size>50){
@@ -54,6 +51,14 @@ public class TransportController {
         }
 
         return ResponseEntity.ok(consumption);
+    }
+    @GetMapping("/getTransportById/{id}")
+    public TransportDTO getTransportById(@PathVariable String id){
+        return transportService.getTransportById(id);
+    }
+    @GetMapping("/getTransportConsumptionById/{id}")
+    public TransportConsumptionDTO getConsumptionById(@PathVariable String id){
+        return transportConsumptionService.getTransportConsumptionById(id);
     }
     @PostMapping("/insertTransport")
     public ResponseEntity<Map<String,Object>> insertTransport(@Valid @RequestBody TransportDTO dto, HttpServletRequest request){

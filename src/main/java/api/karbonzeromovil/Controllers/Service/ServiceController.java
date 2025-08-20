@@ -3,6 +3,7 @@ package api.karbonzeromovil.Controllers.Service;
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Services.Service.MeasureUnitServiceService;
 import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
 import api.karbonzeromovil.Services.Service.ServiceService;
@@ -58,6 +59,14 @@ public class ServiceController {
     @GetMapping("/getServiceConsumption")
     public List<ServiceConsumptionDTO> getAllServiceConsumption(){
         return serviceConsumptionService.getAllServiceConsumption();
+    }
+    @GetMapping("/getServiceById/{id}")
+    public ServiceDTO getServiceById(@PathVariable String id){
+        return serviceService.getServiceById(id);
+    }
+    @GetMapping("/getMeasureUnitServiceById/{id}")
+    public MeasureUnitServiceDTO getMeasureServiceById(@PathVariable String id){
+        return measureUnitServiceService.getMeasureUnitServiceById(id);
     }
     @PostMapping("/insertService")
     public ResponseEntity<Map<String,Object>> insertService(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){

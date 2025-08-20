@@ -25,6 +25,18 @@ public class ServiceService {
         Page<ServiceEntity> users = repo.findAll(pageable);
         return users.map(this::ServiceToDTO);
     }
+    public ServiceDTO getServiceById(String id){
+        try {
+            if(repo.existsById(id)){
+                ServiceEntity entity = repo.getReferenceById(id);
+                return ServiceToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Service with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err) {
+            throw new RuntimeException("The Service could not be found" + err.getMessage());
+
+        }
+    }
     public ServiceDTO insertService(ServiceDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Service cannot be null or empty");
