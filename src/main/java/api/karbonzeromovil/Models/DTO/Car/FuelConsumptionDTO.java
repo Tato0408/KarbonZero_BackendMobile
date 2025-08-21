@@ -21,7 +21,7 @@ public class FuelConsumptionDTO {
     private String idFuelConsumption;
 
     @NotNull
-    private TypeCarEntity idTypeCar;
+    private String idTypeCar;
 
     @Positive
     @NotNull
