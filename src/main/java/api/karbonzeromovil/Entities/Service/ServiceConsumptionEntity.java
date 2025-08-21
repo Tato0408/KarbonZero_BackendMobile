@@ -19,13 +19,14 @@ public class ServiceConsumptionEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDSERVICECONSUMPTION")
     private String idServiceConsumption;
-    @Column(name = "IDMEASUREUNITSERVICE")
-    private String idMeasureUnitService;
+    @ManyToOne
+    @JoinColumn(name = "IDMEASUREUNITSERVICE")
+    private MeasureUnitServiceEntity idMeasureUnitService;
     @ManyToOne
     @JoinColumn(name = "IDUSER")
     private UserEntity idUser;
     @Column(name = "QUANTITY")
-    private Number quantity;
+    private Double quantity;
     @Column(name = "CONSUMPTIONDATE")
     private LocalDateTime consumptionDate;
     @Column(name = "LATITUDE")

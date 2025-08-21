@@ -1,17 +1,17 @@
 package api.karbonzeromovil.Services.Service;
 
-
 import api.karbonzeromovil.Entities.Service.ServiceConsumptionEntity;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
+import api.karbonzeromovil.Repositories.Service.MeasureUnitServiceRepository;
 import api.karbonzeromovil.Repositories.Service.ServiceConsumptionRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,13 +19,26 @@ public class ServiceConsumptionService {
     @Autowired
     private ServiceConsumptionRepository repo;
     @Autowired
+    private MeasureUnitServiceRepository repoMeasureUnit;
+    @Autowired
     private UserRepository repoUser;
 
-    public List<ServiceConsumptionDTO> getAllServiceConsumption(){
-        List<ServiceConsumptionEntity> achievements = repo.findAll();
-        return achievements.stream()
-                .map(this::ServiceConsumptionToDTO)
-                .collect(Collectors.toList());
+    public Page<ServiceConsumptionDTO> getAllServiceConsumption(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<ServiceConsumptionEntity> service = repo.findAll(pageable);
+        return service.map(this::ServiceConsumptionToDTO);
+    }
+    public ServiceConsumptionDTO getServiceConsumptionById(String id){
+        try {
+            if(repo.existsById(id)){
+                ServiceConsumptionEntity entity = repo.getReferenceById(id);
+                return ServiceConsumptionToDTO(entity);
+            }
+            throw new IllegalArgumentException("The Consumption with the id: "+id+" does not exist, check if it exist");
+        }catch (Exception err) {
+            throw new RuntimeException("The Consumption could not be found" + err.getMessage());
+
+        }
     }
     public ServiceConsumptionDTO insertServiceConsumption(ServiceConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){
@@ -33,8 +46,8 @@ public class ServiceConsumptionService {
         }
         try {
             ServiceConsumptionEntity entity = DTOToServiceConsumption(dto);
-            ServiceConsumptionEntity savedAchievement = repo.save(entity);
-            return ServiceConsumptionToDTO(savedAchievement);
+            ServiceConsumptionEntity consumption = repo.save(entity);
+            return ServiceConsumptionToDTO(consumption);
         } catch (Exception e) {
             throw new RuntimeException("The Service Consumption could not be created"+ e.getMessage());
         }
@@ -43,15 +56,15 @@ public class ServiceConsumptionService {
         try {
             if (repo.existsById((id))){
                 ServiceConsumptionEntity entity = repo.getReferenceById(id);
-                entity.setIdMeasureUnitService(dto.getIdMeasureUnitService());
+                entity.setIdMeasureUnitService(repoMeasureUnit.getReferenceById(dto.getIdMeasureUnitService()));
                 entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
                 entity.setQuantity(dto.getQuantity());
                 entity.setConsumptionDate(dto.getConsumptionDate());
                 entity.setLatitude(dto.getLatitude());
                 entity.setLongitude(dto.getLongitude());
 
-                ServiceConsumptionEntity savedServiceConsumption = repo.save(entity);
-                return ServiceConsumptionToDTO(savedServiceConsumption);
+                ServiceConsumptionEntity savedConsumption = repo.save(entity);
+                return ServiceConsumptionToDTO(savedConsumption);
             }
             throw new IllegalArgumentException("The Service Consumption could not be updated"+id+" check if it exist");
         }catch (Exception e){
@@ -73,7 +86,7 @@ public class ServiceConsumptionService {
     private ServiceConsumptionDTO ServiceConsumptionToDTO(ServiceConsumptionEntity entity){
         ServiceConsumptionDTO dto = new ServiceConsumptionDTO();
         dto.setIdServiceConsumption(entity.getIdServiceConsumption());
-        dto.setIdMeasureUnitService(entity.getIdMeasureUnitService());
+        dto.setIdMeasureUnitService(entity.getIdMeasureUnitService().getIdMeasureUnitService());
         dto.setIdUser(entity.getIdUser().getIdUser());
         dto.setQuantity(entity.getQuantity());
         dto.setConsumptionDate(entity.getConsumptionDate());
@@ -84,7 +97,7 @@ public class ServiceConsumptionService {
     private ServiceConsumptionEntity DTOToServiceConsumption(ServiceConsumptionDTO dto){
         ServiceConsumptionEntity entity = new ServiceConsumptionEntity();
         entity.setIdServiceConsumption(dto.getIdServiceConsumption());
-        entity.setIdMeasureUnitService(dto.getIdMeasureUnitService());
+        entity.setIdMeasureUnitService(repoMeasureUnit.getReferenceById(dto.getIdMeasureUnitService()));
         entity.setIdUser(repoUser.getReferenceById(dto.getIdUser()));
         entity.setQuantity(dto.getQuantity());
         entity.setConsumptionDate(dto.getConsumptionDate());

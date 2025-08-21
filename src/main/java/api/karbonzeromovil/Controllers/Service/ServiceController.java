@@ -3,7 +3,6 @@ package api.karbonzeromovil.Controllers.Service;
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
-import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Services.Service.MeasureUnitServiceService;
 import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
 import api.karbonzeromovil.Services.Service.ServiceService;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
@@ -57,8 +55,17 @@ public class ServiceController {
         return ResponseEntity.ok(measureUnit);
     }
     @GetMapping("/getServiceConsumption")
-    public List<ServiceConsumptionDTO> getAllServiceConsumption(){
-        return serviceConsumptionService.getAllServiceConsumption();
+    public ResponseEntity<Page<ServiceConsumptionDTO>> getAllServiceConsumption(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<ServiceConsumptionDTO> consumption = serviceConsumptionService.getAllServiceConsumption(page, size);
+        if(consumption == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
+
+        return ResponseEntity.ok(consumption);
     }
     @GetMapping("/getServiceById/{id}")
     public ServiceDTO getServiceById(@PathVariable String id){
@@ -67,6 +74,10 @@ public class ServiceController {
     @GetMapping("/getMeasureUnitServiceById/{id}")
     public MeasureUnitServiceDTO getMeasureServiceById(@PathVariable String id){
         return measureUnitServiceService.getMeasureUnitServiceById(id);
+    }
+    @GetMapping("/getServiceConsumptionById/{id}")
+    public ServiceConsumptionDTO geServiceConsumptionById(@PathVariable String id){
+        return serviceConsumptionService.getServiceConsumptionById(id);
     }
     @PostMapping("/insertService")
     public ResponseEntity<Map<String,Object>> insertService(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){
