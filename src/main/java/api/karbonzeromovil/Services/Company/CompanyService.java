@@ -75,7 +75,6 @@ public class CompanyService {
         }
     }
 
-
     public CompanyDTO CompanyToDTO(CompanyEntity entity){
         CompanyDTO dto = new CompanyDTO();
         dto.setIdCompany(entity.getIdCompany());

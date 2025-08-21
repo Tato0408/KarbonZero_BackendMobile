@@ -18,7 +18,7 @@ public class ChannelEntity {
     @Column(name="IDCHANNEL")
     private String idChannel;
 
-    @OneToOne(mappedBy = "idChannel")
+    @OneToOne(mappedBy = "idCompany")
     @JoinColumn(name = "IDCOMPANY", nullable = true, unique = true)
     private CompanyEntity idCompany;
 
