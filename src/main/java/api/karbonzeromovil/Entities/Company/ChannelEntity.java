@@ -17,11 +17,11 @@ public class ChannelEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDCHANNEL")
     private String idChannel;
-    @Column(name = "IDCOMPANY", nullable = true, unique = true)
-    private String idCompany;
-    @Column(name = "NAME", unique = true)
-    private String name;
 
     @OneToOne(mappedBy = "idChannel")
-    private ChannelUserEntity idChannelUserList;
+    @JoinColumn(name = "IDCOMPANY", nullable = true, unique = true)
+    private CompanyEntity idCompany;
+
+    @Column(name = "NAME", unique = true)
+    private String name;
 }

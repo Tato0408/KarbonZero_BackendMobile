@@ -15,7 +15,7 @@ public class ChannelDTO {
     private String idChannel;
 
     @NotNull
-    private CompanyEntity idCompany;
+    private String idCompany;
 
     @NotBlank
     @Size(max = 200)

@@ -3,6 +3,7 @@ package api.karbonzeromovil.Services.Company;
 import api.karbonzeromovil.Entities.Company.ChannelEntity;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
 import api.karbonzeromovil.Repositories.Company.ChannelRepository;
+import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,6 +18,9 @@ import java.util.stream.Collectors;
 public class ChannelService {
     @Autowired
     private ChannelRepository repo;
+
+    @Autowired
+    private CompanyRepository CompanyRepo;
 
 
     public List<ChannelDTO> getAllChannel(){
@@ -52,7 +56,7 @@ public class ChannelService {
         try {
             if (repo.existsById((id))){
                 ChannelEntity entity = repo.getById(id);
-                entity.setIdCompany(dto.getIdCompany());
+                entity.setIdCompany(CompanyRepo.getReferenceById(dto.getIdCompany()));
                 entity.setName(dto.getName());
 
                 ChannelEntity savedChannel = repo.save(entity);
@@ -81,14 +85,14 @@ public class ChannelService {
     private ChannelDTO ChannelToDTO(ChannelEntity entity){
         ChannelDTO dto = new ChannelDTO();
         dto.setIdChannel(entity.getIdChannel());
-        dto.setIdCompany(entity.getIdCompany());
+        dto.setIdCompany(entity.getIdCompany().getIdCompany());
         dto.setName(entity.getName());
         return dto;
     }
     private ChannelEntity DT0ToChannel(ChannelDTO dto){
         ChannelEntity entity = new ChannelEntity();
         entity.setIdChannel(dto.getIdChannel());
-        entity.setIdCompany(dto.getIdCompany());
+        entity.setIdCompany(CompanyRepo.getReferenceById(dto.getIdCompany()));
         entity.setName(dto.getName());
         return entity;
     }
