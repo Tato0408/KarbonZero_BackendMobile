@@ -16,8 +16,8 @@ public class CarDTO {
     private String idCar;
 
     @NotNull
-    private UserEntity idUser;
+    private String idUser;
 
     @NotNull
-    private CarSizeEntity idCarSize;
+    private String idCarSize;
 }
