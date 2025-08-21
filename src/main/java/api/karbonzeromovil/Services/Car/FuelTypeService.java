@@ -1,8 +1,10 @@
 package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
+import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
+import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,6 +19,9 @@ import java.util.stream.Collectors;
 public class FuelTypeService {
     @Autowired
     private FuelTypeRepository repo;
+
+    @Autowired
+    private MeasureUnitRepository MeasureUnitRepo;
 
     public List<FuelTypeDTO> getAllFuelType(){
         List<FuelTypeEntity> Fueltype = repo.findAll();
@@ -50,7 +55,7 @@ public class FuelTypeService {
         try {
             if (repo.existsById((id))){
                 FuelTypeEntity entity = repo.getById(id);
-                entity.setIdMeasureUnit(dto.getIdMeasureUnit());
+                entity.setIdMeasureUnit(MeasureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
                 entity.setName(dto.getName());
                 entity.setCarbonFooTprint(dto.getCarbonFootprint());
 
@@ -79,7 +84,7 @@ public class FuelTypeService {
     private FuelTypeDTO FuelTypeToDTO(FuelTypeEntity entity){
         FuelTypeDTO dto = new FuelTypeDTO();
         dto.setIdFuelType(entity.getIdFuelType());
-        dto.setIdMeasureUnit(entity.getIdMeasureUnit());
+        dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
         dto.setName(entity.getName());
         dto.setCarbonFootprint(entity.getCarbonFooTprint());
         return dto;
@@ -87,7 +92,7 @@ public class FuelTypeService {
     private FuelTypeEntity DT0ToFuelType(FuelTypeDTO dto){
         FuelTypeEntity entity = new FuelTypeEntity();
         entity.setIdFuelType(dto.getIdFuelType());
-        entity.setIdMeasureUnit(dto.getIdMeasureUnit());
+        entity.setIdMeasureUnit(MeasureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
         entity.setName(dto.getName());
         entity.setCarbonFooTprint(dto.getCarbonFootprint());
         return entity;

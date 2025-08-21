@@ -16,7 +16,7 @@ public class FuelTypeDTO {
     private String idFuelType;
 
     @NotNull
-    private MeasureUnitEntity idMeasureUnit;
+    private String idMeasureUnit;
 
     @NotBlank @Size (max = 200)
     private String name;
