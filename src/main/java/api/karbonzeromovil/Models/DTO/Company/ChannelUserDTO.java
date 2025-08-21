@@ -14,8 +14,8 @@ public class ChannelUserDTO {
     private String idChannelUser;
 
     @NotNull
-    private ChannelEntity idChannel;
+    private String idChannel;
 
     @NotNull
-    private UserEntity idUser;
+    private String idUser;
 }
