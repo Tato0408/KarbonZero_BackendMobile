@@ -14,8 +14,8 @@ public class TypeCarDTO {
     private String idTypeCar;
 
     @NotNull
-    private CarEntity idCar;
+    private String idCar;
 
     @NotNull
-    private FuelTypeEntity idFuelType;
+    private String idFuelType;
 }

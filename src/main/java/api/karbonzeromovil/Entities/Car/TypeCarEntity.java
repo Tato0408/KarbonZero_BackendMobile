@@ -23,8 +23,9 @@ public class TypeCarEntity {
     @JoinColumn(name = "IDCAR", nullable = true, referencedColumnName = "IDCAR")
     private CarEntity idCar;
 
-    @Column(name = "IDFUELTYPE", nullable = true)
-    private String idFuelType;
+    @ManyToOne
+    @JoinColumn(name = "IDFUELTYPE", nullable = true)
+    private FuelTypeEntity idFuelType;
 
     @OneToMany(mappedBy = "idTypeCar")
     private List<FuelConsumptionEntity> consumptionList;
