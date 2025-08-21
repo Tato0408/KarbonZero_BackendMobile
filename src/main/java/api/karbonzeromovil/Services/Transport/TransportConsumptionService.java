@@ -13,9 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 public class TransportConsumptionService {
@@ -49,8 +46,8 @@ public class TransportConsumptionService {
         }
         try {
             TransportConsumptionEntity entity = DTOToTransportConsumption(dto);
-            TransportConsumptionEntity savedAchievement = repo.save(entity);
-            return TransportConsumptionToDTO(savedAchievement);
+            TransportConsumptionEntity consumption = repo.save(entity);
+            return TransportConsumptionToDTO(consumption);
         } catch (Exception e) {
             throw new RuntimeException("The Transport Consumption could not be created"+ e.getMessage());
         }

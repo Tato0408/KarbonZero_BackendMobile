@@ -3,7 +3,10 @@ package api.karbonzeromovil.Models.DTO.Service;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +20,7 @@ public class ServiceConsumptionDTO {
     @NotBlank
     private String idUser;
     @NotNull @Positive
-    private Number quantity;
+    private Double quantity;
     @NotNull
     private LocalDateTime consumptionDate;
     @NotNull

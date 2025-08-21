@@ -2,7 +2,6 @@ package api.karbonzeromovil.Controllers.Transport;
 
 import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Transport.TransportDTO;
-import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Services.Transport.TransportConsumptionService;
 import api.karbonzeromovil.Services.Transport.TransportService;
 import jakarta.servlet.http.HttpServletRequest;
