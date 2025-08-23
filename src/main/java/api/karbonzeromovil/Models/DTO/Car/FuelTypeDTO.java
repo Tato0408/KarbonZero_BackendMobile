@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Models.DTO.Car;
 
+import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

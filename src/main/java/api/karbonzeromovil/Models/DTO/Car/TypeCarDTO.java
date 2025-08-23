@@ -1,5 +1,7 @@
 package api.karbonzeromovil.Models.DTO.Car;
 
+import api.karbonzeromovil.Entities.Car.CarEntity;
+import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

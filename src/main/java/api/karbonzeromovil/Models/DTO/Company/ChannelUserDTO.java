@@ -1,5 +1,7 @@
 package api.karbonzeromovil.Models.DTO.Company;
 
+import api.karbonzeromovil.Entities.Company.ChannelEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

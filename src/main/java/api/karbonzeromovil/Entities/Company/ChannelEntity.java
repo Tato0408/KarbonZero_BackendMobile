@@ -17,11 +17,11 @@ public class ChannelEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDCHANNEL")
     private String idChannel;
-    @Column(name = "IDCOMPANY", nullable = true, unique = true)
-    private String idCompany;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "IDCOMPANY", referencedColumnName = "idCompany",nullable = true, unique = true)
+    private CompanyEntity idCompany;
+
     @Column(name = "NAME", unique = true)
     private String name;
-
-    @OneToMany(mappedBy = "idChannel")
-    private List<ChannelUserEntity> idChannelUserList;
 }

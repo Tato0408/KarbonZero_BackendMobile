@@ -1,8 +1,10 @@
 package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.FuelConsumptionEntity;
+import api.karbonzeromovil.Entities.Car.TypeCarEntity;
 import api.karbonzeromovil.Models.DTO.Car.FuelConsumptionDTO;
 import api.karbonzeromovil.Repositories.Car.FuelConsumptionRepository;
+import api.karbonzeromovil.Repositories.Car.TypeCarRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -19,11 +21,22 @@ public class FuelConsumptionService {
     @Autowired
     private FuelConsumptionRepository repo;
 
+    @Autowired
+    private TypeCarRepository TypeCarRepo;
+
     public List<FuelConsumptionDTO> getAllFuelConsumption(){
         List<FuelConsumptionEntity> fuelConsumption = repo.findAll();
         return fuelConsumption.stream()
                 .map(this::FuelConsumptionToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public FuelConsumptionDTO getFuelConsumptionById (String id){
+        if(repo.existsById(id)){
+            FuelConsumptionEntity entity = repo.getReferenceById(id);
+            return FuelConsumptionToDTO(entity);
+        }
+        return null;
     }
 
     public FuelConsumptionDTO insertFuelConsumption(FuelConsumptionDTO dto) throws IllegalAccessException {
@@ -43,7 +56,7 @@ public class FuelConsumptionService {
         try {
             if (repo.existsById((id))){
                 FuelConsumptionEntity entity = repo.getById(id);
-                entity.setIdTypeCar(dto.getIdTypeCar());
+                entity.setIdTypeCar(TypeCarRepo.getReferenceById(dto.getIdTypeCar()));
                 entity.setQuantity(dto.getQuantity());
                 entity.setConsumsuptionDate(dto.getConsumptionDate());
                 entity.setLatitude(dto.getLatitude());
@@ -74,7 +87,7 @@ public class FuelConsumptionService {
     private FuelConsumptionDTO FuelConsumptionToDTO(FuelConsumptionEntity entity){
         FuelConsumptionDTO dto = new FuelConsumptionDTO();
         dto.setIdFuelConsumption(entity.getIdFuelConsumption());
-        dto.setIdTypeCar(entity.getIdTypeCar());
+        dto.setIdTypeCar(entity.getIdTypeCar().getIdTypeCar());
         dto.setQuantity(entity.getQuantity());
         dto.setConsumptionDate(entity.getConsumsuptionDate());
         dto.setLatitude(entity.getLatitude());
@@ -84,7 +97,7 @@ public class FuelConsumptionService {
     private FuelConsumptionEntity DT0ToFuelConsumption(FuelConsumptionDTO dto){
         FuelConsumptionEntity entity = new FuelConsumptionEntity();
         entity.setIdFuelConsumption(dto.getIdFuelConsumption());
-        entity.setIdTypeCar(dto.getIdTypeCar());
+        entity.setIdTypeCar(TypeCarRepo.getReferenceById(dto.getIdTypeCar()));
         entity.setQuantity(dto.getQuantity());
         entity.setConsumsuptionDate(dto.getConsumptionDate());
         entity.setLatitude(dto.getLatitude());

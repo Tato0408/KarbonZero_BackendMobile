@@ -1,7 +1,10 @@
 package api.karbonzeromovil.Services.Car;
 
+import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
 import api.karbonzeromovil.Entities.Car.TypeCarEntity;
 import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
+import api.karbonzeromovil.Repositories.Car.CarRepository;
+import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
 import api.karbonzeromovil.Repositories.Car.TypeCarRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +21,25 @@ public class TypeCarService {
     @Autowired
     private TypeCarRepository repo;
 
+    @Autowired
+    private CarRepository CarRepo;
+
+    @Autowired
+    private FuelTypeRepository FuelTypeRepo;
+
     public List<TypeCarDTO> getAllTypeCar(){
         List<TypeCarEntity> cartype = repo.findAll();
         return cartype.stream()
                 .map(this::TypeCarToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public TypeCarDTO getTypeCarById(String id){
+        if(repo.existsById(id)){
+            TypeCarEntity entity = repo.getReferenceById(id);
+            return TypeCarToDTO(entity);
+        }
+        return null;
     }
 
     public TypeCarDTO insertTypeCar(TypeCarDTO dto) throws IllegalAccessException {
@@ -42,8 +59,8 @@ public class TypeCarService {
         try {
             if (repo.existsById((id))){
                 TypeCarEntity entity = repo.getById(id);
-                entity.setIdCar(dto.getIdCar());
-                entity.setIdFuelType(dto.getIdFuelType());
+                entity.setIdCar(CarRepo.getReferenceById(dto.getIdCar()));
+                entity.setIdFuelType(FuelTypeRepo.getReferenceById(dto.getIdFuelType()));
 
                 TypeCarEntity savedTypeCar = repo.save(entity);
                 return TypeCarToDTO(savedTypeCar);
@@ -70,15 +87,15 @@ public class TypeCarService {
     private TypeCarDTO TypeCarToDTO(TypeCarEntity entity){
         TypeCarDTO dto = new TypeCarDTO();
         dto.setIdTypeCar(entity.getIdTypeCar());
-        dto.setIdCar(entity.getIdCar());
-        dto.setIdFuelType(entity.getIdFuelType());
+        dto.setIdCar(entity.getIdCar().getIdCar());
+        dto.setIdFuelType(entity.getIdFuelType().getIdFuelType());
         return dto;
     }
     private TypeCarEntity DT0ToTypeCar(TypeCarDTO dto){
         TypeCarEntity entity = new TypeCarEntity();
         entity.setIdTypeCar(entity.getIdTypeCar());
-        entity.setIdCar(dto.getIdCar());
-        entity.setIdFuelType(dto.getIdFuelType());
+        entity.setIdCar(CarRepo.getReferenceById(dto.getIdCar()));
+        entity.setIdFuelType(FuelTypeRepo.getReferenceById(dto.getIdFuelType()));
         return entity;
     }
 }

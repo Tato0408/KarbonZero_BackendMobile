@@ -50,7 +50,20 @@ public class CompanyController {
     public List<ChannelUserDTO> dateChannelUser(){return serviceChannelUser.getAllChannelUser();}
 
 
+    @GetMapping("/getCompanyById/{id}")
+    public CompanyDTO getCompanyById(@PathVariable String id){
+        return serviceCompany.getCompanyById(id);
+    }
 
+    @GetMapping("/getChannelById/{id}")
+    public ChannelDTO getChannelById(@PathVariable String id){
+        return serviceChannel.getChannelById(id);
+    }
+
+    @GetMapping("/getChannelUserById/{id}")
+    public ChannelUserDTO getChannelUserById(@PathVariable String id){
+        return serviceChannelUser.getChannelUserById(id);
+    }
 
     //Metodos POST para insertar cada cosa relacionada con la tabla carro
     @PostMapping("/insertCompany")

@@ -18,10 +18,14 @@ public class TypeCarEntity {
     @GeneratedValue(generator = "db-uuid")
     @Column(name="IDTYPECAR")
     private String idTypeCar;
-    @Column(name = "IDCAR", nullable = true)
-    private String idCar;
-    @Column(name = "IDFUELTYPE", nullable = true)
-    private String idFuelType;
+
+    @ManyToOne
+    @JoinColumn(name = "IDCAR", nullable = true, referencedColumnName = "IDCAR")
+    private CarEntity idCar;
+
+    @ManyToOne
+    @JoinColumn(name = "IDFUELTYPE", nullable = true)
+    private FuelTypeEntity idFuelType;
 
     @OneToMany(mappedBy = "idTypeCar")
     private List<FuelConsumptionEntity> consumptionList;

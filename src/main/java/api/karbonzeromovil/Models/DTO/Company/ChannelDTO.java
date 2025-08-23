@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Models.DTO.Company;
 
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

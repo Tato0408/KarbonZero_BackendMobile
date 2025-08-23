@@ -1,5 +1,7 @@
 package api.karbonzeromovil.Entities.Company;
 
+import api.karbonzeromovil.Entities.User.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,10 +16,16 @@ public class ChannelUserEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")
     @GeneratedValue(generator = "db-uuid")
+
     @Column(name="IDCHANNELUSER")
     private String idChannelUser;
-    @Column(name = "IDCHANNEL")
-    private String idChannel;
-    @Column(name = "IDUSER")
-    private String idUser;
+
+    @ManyToOne
+    @JoinColumn(name = "IDCHANNEL", referencedColumnName = "IDCHANNEL")
+    private ChannelEntity idChannel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IDUSER", referencedColumnName = "IDUSER")
+    @JsonIgnore
+    private UserEntity idUser;
 }

@@ -2,7 +2,9 @@ package api.karbonzeromovil.Services.Company;
 
 import api.karbonzeromovil.Entities.Company.ChannelUserEntity;
 import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
+import api.karbonzeromovil.Repositories.Company.ChannelRepository;
 import api.karbonzeromovil.Repositories.Company.ChannelUserRepository;
+import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,12 +19,26 @@ public class ChannelUserService {
     @Autowired
     private ChannelUserRepository repo;
 
+    @Autowired
+    private ChannelRepository ChannelRepo;
+
+    @Autowired
+    private UserRepository UserRepo;
+
 
     public List<ChannelUserDTO> getAllChannelUser(){
         List<ChannelUserEntity> company = repo.findAll();
         return company.stream()
                 .map(this::ChannelUserToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ChannelUserDTO getChannelUserById(String id){
+        if(repo.existsById(id)){
+            ChannelUserEntity entity = repo.getReferenceById(id);
+            return ChannelUserToDTO(entity);
+        }
+        return null;
     }
 
     public ChannelUserDTO insertChannelUser(ChannelUserDTO dto) throws IllegalAccessException {
@@ -43,8 +59,8 @@ public class ChannelUserService {
         try {
             if (repo.existsById((id))){
                 ChannelUserEntity entity = repo.getById(id);
-                entity.setIdChannel(dto.getIdChannel());
-                entity.setIdUser(dto.getIdUser());
+                entity.setIdChannel(ChannelRepo.getReferenceById(dto.getIdChannel()));
+                entity.setIdUser(UserRepo.getReferenceById(dto.getIdUser()));
 
                 ChannelUserEntity savedChannelUser = repo.save(entity);
                 return ChannelUserToDTO(savedChannelUser);
@@ -72,15 +88,15 @@ public class ChannelUserService {
     private ChannelUserDTO ChannelUserToDTO(ChannelUserEntity entity){
         ChannelUserDTO dto = new ChannelUserDTO();
         dto.setIdChannelUser(entity.getIdChannelUser());
-        dto.setIdChannel(entity.getIdChannel());
-        dto.setIdUser(entity.getIdUser());
+        dto.setIdChannel(entity.getIdChannel().getIdChannel());
+        dto.setIdUser(entity.getIdUser().getIdUser());
         return dto;
     }
     private ChannelUserEntity DT0ToChannelUser(ChannelUserDTO dto){
         ChannelUserEntity entity = new ChannelUserEntity();
         entity.setIdChannelUser(dto.getIdChannelUser());
-        entity.setIdChannel(dto.getIdChannel());
-        entity.setIdUser(dto.getIdUser());
+        entity.setIdChannel(ChannelRepo.getReferenceById(dto.getIdChannel()));
+        entity.setIdUser(UserRepo.getReferenceById(dto.getIdUser()));
         return entity;
     }
 }

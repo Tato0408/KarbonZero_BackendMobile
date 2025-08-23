@@ -26,4 +26,7 @@ public class CompanyEntity {
 
     @OneToMany(mappedBy = "idCompany")
     private List<UserEntity> UserList;
+
+    @OneToOne(mappedBy = "idCompany")
+    private ChannelEntity idCompanyChannel;
 }

@@ -25,6 +25,14 @@ public class CarSizeService {
                 .collect(Collectors.toList());
     }
 
+    public CarSizeDTO getCarSizeById(String id){
+        if(repo.existsById(id)){
+            CarSizeEntity entity = repo.getReferenceById(id);
+            return CarSizeToDTO(entity);
+        }
+        return null;
+    }
+
     public CarSizeDTO insertCarSize(CarSizeDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Car size cannot be null or empty");
