@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,5 +25,5 @@ public class CountryEntity {
     private Double carbonFootprint;
 
     @OneToMany(mappedBy = "idCountry")
-    private List<UserEntity> consumptionList;
+    private List<UserEntity> consumptionList = new ArrayList<>();
 }
