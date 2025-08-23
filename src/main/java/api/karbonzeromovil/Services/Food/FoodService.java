@@ -94,6 +94,7 @@ public class FoodService {
         if(food.getFoodCategory() != null){
             dto.setCategoryName(food.getFoodCategory().getFoodCategoryName());
             dto.setIdFoodCategory(food.getFoodCategory().getIdFoodCategory());
+            dto.setCarbonFootprint(food.getFoodCategory().getCarbonFootPrint());
         }
         else{
             dto.setCategoryName("The food hasn't a category asigned");

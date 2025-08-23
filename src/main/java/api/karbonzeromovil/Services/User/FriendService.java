@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,13 @@ public class FriendService {
             throw new RuntimeException("The Friend could not be found" + err.getMessage());
         }
     }
+    public int countFollowers(String userId) {
+        return repo.countByUser1_IdUser(userId);
+    }
+    public int countFollowing(String userId) {
+        return repo.countByUser2_IdUser(userId);
+    }
+
     public FriendDTO insertFriend(FriendDTO dto)throws IllegalAccessException{
         if (dto ==null){
             throw new IllegalAccessException("Friend cannot be null");
@@ -87,10 +95,18 @@ public class FriendService {
             dto.setUser1(entity.getUser1().getIdUser());
             dto.setUser2(entity.getUser2().getIdUser());
             dto.setFriendName1(entity.getUser1().getUserName());
+            dto.setCountryName1(entity.getUser1().getIdCountry().getName());
+            dto.setImagePath1(entity.getUser1().getImagePath());
             dto.setFriendName2(entity.getUser2().getUserName());
+            dto.setCountryName2(entity.getUser2().getIdCountry().getName());
+            dto.setImagePath2(entity.getUser2().getImagePath());
         }else{
             dto.setUser1(null);
             dto.setUser2(null);
+            dto.setImagePath2("");
+            dto.setImagePath1("");
+            dto.setCountryName2("");
+            dto.setCountryName1("");
             dto.setFriendName1("No hay un usuario asociado");
             dto.setFriendName2("No hay un usuario asociado");
         }

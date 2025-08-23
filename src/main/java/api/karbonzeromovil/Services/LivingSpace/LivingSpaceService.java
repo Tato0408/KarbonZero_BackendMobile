@@ -105,6 +105,7 @@ public class LivingSpaceService {
         if (entity.getLivingSpaceType() != null && entity.getIdUser() != null) {
             dto.setIdLivingSpaceType(entity.getLivingSpaceType().getIdLivingSpaceType());
             dto.setIdUser(entity.getIdUser().getIdUser());
+            dto.setLivingSpaceCo2(entity.getLivingSpaceType().getCarbonFootPrint());
             dto.setLivingSpaceTypeName(entity.getLivingSpaceType().getNameLivingSpaceType());
             dto.setUserName(entity.getIdUser().getUserName());
 

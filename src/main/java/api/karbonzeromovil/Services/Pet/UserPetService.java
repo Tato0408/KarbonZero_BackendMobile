@@ -91,9 +91,11 @@ public class UserPetService {
         UserPetDTO dto = new UserPetDTO();
 
         dto.setIdUserPet(entity.getIdUserPet());
+        dto.setNamePet(entity.getIdPetType().getNamePetType());
+        dto.setPetCo2(entity.getIdPetType().getCarbonFootPrint());
         dto.setIdPetType(entity.getIdPetType().getIdPetType());
         dto.setIdUser(entity.getIdUser().getIdUser());
-
+        dto.setUsername(entity.getIdUser().getUserName());
         return dto;
     }
     private UserPetEntity DTOToUserPet(UserPetDTO dto){

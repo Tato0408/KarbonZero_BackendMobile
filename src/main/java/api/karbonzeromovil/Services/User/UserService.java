@@ -15,6 +15,7 @@ import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import api.karbonzeromovil.Repositories.User.CountryRepository;
+import api.karbonzeromovil.Repositories.User.FriendRepository;
 import api.karbonzeromovil.Repositories.User.UserAchievementRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import api.karbonzeromovil.Services.Food.FoodConsumptionFoodService;
@@ -46,6 +47,8 @@ public class UserService {
     private CountryRepository countryRepo;
     @Autowired
     private UserAchievementRepository achievementRepository;
+    @Autowired
+    private FriendRepository friendRepository;
 
     public Page<UserDTO> getAllUsers(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
@@ -64,6 +67,13 @@ public class UserService {
 
         }
     }
+
+//    public int countByMainUser(String id){
+//        UserEntity user = repo.getReferenceById(id);
+//        List<FriendDTO> followers = user.getFriendsByMainUser().stream()
+//                .map(new FriendService()::FriendToDTO).collect(Collectors.toList());
+//        return friendRepository.countByUser1(followers);
+//    }
     /// Aca van todos los gets x de users asi genericos
     public List<FriendDTO> getAllFriendsMainUser(String id){
         UserEntity user = repo.getReferenceById(id);
