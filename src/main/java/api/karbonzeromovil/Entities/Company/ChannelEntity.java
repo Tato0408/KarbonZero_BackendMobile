@@ -18,8 +18,8 @@ public class ChannelEntity {
     @Column(name="IDCHANNEL")
     private String idChannel;
 
-    @OneToOne(mappedBy = "idCompany")
-    @JoinColumn(name = "IDCOMPANY", nullable = true, unique = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "IDCOMPANY", referencedColumnName = "idCompany",nullable = true, unique = true)
     private CompanyEntity idCompany;
 
     @Column(name = "NAME", unique = true)
