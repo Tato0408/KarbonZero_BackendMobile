@@ -13,7 +13,9 @@ public class UserPetDTO {
 
     @NotBlank
     private String idPetType;
-
+    private String namePet;
+    private double petCo2;
     @NotBlank
     private String idUser;
+    private String username;
 }

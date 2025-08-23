@@ -15,6 +15,6 @@ public class LivingSpaceDTO {
     private String idUser;
 
     private String livingSpaceTypeName;
-
+    private Double livingSpaceCo2;
     private String userName;
 }

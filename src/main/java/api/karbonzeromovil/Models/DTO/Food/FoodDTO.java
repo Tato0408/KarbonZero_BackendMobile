@@ -18,7 +18,7 @@ public class FoodDTO {
     @NotBlank(message = "No se permiten espacios en blanco")
     @Size(max=200)
     private String foodName;
-
+    private Double carbonFootprint;
     private String categoryName;
 
     }

@@ -14,7 +14,11 @@ public class FriendDTO {
     @NotBlank
     private String user1;
     private String friendName1;
+    private String countryName1;
+    private String imagePath1;
     @NotBlank
     private String user2;
     private String friendName2;
+    private String countryName2;
+    private String imagePath2;
 }
