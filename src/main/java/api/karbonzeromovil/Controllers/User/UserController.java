@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiUser")
+@CrossOrigin(origins = "*")
 public class UserController {
     @Autowired
     private CountryService countryService;
@@ -283,7 +285,14 @@ public class UserController {
     }
     //endregion
     //region SUMMARY: All oneToManyGets
-
+    @GetMapping("/getCountAllFollowersByUser/{id}")
+    public int getCountAllFollowersByUser(@PathVariable String id)  {
+        return friendService.countFollowers(id);
+    }
+    @GetMapping("/getCountAllFollowingsByUser/{id}")
+    public int getCountAllFollowingByUser(@PathVariable String id)  {
+        return friendService.countFollowing(id);
+    }
     @GetMapping("/getAllAchievementsByUser/{id}")
     public List<UserAchievementDTO> getAllAchivementsByUser( @PathVariable String id){
         return userService.getAllUserAchievements(id);

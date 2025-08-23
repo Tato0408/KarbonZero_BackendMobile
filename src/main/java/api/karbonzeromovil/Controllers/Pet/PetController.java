@@ -20,6 +20,7 @@ import static api.karbonzeromovil.Utils.Responses.responseServerError;
 
 @RestController
 @RequestMapping("/apiPet")
+@CrossOrigin(origins = "*")
 public class PetController {
     @Autowired
     private PetTypeService servicePetType;

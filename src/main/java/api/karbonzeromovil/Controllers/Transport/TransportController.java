@@ -19,6 +19,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiTransport")
+@CrossOrigin
 public class TransportController {
     @Autowired
     private TransportService transportService;

@@ -21,6 +21,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiLivingSpace")
+@CrossOrigin(origins = "*")
 public class LivingSpaceController {
     @Autowired
     private LivingSpaceTypeService serviceLivingSpaceType;
