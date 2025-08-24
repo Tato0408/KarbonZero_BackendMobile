@@ -55,28 +55,31 @@ public class FoodController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/getAllFoodCategories")
-    public List<FoodCategoryDTO> getAllFoodCategories(){
-        return serviceCategory.getAllCategories();
+    @GetMapping("/getAllFoodCategoriesPagination")
+    public ResponseEntity<Page<FoodCategoryDTO>> getAllFoodCategoriesPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<FoodCategoryDTO> dto = serviceCategory.getAllCategoriesPagination(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
     }
-    //@GetMapping("/getAllFoodCategories")
-    //public ResponseEntity<Page<FoodCategoryDTO>> getAllFoodCategories(
-    //         @RequestParam(defaultValue = "0") int page,
-    //       @RequestParam(defaultValue = "10") int size)
-    //{
-    //  if(size <= 0 || size > 50){
-    //     ResponseEntity.badRequest().body(Map.of(
-    //           "status", "El tamaño de la página debe de ser de 1 a 50"
-    //  ));
-    //}
-    //Page<FoodCategoryDTO> dto = serviceCategory.getAllCategories(page, size);
-    //if(dto == null){
-    //  ResponseEntity.badRequest().body(Map.of(
-    //   "status", "No hay registros"
-    //));
-    //}
-    //return ResponseEntity.ok(dto);
-    //}
+
+    @GetMapping("/getAllFoodCategories")
+    public List<FoodCategoryDTO> getAllFoodCategories()
+    {
+        return serviceCategory.getAllCategories();
+
+    }
 
     @GetMapping("/getAllFoodConsumptions")
     public ResponseEntity<Page<FoodConsumptionDTO>> getAllFoodConsumptions(
