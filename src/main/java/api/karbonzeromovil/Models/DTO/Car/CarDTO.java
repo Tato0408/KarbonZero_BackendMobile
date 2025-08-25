@@ -17,7 +17,8 @@ public class CarDTO {
 
     @NotNull
     private String idUser;
-
+    private  String username;
     @NotNull
     private String idCarSize;
+    private String sizeC02;
 }

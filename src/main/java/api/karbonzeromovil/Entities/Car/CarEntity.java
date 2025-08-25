@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,5 +34,5 @@ public class CarEntity {
     private CarSizeEntity idCarSize;
 
     @OneToMany(mappedBy = "idCar")
-    private List<TypeCarEntity> TypeCarList;
+    private List<TypeCarEntity> TypeCarList  = new ArrayList<>();
 }

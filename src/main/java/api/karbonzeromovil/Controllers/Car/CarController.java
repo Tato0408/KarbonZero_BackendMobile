@@ -7,6 +7,7 @@ import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelConsumptionDTO;
 
+import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Services.Car.*;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ public class CarController {
 
     @Autowired
     private FuelConsumptionService serviceFuelConsumption;
+
 
 
 
@@ -312,4 +314,14 @@ public class CarController {
             return responseServerError(e,"Can't delete the fuel consumption object");
         }
     }
+
+    @GetMapping("/getAllTypeCarsByCar/{id}")
+    public List<TypeCarDTO> getAllTypeCarsByCar(@PathVariable String id){
+        return serviceCar.getAllTypeCarsByCar(id);
+    }
+    @GetMapping("/getAllC02CarsByTypeCar/{id}")
+    public double getAllC02CarsByTypeCar(@PathVariable String id){
+        return serviceTypeCar.getAllCarsC02ByUserCar(id);
+    }
+
 }
