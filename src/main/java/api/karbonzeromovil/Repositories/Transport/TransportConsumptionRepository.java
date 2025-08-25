@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransportConsumptionRepository extends JpaRepository<TransportConsumptionEntity,String> {
     Page<TransportConsumptionEntity> findAll(Pageable pageable);
+    int countByIdUser_IdUser(String userId);
+
 }
