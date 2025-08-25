@@ -13,10 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 public class FriendService {
@@ -48,13 +44,22 @@ public class FriendService {
     public int countFollowing(String userId) {
         return repo.countByUser2_IdUser(userId);
     }
+    public boolean getExistRelationUser1AndUser2(String user1, String user2){
+        return repo.existsByUser1_IdUserAndUser2_IdUser(user1, user2);
+    }
+    public FriendDTO getRelationUser1AndUser2(String user1, String user2){
+        return FriendToDTO(repo.findByUser1_IdUserAndUser2_IdUser(user1, user2));
+    }
 
     public FriendDTO insertFriend(FriendDTO dto)throws IllegalAccessException{
         if (dto ==null){
             throw new IllegalAccessException("Friend cannot be null");
         }
+        if(dto.getUser1().equals(dto.getUser2())){
+            throw new IllegalAccessException("You cannot add yourself");
+        }
         try{
-            FriendEntity entity =DTOToFriend(dto);
+            FriendEntity entity = DTOToFriend(dto);
             FriendEntity savedFriend = repo.save(entity);
             return FriendToDTO(savedFriend);
         }catch (Exception e){
@@ -117,7 +122,7 @@ public class FriendService {
         entity.setIdFriend(dto.getIdFriend());
         if(dto.getUser1() != null && dto.getUser2() != null){
             UserEntity user1 = userRepo.findById(dto.getUser1()).orElseThrow(()->new IllegalArgumentException("No hay un usuario con ese id "+dto.getUser1()));
-            UserEntity user2 = userRepo.findById(dto.getUser1()).orElseThrow(()->new IllegalArgumentException("No hay un usuario con ese id "+dto.getUser2()));
+            UserEntity user2 = userRepo.findById(dto.getUser2()).orElseThrow(()->new IllegalArgumentException("No hay un usuario con ese id "+dto.getUser2()));
             entity.setUser1(user1);
             entity.setUser2(user2);
         }
