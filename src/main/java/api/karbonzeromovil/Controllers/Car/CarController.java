@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -319,8 +320,10 @@ public class CarController {
     public List<TypeCarDTO> getAllTypeCarsByCar(@PathVariable String id){
         return serviceCar.getAllTypeCarsByCar(id);
     }
+
     @GetMapping("/getAllC02CarsByTypeCar/{id}")
-    public double getAllC02CarsByTypeCar(@PathVariable String id){
+    public HashMap<String, Double> getAllCarsC02ByUserCar(@PathVariable String id){
+
         return serviceTypeCar.getAllCarsC02ByUserCar(id);
     }
 

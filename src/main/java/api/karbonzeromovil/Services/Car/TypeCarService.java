@@ -1,16 +1,16 @@
 package api.karbonzeromovil.Services.Car;
 
-import api.karbonzeromovil.Entities.Car.CarEntity;
-import api.karbonzeromovil.Entities.Car.CarSizeEntity;
-import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
-import api.karbonzeromovil.Entities.Car.TypeCarEntity;
+import api.karbonzeromovil.Entities.Car.*;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
 import api.karbonzeromovil.Repositories.Car.CarRepository;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
 import api.karbonzeromovil.Repositories.Car.TypeCarRepository;
+import api.karbonzeromovil.Repositories.User.UserRepository;
 import api.karbonzeromovil.Services.User.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,8 @@ public class TypeCarService {
     @Autowired
     private TypeCarRepository repo;
 
+    @Autowired
+    private  UserRepository userRepo;
     @Autowired
     private CarRepository CarRepo;
 
@@ -82,20 +84,40 @@ public class TypeCarService {
             throw new RuntimeException("The car type could not be updated" + e.getMessage());
         }
     }
-    public double getAllCarsC02ByUserCar(String idTypeCar){
-        TypeCarEntity typeCarEntity = repo.getReferenceById(idTypeCar);
-        double quantity = 0.0;
-        if(repo.existsById(idTypeCar)){
 
-            CarEntity carEntity = repo.getReferenceById(typeCarEntity.getIdCar().getIdCar());
-             List<CarEntity> typeCarList = carService.getAllTypeCarsByCar(typeCarEntity.getIdTypeCar());
-             for (TypeCarDTO typeCar : typeCarList) {
-                 quantity += typeCarEntity.getIdFuelType().getCarbonFooTprint();
-             }
-             return quantity;
-         }
-         return quantity;
+    public HashMap<String, Double> getAllCarsC02ByUserCar(String idUser){
+        /// Aca definimos el hashMap que vamos a retornar
+        HashMap<String, Double> hashMap = new HashMap<>();
+        /// Obtenemos la referencia de nuestro idUser para obtener ese usuario
+        UserEntity  userEntity = userRepo.getReferenceById(idUser);
+        /// Iniciamos nuestro valor de el hashmap con esa clave, puesto que cabal esa es la que cambiamos
+        hashMap.put(userEntity.getIdUser(), 0.00);
+        /// Obtenemos todos los carros de x usuario
+        List<CarEntity> cars = userEntity.getGetAllUserCars();
+        /// Iteramos sobre esos carros
+        cars.forEach(car->{
+            /// Obtenemos la referencia de ese car entity al cual vamos a extraer su fokin huella de carbono
+            CarEntity carEntity = CarRepo.getReferenceById(car.getIdCar());
+            /// Ahora obtenemos todos los tipos de carro al cual esta asociado ese carro
+            List<TypeCarEntity> typeCars = carEntity.getTypeCarList();
+            /// Iteramos por todos los tipos de carro al cual este asociado ese usuario
+            typeCars.forEach(typeCar ->{
+                /// Aca obtenemos el fuelType al cual esta asociado ese typeCar
+                FuelTypeEntity fuelType = typeCar.getIdFuelType();
+                /// Y aca obtenemos todos los consumos de ese tipo de carro
+                List<FuelConsumptionEntity> consumptions = typeCar.getConsumptionList();
+                /// Ahora iteramos sobre esos consumos encontrados
+                consumptions.forEach(consumption ->{
+                    /// Agregamos a esa fila del hashMap que tiene el idUser que definimos al inicio, su consumo de huella de carbono
+                    hashMap.put(userEntity.getIdUser(),
+                            (consumption.getQuantity() * fuelType.getCarbonFooTprint()) +
+                                    hashMap.get(userEntity.getIdUser()));
+                });
+            });
+        });
+        return hashMap;
     }
+
     public boolean deleteTypeCar(String id){
         try{
             if(repo.existsById(id)){
