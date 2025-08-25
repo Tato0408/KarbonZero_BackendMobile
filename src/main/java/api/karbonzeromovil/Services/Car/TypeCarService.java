@@ -1,17 +1,24 @@
 package api.karbonzeromovil.Services.Car;
 
+import api.karbonzeromovil.Entities.Car.CarEntity;
+import api.karbonzeromovil.Entities.Car.CarSizeEntity;
 import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
 import api.karbonzeromovil.Entities.Car.TypeCarEntity;
+import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
 import api.karbonzeromovil.Repositories.Car.CarRepository;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
 import api.karbonzeromovil.Repositories.Car.TypeCarRepository;
+import api.karbonzeromovil.Services.User.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +34,11 @@ public class TypeCarService {
     @Autowired
     private FuelTypeRepository FuelTypeRepo;
 
+    @Autowired
+    private CarService carService;
+
+    @Autowired
+    private UserService userService;
     public List<TypeCarDTO> getAllTypeCar(){
         List<TypeCarEntity> cartype = repo.findAll();
         return cartype.stream()
@@ -70,7 +82,20 @@ public class TypeCarService {
             throw new RuntimeException("The car type could not be updated" + e.getMessage());
         }
     }
+    public double getAllCarsC02ByUserCar(String idTypeCar){
+        TypeCarEntity typeCarEntity = repo.getReferenceById(idTypeCar);
+        double quantity = 0.0;
+        if(repo.existsById(idTypeCar)){
 
+            CarEntity carEntity = repo.getReferenceById(typeCarEntity.getIdCar().getIdCar());
+             List<CarEntity> typeCarList = carService.getAllTypeCarsByCar(typeCarEntity.getIdTypeCar());
+             for (TypeCarDTO typeCar : typeCarList) {
+                 quantity += typeCarEntity.getIdFuelType().getCarbonFooTprint();
+             }
+             return quantity;
+         }
+         return quantity;
+    }
     public boolean deleteTypeCar(String id){
         try{
             if(repo.existsById(id)){
@@ -84,11 +109,17 @@ public class TypeCarService {
         }
     }
 
-    private TypeCarDTO TypeCarToDTO(TypeCarEntity entity){
+    public TypeCarDTO TypeCarToDTO(TypeCarEntity entity){
         TypeCarDTO dto = new TypeCarDTO();
         dto.setIdTypeCar(entity.getIdTypeCar());
-        dto.setIdCar(entity.getIdCar().getIdCar());
-        dto.setIdFuelType(entity.getIdFuelType().getIdFuelType());
+        if(entity.getIdCar() != null && entity.getIdFuelType() != null){
+            dto.setIdCar(entity.getIdCar().getIdCar());
+            dto.setIdFuelType(entity.getIdFuelType().getIdFuelType());
+            dto.setSizeCar(entity.getIdCar().getIdCarSize().getName());
+            dto.setUserName(entity.getIdCar().getIdUser().getUserName());
+            dto.setCarbonBootprint(entity.getIdFuelType().getCarbonFooTprint());
+            dto.setFuelTypeName(entity.getIdFuelType().getName());
+        }
         return dto;
     }
     private TypeCarEntity DT0ToTypeCar(TypeCarDTO dto){
