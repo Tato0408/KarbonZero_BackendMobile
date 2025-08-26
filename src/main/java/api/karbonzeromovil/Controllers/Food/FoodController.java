@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -298,5 +299,10 @@ public class FoodController {
         }catch(Exception e){
             return responseServerError(e, "Can't delete the food consumption food object");
         }
+    }
+    @GetMapping("/getAllC02FoodByUser/{id}")
+    public HashMap<String, Double> getAllC02FoodByUser(@PathVariable String id){
+
+        return serviceConsumption.getAllFoodConsumptionsByUser(id);
     }
 }

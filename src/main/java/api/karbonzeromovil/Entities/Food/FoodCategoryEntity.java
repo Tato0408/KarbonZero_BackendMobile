@@ -29,5 +29,5 @@ public class FoodCategoryEntity {
     private double carbonFootPrint;
 
     @OneToMany(mappedBy = "foodCategory", cascade = CascadeType.ALL)
-    private List<FoodEntity> food = new ArrayList<>();
+    private List<FoodEntity> foodCategoryList = new ArrayList<>();
 }
