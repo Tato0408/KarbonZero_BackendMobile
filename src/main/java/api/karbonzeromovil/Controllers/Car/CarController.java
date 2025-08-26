@@ -321,7 +321,7 @@ public class CarController {
         return serviceCar.getAllTypeCarsByCar(id);
     }
 
-    @GetMapping("/getAllC02CarsByTypeCar/{id}")
+    @GetMapping("/getAllC02CarsByUser/{id}")
     public HashMap<String, Double> getAllCarsC02ByUserCar(@PathVariable String id){
 
         return serviceTypeCar.getAllCarsC02ByUserCar(id);
