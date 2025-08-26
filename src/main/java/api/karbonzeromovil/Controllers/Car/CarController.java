@@ -320,6 +320,10 @@ public class CarController {
     public List<TypeCarDTO> getAllTypeCarsByCar(@PathVariable String id){
         return serviceCar.getAllTypeCarsByCar(id);
     }
+    @GetMapping("/getAllFuelConsumptionsByTypeCar/{id}")
+    public List<FuelConsumptionDTO> getAllFuelConsumptionsByTypeCar(@PathVariable String id){
+        return serviceTypeCar.getAllFuelConsumptionsByTypeCar(id);
+    }
 
     @GetMapping("/getAllC02CarsByUser/{id}")
     public HashMap<String, Double> getAllCarsC02ByUserCar(@PathVariable String id){

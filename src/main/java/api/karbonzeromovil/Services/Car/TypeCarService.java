@@ -3,6 +3,7 @@ package api.karbonzeromovil.Services.Car;
 import api.karbonzeromovil.Entities.Car.*;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
+import api.karbonzeromovil.Models.DTO.Car.FuelConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
 import api.karbonzeromovil.Repositories.Car.CarRepository;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
@@ -38,6 +39,7 @@ public class TypeCarService {
 
     @Autowired
     private CarService carService;
+
 
     @Autowired
     private UserService userService;
@@ -105,7 +107,7 @@ public class TypeCarService {
                 /// Aca obtenemos el fuelType al cual esta asociado ese typeCar
                 FuelTypeEntity fuelType = typeCar.getIdFuelType();
                 /// Y aca obtenemos todos los consumos de ese tipo de carro
-                List<FuelConsumptionEntity> consumptions = typeCar.getConsumptionList();
+                List<FuelConsumptionEntity> consumptions = typeCar.getFuelConsumptionList();
                 /// Ahora iteramos sobre esos consumos encontrados
                 consumptions.forEach(consumption ->{
                     /// Agregamos a esa fila del hashMap que tiene el idUser que definimos al inicio, su consumo de huella de carbono
@@ -116,6 +118,11 @@ public class TypeCarService {
             });
         });
         return hashMap;
+    }
+
+    public List<FuelConsumptionDTO> getAllFuelConsumptionsByTypeCar(String idCar){
+        TypeCarEntity typeCarEntity = repo.getReferenceById(idCar);
+        return typeCarEntity.getFuelConsumptionList().stream().map(new FuelConsumptionService()::FuelConsumptionToDTO).collect(Collectors.toList());
     }
 
     public boolean deleteTypeCar(String id){
