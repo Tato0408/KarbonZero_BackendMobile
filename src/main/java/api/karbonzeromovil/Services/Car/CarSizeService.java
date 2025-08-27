@@ -27,6 +27,12 @@ public class CarSizeService {
 
         return entity.map(this::CarSizeToDTO);
     }
+    public List<CarSizeDTO> getAllCarSizeSP(){
+        List<CarSizeEntity> entity = repo.findAll();
+
+        return entity.stream().map(this::CarSizeToDTO).collect(Collectors.toList());
+    }
+
 
     public CarSizeDTO getCarSizeById(String id){
         if(repo.existsById(id)){

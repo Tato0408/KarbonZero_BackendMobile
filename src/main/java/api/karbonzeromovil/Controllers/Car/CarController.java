@@ -67,7 +67,10 @@ public class CarController {
         }
         return ResponseEntity.ok(dto);
     }
-
+    @GetMapping("/getCarSizeSp")
+    public List<CarSizeDTO> getAllCarSizeSP(){
+        return serviceSizeCar.getAllCarSizeSP();
+    }
     @GetMapping("/getAllTypeCar")
     public List<TypeCarDTO> dateTypeCar(){return serviceTypeCar.getAllTypeCar();}
 
@@ -88,6 +91,10 @@ public class CarController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/getAllFuelTypeSP")
+    public List<FuelTypeDTO> dataCompanySP(){
+        return serviceFuelType.getAllFuelTypeSP();
+    }
     @GetMapping("/getAllFuelConsumption")
     public List<FuelConsumptionDTO> dataFuelConsumption(){return serviceFuelConsumption.getAllFuelConsumption();}
 

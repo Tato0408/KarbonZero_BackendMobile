@@ -32,6 +32,11 @@ public class FuelTypeService {
 
         return entity.map(this::FuelTypeToDTO);
     }
+    public List<FuelTypeDTO> getAllFuelTypeSP(){
+        List<FuelTypeEntity> entity = repo.findAll();
+
+        return entity.stream().map(this::FuelTypeToDTO).collect(Collectors.toList());
+    }
 
     public FuelTypeDTO getFuelTypeById (String id) {
         if(repo.existsById(id)){
