@@ -55,7 +55,7 @@ public class FuelTypeService {
         try {
             if (repo.existsById((id))){
                 FuelTypeEntity entity = repo.getById(id);
-                entity.setIdMeasureUnit(MeasureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
+                entity.setIdMeasureUnit(MeasureUnitRepo.getReferenceById(entity.getIdMeasureUnit().getIdMeasureUnit()));
                 entity.setName(dto.getName());
                 entity.setCarbonFooTprint(dto.getCarbonFootprint());
 
@@ -84,7 +84,13 @@ public class FuelTypeService {
     private FuelTypeDTO FuelTypeToDTO(FuelTypeEntity entity){
         FuelTypeDTO dto = new FuelTypeDTO();
         dto.setIdFuelType(entity.getIdFuelType());
-        dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
+        if(entity.getIdMeasureUnit() != null){
+            dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
+            dto.setMeasureUnit(entity.getIdMeasureUnit().getNameMeasuresUnit());
+        }else{
+            dto.setIdMeasureUnit(null);
+            dto.setMeasureUnit("No hay relacion");
+        }
         dto.setName(entity.getName());
         dto.setCarbonFootprint(entity.getCarbonFooTprint());
         return dto;
@@ -92,7 +98,10 @@ public class FuelTypeService {
     private FuelTypeEntity DT0ToFuelType(FuelTypeDTO dto){
         FuelTypeEntity entity = new FuelTypeEntity();
         entity.setIdFuelType(dto.getIdFuelType());
-        entity.setIdMeasureUnit(MeasureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
+        if(dto.getIdMeasureUnit() != null){
+            MeasureUnitEntity meE = MeasureUnitRepo.findById(dto.getMeasureUnit()).orElseThrow(()->new IllegalArgumentException("No hay una unidad de medida con ese id"));
+            entity.setIdMeasureUnit(meE);
+        }
         entity.setName(dto.getName());
         entity.setCarbonFooTprint(dto.getCarbonFootprint());
         return entity;
