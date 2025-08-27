@@ -239,7 +239,15 @@ public class UserController {
         return ResponseEntity.ok(countries);
 
     }
+    @GetMapping("/getAllCountriesSP")
+    public ResponseEntity<List<CountryDTO>> getAllCountriesSP(){
+        List<CountryDTO> countries = countryService.getAllCountriesSP();
+        if(countries == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados"));
+        }
+        return ResponseEntity.ok(countries);
 
+    }
     @GetMapping("/getCountryById/{id}")
     public CountryDTO getCountryById(@PathVariable String id){
         return countryService.getCountryById(id);
