@@ -9,6 +9,7 @@ import api.karbonzeromovil.Services.Company.CompanyService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,21 @@ public class CompanyController {
 
     //Metodos Get para obtener cada cosa relacionada con la tabla company
     @GetMapping("/getAllCompany")
-    public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompany();}
+    public ResponseEntity<Page<CompanyDTO>> dataCompany(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la pagina debe ser entre 1 y 50"
+            ));
+            return ResponseEntity.ok(null);
+        }
+        Page<CompanyDTO> dto = serviceCompany.getAllCompany(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
 
     @GetMapping("/getAllChannel")
     public List<ChannelDTO> dataChannel(){return serviceChannel.getAllChannel(); }
