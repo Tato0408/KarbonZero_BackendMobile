@@ -1,13 +1,15 @@
 package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
-import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +25,11 @@ public class FuelTypeService {
     @Autowired
     private MeasureUnitRepository MeasureUnitRepo;
 
-    public List<FuelTypeDTO> getAllFuelType(){
-        List<FuelTypeEntity> Fueltype = repo.findAll();
-        return Fueltype.stream()
-                .map(this::FuelTypeToDTO)
-                .collect(Collectors.toList());
+    public Page<FuelTypeDTO> getAllFuelType(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FuelTypeEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::FuelTypeToDTO);
     }
 
     public FuelTypeDTO getFuelTypeById (String id) {

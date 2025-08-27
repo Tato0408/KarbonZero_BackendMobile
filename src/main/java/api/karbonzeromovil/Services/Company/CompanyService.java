@@ -1,6 +1,9 @@
 package api.karbonzeromovil.Services.Company;
 
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
+import api.karbonzeromovil.Entities.Food.FoodEntity;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
@@ -22,11 +25,11 @@ public class CompanyService {
     @Autowired
     private CompanyRepository repo;
 
-    public List<CompanyDTO> getAllCompany(){
-        List<CompanyEntity> company = repo.findAll();
-        return company.stream()
-                .map(this::CompanyToDTO)
-                .collect(Collectors.toList());
+    public Page<CompanyDTO> getAllCompany(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CompanyEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::CompanyToDTO);
     }
 
     public Page<CompanyDTO> getAllCompaniesSP(int page, int size){

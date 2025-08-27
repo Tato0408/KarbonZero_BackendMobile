@@ -43,20 +43,25 @@ public class CompanyController {
 
     //Metodos Get para obtener cada cosa relacionada con la tabla company
     @GetMapping("/getAllCompany")
-    public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompany();}
-    @GetMapping("/getAllCompaniesSP")
-    public ResponseEntity<Page<CompanyDTO>> getAllCompaniesSP(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-        if(size<=0 || size>50){
-            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+    public ResponseEntity<Page<CompanyDTO>> dataCompany(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la pagina debe ser entre 1 y 50"
+            ));
             return ResponseEntity.ok(null);
         }
-        Page<CompanyDTO> companies = serviceCompany.getAllCompaniesSP(page, size);
-        if(companies == null){
-            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        Page<CompanyDTO> dto = serviceCompany.getAllCompany(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
         }
-
-        return ResponseEntity.ok(companies);
+        return ResponseEntity.ok(dto);
     }
+  
+    @GetMapping("/getAllCompaniesSP")
+    public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompany();}
+
     @GetMapping("/getAllChannel")
     public List<ChannelDTO> dataChannel(){return serviceChannel.getAllChannel(); }
 

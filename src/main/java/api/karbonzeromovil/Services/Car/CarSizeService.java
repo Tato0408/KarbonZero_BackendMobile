@@ -6,6 +6,9 @@ import api.karbonzeromovil.Repositories.Car.CarSizeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +21,11 @@ public class CarSizeService {
     @Autowired
     private CarSizeRepository repo;
 
-    public List<CarSizeDTO> getAllCarSize(){
-        List<CarSizeEntity> carSize = repo.findAll();
-        return carSize.stream()
-                .map(this::CarSizeToDTO)
-                .collect(Collectors.toList());
+    public Page<CarSizeDTO> getAllCarSize(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CarSizeEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::CarSizeToDTO);
     }
 
     public CarSizeDTO getCarSizeById(String id){
