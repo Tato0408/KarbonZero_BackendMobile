@@ -141,10 +141,10 @@ public class UserService {
         UserEntity user = repo.getReferenceById(id);
         return user.getGetAllUserCars().stream().map(new CarService():: CarsToDTO).collect(Collectors.toList());
     }
-//    public List<ServiceConsumptionDTO> getAllUserServiceConsumptions(String id){
-//        UserEntity user = repo.getReferenceById(id);
-//        return  user.getAllUserServiceConsumption().stream().map(new ServiceConsumptionService()::ServiceConsumptionToDTO).collect(Collectors.toList());
-//    }
+    public List<ServiceConsumptionDTO> getAllUserServiceConsumptions(String id){
+        UserEntity user = repo.getReferenceById(id);
+        return  user.getAllUserServiceConsumption().stream().map(new ServiceConsumptionService()::ServiceConsumptionToDTO).collect(Collectors.toList());
+    }
 
 
     public UserDTO insertUser(UserDTO dto) throws IllegalAccessException {

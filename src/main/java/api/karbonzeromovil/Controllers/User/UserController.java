@@ -353,9 +353,9 @@ public class UserController {
     public int getCountUserConsumptions(@PathVariable String id){
         return userService.getAllUserConsumptions(id);
     }
-//    @GetMapping("/getAllUserServiceConsumption/{id}")
-//    public List<ServiceConsumptionDTO> getAllUserServiceConsumption(@PathVariable String id){
-//        return userService.getAllUserServiceConsumptions(id);
-//    }
+    @GetMapping("/getAllUserServiceConsumption/{id}")
+    public List<ServiceConsumptionDTO> getAllUserServiceConsumption(@PathVariable String id){
+        return userService.getAllUserServiceConsumptions(id);
+    }
     //endregion
 }

@@ -40,7 +40,6 @@ public class ServiceController {
         if(service == null){
             ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
         }
-
         return ResponseEntity.ok(service);
     }
     @GetMapping("/getMeasureUnitService")

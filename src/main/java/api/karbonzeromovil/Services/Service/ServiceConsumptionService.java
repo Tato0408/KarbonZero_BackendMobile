@@ -83,7 +83,7 @@ public class ServiceConsumptionService {
             throw new EmptyResultDataAccessException("The Service Consumption with the ID : " + id + " doesn't exists", 1);
         }
     }
-    private ServiceConsumptionDTO ServiceConsumptionToDTO(ServiceConsumptionEntity entity){
+    public ServiceConsumptionDTO ServiceConsumptionToDTO(ServiceConsumptionEntity entity){
         ServiceConsumptionDTO dto = new ServiceConsumptionDTO();
         dto.setIdServiceConsumption(entity.getIdServiceConsumption());
         dto.setIdMeasureUnitService(entity.getIdMeasureUnitService().getIdMeasureUnitService());
