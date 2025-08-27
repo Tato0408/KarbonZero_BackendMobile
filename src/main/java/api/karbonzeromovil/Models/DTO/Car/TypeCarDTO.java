@@ -15,7 +15,12 @@ public class TypeCarDTO {
 
     @NotNull
     private String idCar;
+    private String userName;
+    private String sizeCar;
 
     @NotNull
     private String idFuelType;
+    private String fuelTypeName;
+    private Double carbonBootprint;
+
 }

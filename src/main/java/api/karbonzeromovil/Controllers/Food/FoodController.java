@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,28 +56,30 @@ public class FoodController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/getAllFoodCategories")
-    public List<FoodCategoryDTO> getAllFoodCategories(){
-        return serviceCategory.getAllCategories();
+    @GetMapping("/getAllFoodCategoriesPagination")
+    public ResponseEntity<Page<FoodCategoryDTO>> getAllFoodCategoriesPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size)
+    {
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la página debe de ser de 1 a 50"
+            ));
+        }
+        Page<FoodCategoryDTO> dto = serviceCategory.getAllCategoriesPagination(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
     }
-    //@GetMapping("/getAllFoodCategories")
-    //public ResponseEntity<Page<FoodCategoryDTO>> getAllFoodCategories(
-    //         @RequestParam(defaultValue = "0") int page,
-    //       @RequestParam(defaultValue = "10") int size)
-    //{
-    //  if(size <= 0 || size > 50){
-    //     ResponseEntity.badRequest().body(Map.of(
-    //           "status", "El tamaño de la página debe de ser de 1 a 50"
-    //  ));
-    //}
-    //Page<FoodCategoryDTO> dto = serviceCategory.getAllCategories(page, size);
-    //if(dto == null){
-    //  ResponseEntity.badRequest().body(Map.of(
-    //   "status", "No hay registros"
-    //));
-    //}
-    //return ResponseEntity.ok(dto);
-    //}
+    @GetMapping("/getAllFoodCategories")
+    public List<FoodCategoryDTO> getAllFoodCategories()
+    {
+        return serviceCategory.getAllCategories();
+
+    }
 
     @GetMapping("/getAllFoodConsumptions")
     public ResponseEntity<Page<FoodConsumptionDTO>> getAllFoodConsumptions(
@@ -298,5 +301,10 @@ public class FoodController {
         }catch(Exception e){
             return responseServerError(e, "Can't delete the food consumption food object");
         }
+    }
+    @GetMapping("/getAllC02FoodByUser/{id}")
+    public HashMap<String, Double> getAllC02FoodByUser(@PathVariable String id){
+
+        return serviceConsumption.getAllFoodConsumptionsByUser(id);
     }
 }

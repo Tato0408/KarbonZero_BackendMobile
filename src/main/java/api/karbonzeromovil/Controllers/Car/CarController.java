@@ -7,6 +7,7 @@ import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelConsumptionDTO;
 
+import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Services.Car.*;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiCar")
+@CrossOrigin
 public class CarController {
     @Autowired
     private CarService serviceCar;
@@ -38,6 +41,7 @@ public class CarController {
 
     @Autowired
     private FuelConsumptionService serviceFuelConsumption;
+
 
 
 
@@ -312,4 +316,20 @@ public class CarController {
             return responseServerError(e,"Can't delete the fuel consumption object");
         }
     }
+
+    @GetMapping("/getAllTypeCarsByCar/{id}")
+    public List<TypeCarDTO> getAllTypeCarsByCar(@PathVariable String id){
+        return serviceCar.getAllTypeCarsByCar(id);
+    }
+    @GetMapping("/getAllFuelConsumptionsByTypeCar/{id}")
+    public List<FuelConsumptionDTO> getAllFuelConsumptionsByTypeCar(@PathVariable String id){
+        return serviceTypeCar.getAllFuelConsumptionsByTypeCar(id);
+    }
+
+    @GetMapping("/getAllC02CarsByUser/{id}")
+    public HashMap<String, Double> getAllCarsC02ByUserCar(@PathVariable String id){
+
+        return serviceTypeCar.getAllCarsC02ByUserCar(id);
+    }
+
 }

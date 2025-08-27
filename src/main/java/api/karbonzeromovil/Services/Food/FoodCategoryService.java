@@ -22,18 +22,18 @@ public class FoodCategoryService {
     @Autowired
     FoodCategoryRepository repo;
 
-    //public Page<FoodCategoryDTO> getAllCategories(int page, int //size){
-    //      Pageable pageable = PageRequest.of(page, size);
-//        Page<FoodCategoryEntity> entity = repo.findAll(pageable);
 
-    //      return entity.map(this::categoryToDTO);
-//    }
-
-    public List<FoodCategoryDTO> getAllCategories(){
+    public List<FoodCategoryDTO>getAllCategories(){
         List<FoodCategoryEntity> entity = repo.findAll();
         return entity.stream()
                 .map(this::categoryToDTO)
                 .collect(Collectors.toList());
+    }
+    public  Page<FoodCategoryDTO>getAllCategoriesPagination(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FoodCategoryEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::categoryToDTO);
     }
 
     public FoodCategoryDTO getFoodCategoryById(String id){

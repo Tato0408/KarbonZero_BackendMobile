@@ -1,10 +1,12 @@
 package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Config.Argon2PasswordEncoder;
+import api.karbonzeromovil.Entities.Car.CarEntity;
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.UserAchievementEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
@@ -13,11 +15,18 @@ import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
+import api.karbonzeromovil.Repositories.Car.CarRepository;
+import api.karbonzeromovil.Repositories.Car.CarSizeRepository;
+import api.karbonzeromovil.Repositories.Car.FuelConsumptionRepository;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
+import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
+import api.karbonzeromovil.Repositories.Service.ServiceConsumptionRepository;
+import api.karbonzeromovil.Repositories.Transport.TransportConsumptionRepository;
 import api.karbonzeromovil.Repositories.User.CountryRepository;
 import api.karbonzeromovil.Repositories.User.FriendRepository;
 import api.karbonzeromovil.Repositories.User.UserAchievementRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
+import api.karbonzeromovil.Services.Car.CarService;
 import api.karbonzeromovil.Services.Food.FoodConsumptionFoodService;
 import api.karbonzeromovil.Services.Food.FoodConsumptionService;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceService;
@@ -50,10 +59,30 @@ public class UserService {
     @Autowired
     private FriendRepository friendRepository;
 
+    @Autowired
+    private FoodConsumptionRepository foodRepo;
+    @Autowired
+    private ServiceConsumptionRepository serviceRepo;
+    @Autowired
+    private FuelConsumptionRepository fuelRepo;
+    @Autowired
+    TransportConsumptionRepository transportRepo;
+    @Autowired
+    private CarRepository carRepo;
+
     public Page<UserDTO> getAllUsers(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
         Page<UserEntity> users = repo.findAll(pageable);
         return users.map(this::UsersToDTO);
+    }
+    public int getAllUserConsumptions(String id){
+        return foodRepo.countByIdUser_IdUser(id) + serviceRepo.countByIdUser_IdUser(id) +
+                fuelRepo.countByIdTypeCar_IdTypeCar(id) + transportRepo.countByIdUser_IdUser(id);
+    }
+
+    public List<UserDTO> getAllUsersSearch(String variable){
+        List<UserEntity> entity = repo.findByUserNameContainingIgnoreCase(variable);
+        return entity.stream().map(this::UsersToDTO).collect(Collectors.toList());
     }
     public UserDTO getUserById(String id){
         try {
@@ -91,7 +120,6 @@ public class UserService {
                 .map(new UserAchievementService()::AchievementToDTO).collect(Collectors.toList());
     }
 
-
     ///Aca van todos los de gets de x cosnumo
     public List<LivingSpaceDTO> getAllLivingSpacesUser (String id){
         UserEntity user = repo.getReferenceById(id);
@@ -109,7 +137,10 @@ public class UserService {
         UserEntity user = repo.getReferenceById(id);
         return user.getAllUserPets().stream().map(new UserPetService()::UserPetToDTO).collect(Collectors.toList());
     }
-
+    public List<CarDTO> getAllUserCars (String id){
+        UserEntity user = repo.getReferenceById(id);
+        return user.getGetAllUserCars().stream().map(new CarService():: CarsToDTO).collect(Collectors.toList());
+    }
 //    public List<ServiceConsumptionDTO> getAllUserServiceConsumptions(String id){
 //        UserEntity user = repo.getReferenceById(id);
 //        return  user.getAllUserServiceConsumption().stream().map(new ServiceConsumptionService()::ServiceConsumptionToDTO).collect(Collectors.toList());

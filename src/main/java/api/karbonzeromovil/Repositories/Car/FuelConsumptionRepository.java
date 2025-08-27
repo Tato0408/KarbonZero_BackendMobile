@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FuelConsumptionRepository extends JpaRepository<FuelConsumptionEntity, String> {
     Page<FuelConsumptionEntity> findAll (Pageable pageable);
+    int countByIdTypeCar_IdTypeCar(String userId);
 }

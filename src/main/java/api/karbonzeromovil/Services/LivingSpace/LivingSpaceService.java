@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,6 +99,25 @@ public class LivingSpaceService {
         }
     }
 
+    public HashMap<String, Double> getAllLivingSpaceCO2ByUser(String idUser){
+        HashMap<String, Double> hashMap = new HashMap<>();
+        UserEntity userEntity = repoUser.getReferenceById(idUser);
+        hashMap.put(userEntity.getIdUser(), 0.00);
+
+        List<LivingSpaceEntity> livingSpaces = userEntity.getLivingSpacesUser();
+
+        livingSpaces.forEach(livingSpace ->{
+
+            LivingSpaceTypeEntity livingSpaceTypeEntity = repoType.getReferenceById(livingSpace.getLivingSpaceType().getIdLivingSpaceType());
+
+            List<LivingSpaceEntity> livingSpaceEntities = livingSpaceTypeEntity.getLivingSpace();
+
+            livingSpaceEntities.forEach(livingSpaceEntity -> {
+                hashMap.put(userEntity.getIdUser(), (livingSpaceEntity.getLivingSpaceType().getCarbonFootPrint())+ hashMap.get(userEntity.getIdUser()));
+            });
+        });
+        return hashMap;
+    }
     public LivingSpaceDTO livingSpaceToDTO(LivingSpaceEntity entity) {
         LivingSpaceDTO dto = new LivingSpaceDTO();
 

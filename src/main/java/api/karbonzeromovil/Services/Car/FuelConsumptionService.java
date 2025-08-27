@@ -84,7 +84,7 @@ public class FuelConsumptionService {
         }
     }
 
-    private FuelConsumptionDTO FuelConsumptionToDTO(FuelConsumptionEntity entity){
+    public FuelConsumptionDTO FuelConsumptionToDTO(FuelConsumptionEntity entity){
         FuelConsumptionDTO dto = new FuelConsumptionDTO();
         dto.setIdFuelConsumption(entity.getIdFuelConsumption());
         dto.setIdTypeCar(entity.getIdTypeCar().getIdTypeCar());

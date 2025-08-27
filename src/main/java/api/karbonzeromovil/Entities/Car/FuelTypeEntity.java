@@ -23,7 +23,7 @@ public class FuelTypeEntity {
     private String idFuelType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IDMEASUREUNIT", nullable = true, referencedColumnName = "IDMEASUREUNIT")
+    @JoinColumn(name = "IDMEASUREUNIT", referencedColumnName = "IDMEASUREUNIT")
     @JsonIgnore
     private MeasureUnitEntity idMeasureUnit;
 

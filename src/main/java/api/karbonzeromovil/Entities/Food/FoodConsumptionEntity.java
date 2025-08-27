@@ -9,6 +9,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class FoodConsumptionEntity {
     private UserEntity idUser;
 
     @Column(name="CONSUMPTIONDATE")
-    private String consumptionDate;
+    private LocalDateTime consumptionDate;
 
     @Column(name="LATITUDE")
     private Double latitude;
