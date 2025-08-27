@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Entities.User;
 
+import api.karbonzeromovil.Entities.Car.CarEntity;
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
@@ -13,6 +14,7 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -66,4 +68,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "idUser")
     private List<TransportConsumptionEntity> allUserTransportConsumption = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idUser")
+    private List<CarEntity> getAllUserCars = new ArrayList<>();
 }

@@ -88,8 +88,17 @@ public class MeasureUnitServiceService {
     private MeasureUnitServiceDTO MeasureUnitServiceToDTO(MeasureUnitServiceEntity entity){
         MeasureUnitServiceDTO dto = new MeasureUnitServiceDTO();
         dto.setIdMeasureUnitService(entity.getIdMeasureUnitService());
-        dto.setIdService(entity.getIdService().getIdService());
-        dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
+        if(entity.getIdMeasureUnit() != null && entity.getIdService() != null){
+            dto.setIdService(entity.getIdService().getIdService());
+            dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
+            dto.setServiceName(entity.getIdService().getName());
+            dto.setMeasureUnitName(entity.getIdMeasureUnit().getNameMeasuresUnit());
+        }else{
+            dto.setIdService(null);
+            dto.setIdMeasureUnit(null);
+            dto.setServiceName("No hay relacion");
+            dto.setMeasureUnitName("No hay relacion");
+        }
         dto.setCarbonFootprint(entity.getCarbonFootprint());
         return dto;
     }

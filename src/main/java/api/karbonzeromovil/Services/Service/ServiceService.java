@@ -25,6 +25,12 @@ public class ServiceService {
         Page<ServiceEntity> users = repo.findAll(pageable);
         return users.map(this::ServiceToDTO);
     }
+    public List<ServiceDTO> getAllServiceNP(){
+        List<ServiceEntity> entity = repo.findAll();
+        return entity.stream()
+                .map(this::ServiceToDTO)
+                .collect(Collectors.toList());
+    }
     public ServiceDTO getServiceById(String id){
         try {
             if(repo.existsById(id)){

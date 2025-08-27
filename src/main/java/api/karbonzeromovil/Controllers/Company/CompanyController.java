@@ -3,6 +3,7 @@ package api.karbonzeromovil.Controllers.Company;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
 import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
 import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Services.Company.ChannelService;
 import api.karbonzeromovil.Services.Company.ChannelUserService;
 import api.karbonzeromovil.Services.Company.CompanyService;
@@ -57,6 +58,9 @@ public class CompanyController {
         }
         return ResponseEntity.ok(dto);
     }
+  
+    @GetMapping("/getAllCompaniesSP")
+    public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompany();}
 
     @GetMapping("/getAllChannel")
     public List<ChannelDTO> dataChannel(){return serviceChannel.getAllChannel(); }

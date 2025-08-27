@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Controllers.User;
 
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
@@ -238,7 +239,15 @@ public class UserController {
         return ResponseEntity.ok(countries);
 
     }
+    @GetMapping("/getAllCountriesSP")
+    public ResponseEntity<List<CountryDTO>> getAllCountriesSP(){
+        List<CountryDTO> countries = countryService.getAllCountriesSP();
+        if(countries == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados"));
+        }
+        return ResponseEntity.ok(countries);
 
+    }
     @GetMapping("/getCountryById/{id}")
     public CountryDTO getCountryById(@PathVariable String id){
         return countryService.getCountryById(id);
@@ -289,6 +298,10 @@ public class UserController {
     public int getCountAllFollowersByUser(@PathVariable String id)  {
         return friendService.countFollowers(id);
     }
+    @GetMapping("/searchUsers/{variable}")
+    public List<UserDTO> searchUsers(@PathVariable String variable) {
+        return userService.getAllUsersSearch(variable);
+    }
     @GetMapping("/getCountAllFollowingsByUser/{id}")
     public int getCountAllFollowingByUser(@PathVariable String id)  {
         return friendService.countFollowing(id);
@@ -297,7 +310,10 @@ public class UserController {
     public List<UserAchievementDTO> getAllAchivementsByUser( @PathVariable String id){
         return userService.getAllUserAchievements(id);
     }
-
+    @GetMapping("/getAllCarsByUser/{id}")
+    public List<CarDTO> getAllCarsByUser(@PathVariable String id){
+        return userService.getAllUserCars(id);
+    }
     @GetMapping("/getFriendsByMainUser/{id}")
     public List<FriendDTO> getFriendsByMaiNuSER( @PathVariable String id){
         return userService.getAllFriendsMainUser(id);
@@ -323,6 +339,20 @@ public class UserController {
         return userService.getAllUserPets(id);
     }
 
+
+    @GetMapping("/getExistRelation/{idUser1}/{idUser2}")
+    public boolean getExistRelation(@PathVariable String idUser1, @PathVariable String idUser2){
+        return friendService.getExistRelationUser1AndUser2(idUser1, idUser2);
+    }
+    @GetMapping("/getRelation/{idUser1}/{idUser2}")
+    public FriendDTO getRelation(@PathVariable String idUser1, @PathVariable String idUser2){
+        return friendService.getRelationUser1AndUser2(idUser1, idUser2);
+    }
+
+    @GetMapping("/getCountUserConsumptions/{id}")
+    public int getCountUserConsumptions(@PathVariable String id){
+        return userService.getAllUserConsumptions(id);
+    }
 //    @GetMapping("/getAllUserServiceConsumption/{id}")
 //    public List<ServiceConsumptionDTO> getAllUserServiceConsumption(@PathVariable String id){
 //        return userService.getAllUserServiceConsumptions(id);

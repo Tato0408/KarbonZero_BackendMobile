@@ -4,6 +4,9 @@ import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
+import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,12 @@ public class CompanyService {
         Page<CompanyEntity> entity = repo.findAll(pageable);
 
         return entity.map(this::CompanyToDTO);
+    }
+
+    public Page<CompanyDTO> getAllCompaniesSP(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<CompanyEntity> users = repo.findAll(pageable);
+        return users.map(this::CompanyToDTO);
     }
 
     public CompanyDTO getCompanyById(String id){

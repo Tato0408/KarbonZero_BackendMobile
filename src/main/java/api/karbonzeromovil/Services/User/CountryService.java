@@ -25,6 +25,10 @@ public class CountryService {
         Page<CountryEntity> countries = repo.findAll(pageable);
         return countries.map(this::CountryToDTO);
     }
+    public List<CountryDTO>getAllCountriesSP(){
+        List<CountryEntity> countries = repo.findAll();
+        return countries.stream().map(this::CountryToDTO).collect(Collectors.toList());
+    }
     public CountryDTO getCountryById (String id){
         try {
             if(repo.existsById(id)){
