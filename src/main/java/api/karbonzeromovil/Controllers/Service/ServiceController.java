@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
@@ -68,8 +69,13 @@ public class ServiceController {
 
         return ResponseEntity.ok(consumption);
     }
+
+    @GetMapping("/getAllServiceList")
+    public List<ServiceDTO> getServiceNP() {return serviceService.getAllServiceNP();}
+
     @GetMapping("/getServiceById/{id}")
     public ServiceDTO getServiceById(@PathVariable String id){
+
         return serviceService.getServiceById(id);
     }
     @GetMapping("/getMeasureUnitServiceById/{id}")

@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
@@ -60,6 +62,9 @@ public class MeasureController {
         }
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/getAllMeasureUnitList")
+    public List<MeasureUnitDTO>getMeasureUnitNP() {return serviceMeasureUnit.getAllMeasureUnitNP();}
 
     @GetMapping("/getMeasureById/{id}")
     public MeasureDTO getMeasureById(@PathVariable String id) {return serviceMeasure.getMeasureById(id);}
