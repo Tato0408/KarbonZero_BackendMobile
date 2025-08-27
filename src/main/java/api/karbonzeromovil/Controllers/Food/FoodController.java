@@ -131,6 +131,9 @@ public class FoodController {
     @GetMapping("/getFoodConsumptionFoodById/{id}")
     public FoodConsumptionFoodDTO getFoodConsumptionFoodById(@PathVariable String id){ return serviceFoodConsumption.getFoodConsumptionFoodById(id);}
 
+    @GetMapping("/getAllfoodConsumptionFoodByFoodConsumption/{id}")
+    public List<FoodConsumptionFoodDTO> getAllfoodConsumptionFoodByFoodConsumption(@PathVariable String id){ return serviceConsumption.getAllfoodConsumptionFoodByFoodConsumption(id);}
+
     @PostMapping("/insertFood")
     public ResponseEntity<Map<String, Object >> insertFood(@Valid @RequestBody FoodDTO dto, HttpServletRequest request){
         try{

@@ -7,12 +7,15 @@ import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
+import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Repositories.Food.FoodCategoryRepository;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionFoodRepository;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
 import api.karbonzeromovil.Repositories.Food.FoodRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
+import api.karbonzeromovil.Services.User.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -35,6 +38,8 @@ public class FoodConsumptionService {
     @Autowired
     private FoodRepository foodRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private FoodCategoryRepository foodCategoryRepository;
     @Autowired
     private FoodConsumptionFoodRepository foodCfoodRepo;
@@ -53,6 +58,11 @@ public class FoodConsumptionService {
         return null;
     }
 
+    public List<FoodConsumptionFoodDTO> getAllfoodConsumptionFoodByFoodConsumption(String id){
+        FoodConsumptionEntity foodC = repo.getReferenceById(id);
+        return foodC.getFoodConsumptionFood().stream()
+                .map(new FoodConsumptionFoodService()::foodConsumptionFoodToDTO).collect(Collectors.toList());
+    }
     public HashMap<String, Double> getAllFoodConsumptionsByUser(String idUser){
             HashMap<String, Double> hashMap = new HashMap<>();
             UserEntity entity = repoUser.getReferenceById(idUser);

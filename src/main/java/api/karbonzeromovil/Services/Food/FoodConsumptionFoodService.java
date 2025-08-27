@@ -96,7 +96,7 @@ public class FoodConsumptionFoodService {
     }
 
 
-    private FoodConsumptionFoodDTO foodConsumptionFoodToDTO(FoodConsumptionFoodEntity entity){
+    public FoodConsumptionFoodDTO foodConsumptionFoodToDTO(FoodConsumptionFoodEntity entity){
         FoodConsumptionFoodDTO dto = new FoodConsumptionFoodDTO();
 
         dto.setIdFoodConsumptionsFood(entity.getIdFoodConsumptionsFood());
