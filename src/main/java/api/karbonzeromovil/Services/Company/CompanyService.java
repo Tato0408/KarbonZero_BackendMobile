@@ -1,11 +1,16 @@
 package api.karbonzeromovil.Services.Company;
 
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +27,12 @@ public class CompanyService {
         return company.stream()
                 .map(this::CompanyToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Page<CompanyDTO> getAllCompaniesSP(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<CompanyEntity> users = repo.findAll(pageable);
+        return users.map(this::CompanyToDTO);
     }
 
     public CompanyDTO getCompanyById(String id){
