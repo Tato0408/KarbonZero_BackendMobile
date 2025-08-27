@@ -50,7 +50,7 @@ public class CompanyController {
             ));
             return ResponseEntity.ok(null);
         }
-        Page<CompanyDTO> dto = serviceCompany.getAllCompany(page, size);
+        Page<CompanyDTO> dto = serviceCompany.getAllCompanies(page, size);
         if(dto == null){
             ResponseEntity.badRequest().body(Map.of(
                     "status", "No hay registros"
@@ -60,7 +60,7 @@ public class CompanyController {
     }
   
     @GetMapping("/getAllCompaniesSP")
-    public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompany();}
+    public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompaniesSp();}
 
     @GetMapping("/getAllChannel")
     public List<ChannelDTO> dataChannel(){return serviceChannel.getAllChannel(); }

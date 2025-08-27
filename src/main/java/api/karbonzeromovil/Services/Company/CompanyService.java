@@ -25,14 +25,13 @@ public class CompanyService {
     @Autowired
     private CompanyRepository repo;
 
-    public Page<CompanyDTO> getAllCompany(int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
-        Page<CompanyEntity> entity = repo.findAll(pageable);
+    public List<CompanyDTO> getAllCompaniesSp(){
+        List<CompanyEntity> entity = repo.findAll();
 
-        return entity.map(this::CompanyToDTO);
+        return entity.stream().map(this::CompanyToDTO).collect(Collectors.toList());
     }
 
-    public Page<CompanyDTO> getAllCompaniesSP(int page, int size){
+    public Page<CompanyDTO> getAllCompanies(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
         Page<CompanyEntity> users = repo.findAll(pageable);
         return users.map(this::CompanyToDTO);
