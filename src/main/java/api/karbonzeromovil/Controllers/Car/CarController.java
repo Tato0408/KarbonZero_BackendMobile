@@ -25,6 +25,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiCar")
+@CrossOrigin
 public class CarController {
     @Autowired
     private CarService serviceCar;
