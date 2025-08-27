@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
+import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
