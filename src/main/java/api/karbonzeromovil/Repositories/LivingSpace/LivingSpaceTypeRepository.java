@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LivingSpaceTypeRepository extends JpaRepository<LivingSpaceTypeEntity, String > {
     Page<LivingSpaceTypeEntity> findAll (Pageable pagebale);
+    Page<LivingSpaceTypeEntity> findByNameLivingSpaceTypeContains(String nameLivingSpaceType, Pageable pageable);
+
 }

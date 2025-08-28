@@ -77,6 +77,16 @@ public class LivingSpaceController {
     @GetMapping("/getLivingSpaceTypeById/{id}")
     public LivingSpaceTypeDTO getLivingSpaceTypeById(@PathVariable String id) {return serviceLivingSpaceType.getLivingSpaceTypeById(id);}
 
+    @GetMapping("/getLivingSpaceTypeByName/{nameLivingSpaceType}")
+    public Page<LivingSpaceTypeDTO> getFoodByName (@PathVariable String nameLivingSpaceType,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return serviceLivingSpaceType.getLivingSpaceTypeByName(nameLivingSpaceType, page, size);
+    }
+
     @PostMapping("/insertLivingSpaceType")
     public ResponseEntity<Map<String, Object>> insertLivingSpaceType(@Valid @RequestBody LivingSpaceTypeDTO dto, HttpServletRequest request){
         try{

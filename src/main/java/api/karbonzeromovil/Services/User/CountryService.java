@@ -40,6 +40,13 @@ public class CountryService {
             throw new RuntimeException("The Country could not be found" + err.getMessage());
         }
     }
+
+    public Page<CountryDTO> getCountryByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CountryEntity> users = repo.findByNameContains(name, pageable);
+        return users.map(this::CountryToDTO);
+    }
+
     public CountryDTO insertCountry(CountryDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Country cannot be null or empty");

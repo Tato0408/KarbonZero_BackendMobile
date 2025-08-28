@@ -39,6 +39,12 @@ public class LivingSpaceTypeService {
         return null;
     }
 
+    public Page<LivingSpaceTypeDTO> getLivingSpaceTypeByName(String nameLivingSpaceType, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<LivingSpaceTypeEntity> users = repo.findByNameLivingSpaceTypeContains(nameLivingSpaceType, pageable);
+        return users.map(this::livingSpaceTypeToDTO);
+    }
+
     public LivingSpaceTypeDTO insertLivingSpaceType(LivingSpaceTypeDTO dto){
         if(dto == null){
             throw new IllegalArgumentException("Living space type can't be null or empty");
