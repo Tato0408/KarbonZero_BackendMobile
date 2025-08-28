@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PetTypeRepository extends JpaRepository<PetTypeEntity, String> {
     Page<PetTypeEntity> findAll (Pageable pagebale);
+    Page<PetTypeEntity> findPetTypeByPetName(String namePetType, Pageable pageable);
 }

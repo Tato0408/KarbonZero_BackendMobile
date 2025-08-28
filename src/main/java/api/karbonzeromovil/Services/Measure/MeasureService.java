@@ -1,7 +1,9 @@
 package api.karbonzeromovil.Services.Measure;
 
 import api.karbonzeromovil.Entities.Measure.MeasureEntity;
+import api.karbonzeromovil.Entities.Pet.PetTypeEntity;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
+import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,12 @@ public class MeasureService {
             return MeasureToDTO(entity);
         }
         return null;
+    }
+
+    public Page<MeasureDTO> getMeasureByName(String nameMeasure, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureEntity> users = repo.findMeasureByName(nameMeasure, pageable);
+        return users.map(this::MeasureToDTO);
     }
 
     public MeasureDTO insertMeasure(MeasureDTO dto){

@@ -41,6 +41,12 @@ public class MeasureUnitService {
         return null;
     }
 
+    public Page<MeasureUnitDTO> getMeasureUnitByName(String nameMeasuresUnit, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureUnitEntity> users = repo.findMeasureUnitByName(nameMeasuresUnit, pageable);
+        return users.map(this::MeasureUnitToDTO);
+    }
+
     public List<MeasureUnitDTO> getAllMeasureUnitNP(){
         List<MeasureUnitEntity> entity = repo.findAll();
         return entity.stream()
