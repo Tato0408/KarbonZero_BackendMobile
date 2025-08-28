@@ -87,7 +87,11 @@ public class FuelConsumptionService {
     public FuelConsumptionDTO FuelConsumptionToDTO(FuelConsumptionEntity entity){
         FuelConsumptionDTO dto = new FuelConsumptionDTO();
         dto.setIdFuelConsumption(entity.getIdFuelConsumption());
-        dto.setIdTypeCar(entity.getIdTypeCar().getIdTypeCar());
+        if(entity.getIdTypeCar()!= null){
+            dto.setIdTypeCar(entity.getIdTypeCar().getIdTypeCar());
+            dto.setTypeFuel(entity.getIdTypeCar().getIdFuelType().getName());
+            dto.setTypeSize(entity.getIdTypeCar().getIdCar().getIdCarSize().getName());
+        }
         dto.setQuantity(entity.getQuantity());
         dto.setConsumptionDate(entity.getConsumsuptionDate());
         dto.setLatitude(entity.getLatitude());

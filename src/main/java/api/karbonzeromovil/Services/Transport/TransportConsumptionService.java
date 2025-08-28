@@ -83,10 +83,13 @@ public class TransportConsumptionService {
             throw new EmptyResultDataAccessException("The Transport Consumption with the ID : " + id + " doesn't exists", 1);
         }
     }
-    private TransportConsumptionDTO TransportConsumptionToDTO(TransportConsumptionEntity entity){
+    public TransportConsumptionDTO TransportConsumptionToDTO(TransportConsumptionEntity entity){
         TransportConsumptionDTO dto = new TransportConsumptionDTO();
         dto.setIdTransportConsumption(entity.getIdTransportConsumption());
-        dto.setIdTransport(entity.getIdTransport().getIdTransport());
+        if(entity.getIdTransport() != null){
+            dto.setIdTransport(entity.getIdTransport().getIdTransport());
+            dto.setTransportName(entity.getIdTransport().getName());
+        }
         dto.setIdUser(entity.getIdUser().getIdUser());
         dto.setDistance(entity.getDistance());
         dto.setConsumptionDate(entity.getConsumptionDate());

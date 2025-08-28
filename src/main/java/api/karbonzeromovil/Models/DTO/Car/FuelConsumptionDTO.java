@@ -22,6 +22,8 @@ public class FuelConsumptionDTO {
 
     @NotNull
     private String idTypeCar;
+    private String typeFuel;
+    private String typeSize;
 
     @Positive
     @NotNull
