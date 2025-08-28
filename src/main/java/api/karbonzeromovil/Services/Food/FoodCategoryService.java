@@ -44,6 +44,12 @@ public class FoodCategoryService {
         return null;
     }
 
+    public Page<FoodCategoryDTO> getCategoryByName(String foodCategoryName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FoodCategoryEntity> users = repo.findByFoodCategoryName(foodCategoryName, pageable);
+        return users.map(this::categoryToDTO);
+    }
+
     public FoodCategoryDTO insertCategory(FoodCategoryDTO dto){
         if (dto == null){
             throw new IllegalArgumentException("Food can't be null or empty");

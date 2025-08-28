@@ -134,6 +134,25 @@ public class FoodController {
     @GetMapping("/getAllfoodConsumptionFoodByFoodConsumption/{id}")
     public List<FoodConsumptionFoodDTO> getAllfoodConsumptionFoodByFoodConsumption(@PathVariable String id){ return serviceConsumption.getAllfoodConsumptionFoodByFoodConsumption(id);}
 
+    @GetMapping("/getFoodByFoodName/{foodName}")
+    public Page<FoodDTO> getFoodByName (@PathVariable String foodName,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return service.getFoodByName(foodName, page, size);
+    }
+
+    @GetMapping("/getFoodCategoryByFoodCategoryName/{foodCategoryName}")
+    public Page<FoodCategoryDTO> getFoodCategoryByName (@PathVariable String foodCategoryName,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return serviceCategory.getCategoryByName(foodCategoryName, page, size);
+    }
     @PostMapping("/insertFood")
     public ResponseEntity<Map<String, Object >> insertFood(@Valid @RequestBody FoodDTO dto, HttpServletRequest request){
         try{

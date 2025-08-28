@@ -253,6 +253,16 @@ public class UserController {
         return countryService.getCountryById(id);
     }
 
+    @GetMapping("/getCountryByName/{name}")
+    public Page<CountryDTO> getFoodByName (@PathVariable String name,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return countryService.getCountryByName(name, page, size);
+    }
+
     @PostMapping("/insertCountry")
     public ResponseEntity<Map<String,Object>> insertUser(@Valid @RequestBody CountryDTO dto, HttpServletRequest request){
         try {
