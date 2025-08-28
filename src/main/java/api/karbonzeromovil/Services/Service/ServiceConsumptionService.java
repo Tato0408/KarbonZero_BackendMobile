@@ -86,7 +86,11 @@ public class ServiceConsumptionService {
     public ServiceConsumptionDTO ServiceConsumptionToDTO(ServiceConsumptionEntity entity){
         ServiceConsumptionDTO dto = new ServiceConsumptionDTO();
         dto.setIdServiceConsumption(entity.getIdServiceConsumption());
-        dto.setIdMeasureUnitService(entity.getIdMeasureUnitService().getIdMeasureUnitService());
+        if(entity.getIdMeasureUnitService() != null){
+            dto.setIdMeasureUnitService(entity.getIdMeasureUnitService().getIdMeasureUnitService());
+            dto.setServiceName(entity.getIdMeasureUnitService().getIdService().getName());
+            dto.setMeasureUnitName(entity.getIdMeasureUnitService().getIdMeasureUnit().getNameMeasuresUnit());
+        }
         dto.setIdUser(entity.getIdUser().getIdUser());
         dto.setQuantity(entity.getQuantity());
         dto.setConsumptionDate(entity.getConsumptionDate());

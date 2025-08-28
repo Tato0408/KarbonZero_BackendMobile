@@ -6,6 +6,7 @@ import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
@@ -337,6 +338,10 @@ public class UserController {
     @GetMapping("/getAllUserLivingConsumptions/{id}")
     public List<LivingSpaceDTO>getAllUserLivingConsumptions(@PathVariable String id){
         return userService.getAllLivingSpacesUser(id);
+    }
+    @GetMapping("/getAllTransportConsumptionsByUser/{id}")
+    public List<TransportConsumptionDTO>getAllTransportConsumptionsByUser(@PathVariable String id){
+        return userService.getAllTransportConsumptionsByUser(id);
     }
 
     @GetMapping("/getAllUserFoodConsumptions/{id}")

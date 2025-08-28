@@ -12,6 +12,7 @@ import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
@@ -32,6 +33,7 @@ import api.karbonzeromovil.Services.Food.FoodConsumptionService;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceService;
 import api.karbonzeromovil.Services.Pet.UserPetService;
 import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
+import api.karbonzeromovil.Services.Transport.TransportConsumptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.hibernate.boot.model.internal.CreateKeySecondPass;
@@ -144,6 +146,10 @@ public class UserService {
     public List<ServiceConsumptionDTO> getAllUserServiceConsumptions(String id){
         UserEntity user = repo.getReferenceById(id);
         return  user.getAllUserServiceConsumption().stream().map(new ServiceConsumptionService()::ServiceConsumptionToDTO).collect(Collectors.toList());
+    }
+    public List<TransportConsumptionDTO> getAllTransportConsumptionsByUser(String id){
+        UserEntity user = repo.getReferenceById(id);
+        return  user.getAllUserTransportConsumption().stream().map(new TransportConsumptionService()::TransportConsumptionToDTO).collect(Collectors.toList());
     }
 
 
