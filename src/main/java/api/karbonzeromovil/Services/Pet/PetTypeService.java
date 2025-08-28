@@ -1,8 +1,6 @@
 package api.karbonzeromovil.Services.Pet;
 
-import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.Pet.PetTypeEntity;
-import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Repositories.Pet.PetTypeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -51,7 +46,7 @@ public class PetTypeService {
     }
     public Page<PetTypeDTO> getPetTypeByName(String namePetType, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PetTypeEntity> users = repo.findPetTypeByPetName(namePetType, pageable);
+        Page<PetTypeEntity> users = repo.findByNamePetType(namePetType, pageable);
         return users.map(this::PetTypeToDTO);
     }
 

@@ -43,7 +43,7 @@ public class MeasureUnitService {
 
     public Page<MeasureUnitDTO> getMeasureUnitByName(String nameMeasuresUnit, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<MeasureUnitEntity> users = repo.findMeasureUnitByName(nameMeasuresUnit, pageable);
+        Page<MeasureUnitEntity> users = repo.findByNameMeasuresUnit(nameMeasuresUnit, pageable);
         return users.map(this::MeasureUnitToDTO);
     }
 
