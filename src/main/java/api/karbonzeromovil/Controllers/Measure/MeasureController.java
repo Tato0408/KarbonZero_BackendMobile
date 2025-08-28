@@ -2,6 +2,7 @@ package api.karbonzeromovil.Controllers.Measure;
 
 import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
+import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Services.Measure.MeasureService;
 import api.karbonzeromovil.Services.Measure.MeasureUnitService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiMeasure")
+@CrossOrigin
 public class MeasureController {
     @Autowired
     private MeasureUnitService serviceMeasureUnit;
@@ -72,6 +74,25 @@ public class MeasureController {
     @GetMapping("/getMeasureUnitById/{id}")
     public MeasureUnitDTO getMeasureUnitById(@PathVariable String id) {return serviceMeasureUnit.getMeasureUnitById(id);}
 
+    @GetMapping("/getMeasureUnitByName/{nameMeasuresUnit}")
+    public Page<MeasureUnitDTO> getMeasureUnitByName (@PathVariable String nameMeasuresUnit,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return serviceMeasureUnit.getMeasureUnitByName(nameMeasuresUnit, page, size);
+    }
+
+    @GetMapping("/getMeasureByName/{nameMeasure}")
+    public Page<MeasureDTO> getMeasureByName (@PathVariable String nameMeasure,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return serviceMeasure.getMeasureByName(nameMeasure, page, size);
+    }
 
     @PostMapping("/insertMeasureUnit")
     public ResponseEntity<Map<String, Object>> insertMeasureUnit(@Valid @RequestBody MeasureUnitDTO dto, HttpServletRequest request){

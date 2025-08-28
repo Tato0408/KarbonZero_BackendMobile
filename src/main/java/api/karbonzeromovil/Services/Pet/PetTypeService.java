@@ -1,6 +1,8 @@
 package api.karbonzeromovil.Services.Pet;
 
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.Pet.PetTypeEntity;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Repositories.Pet.PetTypeRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,11 @@ public class PetTypeService {
         catch (Exception e){
             throw new RuntimeException("Can't create Pet Type " + e.getMessage());
         }
+    }
+    public Page<PetTypeDTO> getPetTypeByName(String namePetType, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PetTypeEntity> users = repo.findPetTypeByPetName(namePetType, pageable);
+        return users.map(this::PetTypeToDTO);
     }
 
     public PetTypeDTO updatePetType(String id, PetTypeDTO dto){
