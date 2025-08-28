@@ -39,7 +39,13 @@ public class CompanyController {
     @Autowired
     private ChannelUserService serviceChannelUser;
 
-
+    @GetMapping("/getCompanyByName/{name}")
+    public Page<CompanyDTO> getCompanyByName (@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            return null;
+        }
+        return serviceCompany.getCompanyByName(name, page, size);
+    }
 
     //Metodos Get para obtener cada cosa relacionada con la tabla company
     @GetMapping("/getAllCompany")

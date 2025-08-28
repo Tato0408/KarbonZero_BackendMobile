@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CarSizeRepository extends JpaRepository<CarSizeEntity, String> {
     Page<CarSizeEntity> findAll (Pageable pageable);
+
+    Page<CarSizeEntity> findByNameContains(String name, Pageable pageable);
 }

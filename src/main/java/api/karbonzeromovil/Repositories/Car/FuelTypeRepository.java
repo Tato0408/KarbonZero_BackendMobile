@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FuelTypeRepository extends JpaRepository<FuelTypeEntity, String> {
     Page<FuelTypeEntity> findAll (Pageable pageable);
+
+    Page<FuelTypeEntity> findByNameContains(String name, Pageable pageable);
 }

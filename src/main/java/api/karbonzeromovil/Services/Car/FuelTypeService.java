@@ -1,7 +1,9 @@
 package api.karbonzeromovil.Services.Car;
 
+import api.karbonzeromovil.Entities.Car.CarSizeEntity;
 import api.karbonzeromovil.Entities.Car.FuelTypeEntity;
 import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
+import api.karbonzeromovil.Models.DTO.Car.CarSizeDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Repositories.Car.FuelTypeRepository;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
@@ -25,6 +27,12 @@ public class FuelTypeService {
 
     @Autowired
     private MeasureUnitRepository MeasureUnitRepo;
+
+    public Page<FuelTypeDTO> getFuelTypeByName(String name, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FuelTypeEntity> carSize = repo.findByNameContains(name, pageable);
+        return carSize.map(this::FuelTypeToDTO);
+    }
 
     public Page<FuelTypeDTO> getAllFuelType(int page, int size){
         Pageable pageable = PageRequest.of(page, size);

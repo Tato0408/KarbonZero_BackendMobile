@@ -1,7 +1,9 @@
 package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.CarSizeEntity;
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarSizeDTO;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Repositories.Car.CarSizeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,12 @@ import java.util.stream.Collectors;
 public class CarSizeService {
     @Autowired
     private CarSizeRepository repo;
+
+    public Page<CarSizeDTO> getCarSizeByName(String name, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CarSizeEntity> carSize = repo.findByNameContains(name, pageable);
+        return carSize.map(this::CarSizeToDTO);
+    }
 
     public Page<CarSizeDTO> getAllCarSize(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
