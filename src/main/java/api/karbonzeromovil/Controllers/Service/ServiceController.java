@@ -3,6 +3,7 @@ package api.karbonzeromovil.Controllers.Service;
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
+import api.karbonzeromovil.Models.DTO.Transport.TransportDTO;
 import api.karbonzeromovil.Services.Service.MeasureUnitServiceService;
 import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
 import api.karbonzeromovil.Services.Service.ServiceService;
@@ -68,7 +69,15 @@ public class ServiceController {
 
         return ResponseEntity.ok(consumption);
     }
-
+    @GetMapping("/getMeasureUnitServiceByName/{serviceName}")
+    public Page<MeasureUnitServiceDTO> getMeasureUnitServiceByName (@PathVariable String serviceName,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return measureUnitServiceService.getMeasureUnitServiceByName(serviceName, page, size);
+    }
     @GetMapping("/getAllServiceList")
     public List<ServiceDTO> getServiceNP() {return serviceService.getAllServiceNP();}
 
