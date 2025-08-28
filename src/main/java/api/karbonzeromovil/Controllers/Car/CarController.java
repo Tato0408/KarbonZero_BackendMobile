@@ -6,6 +6,7 @@ import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelConsumptionDTO;
 
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Services.Car.*;
 
@@ -43,8 +44,21 @@ public class CarController {
     @Autowired
     private FuelConsumptionService serviceFuelConsumption;
 
+    @GetMapping("/getFuelTypeByName/{name}")
+    public Page<FuelTypeDTO> getFuelTypeByName (@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            return null;
+        }
+        return serviceFuelType.getFuelTypeByName(name, page, size);
+    }
 
-
+    @GetMapping("/getCarSize/{name}")
+    public Page<CarSizeDTO> getCarSizeByName (@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            return null;
+        }
+        return serviceSizeCar.getCarSizeByName(name, page, size);
+    }
 
 
     //Metodos Get para obtener cada cosa relacionada con la tabla carro

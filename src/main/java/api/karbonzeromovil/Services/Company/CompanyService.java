@@ -25,6 +25,12 @@ public class CompanyService {
     @Autowired
     private CompanyRepository repo;
 
+    public Page<CompanyDTO> getCompanyByName(String name, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CompanyEntity> companies = repo.findByNameContains(name, pageable);
+        return companies.map(this::CompanyToDTO);
+    }
+
     public List<CompanyDTO> getAllCompaniesSp(){
         List<CompanyEntity> entity = repo.findAll();
 
