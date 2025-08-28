@@ -52,6 +52,13 @@ public class TransportController {
 
         return ResponseEntity.ok(consumption);
     }
+    @GetMapping("/getTransportByName/{name}")
+    public Page<TransportDTO>getTransportByName(@PathVariable String name,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size ){
+        if(size<=0 || size>50){
+            return null;
+        }
+        return transportService.getTransportByName(name, page, size);
+    }
     @GetMapping("/getTransportById/{id}")
     public TransportDTO getTransportById(@PathVariable String id){
         return transportService.getTransportById(id);

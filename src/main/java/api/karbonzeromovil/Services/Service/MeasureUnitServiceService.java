@@ -3,7 +3,6 @@ package api.karbonzeromovil.Services.Service;
 import api.karbonzeromovil.Entities.Service.MeasureUnitServiceEntity;
 import api.karbonzeromovil.Entities.Service.ServiceEntity;
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
-import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
 import api.karbonzeromovil.Repositories.Service.MeasureUnitServiceRepository;
 import api.karbonzeromovil.Repositories.Service.ServiceRepository;
@@ -44,6 +43,12 @@ public class MeasureUnitServiceService {
             throw new RuntimeException("The Measure could not be found" + err.getMessage());
 
         }
+    }
+    public Page<MeasureUnitServiceDTO> getMeasureUnitServiceByName(String serviceName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<ServiceEntity> services = serviceRepo.findByNameContains(serviceName);
+
+        return repo.findByIdServiceIn(services, pageable).map(this::MeasureUnitServiceToDTO);
     }
     public MeasureUnitServiceDTO insertMeasureUnitService(MeasureUnitServiceDTO dto) throws IllegalAccessException {
         if(dto == null){

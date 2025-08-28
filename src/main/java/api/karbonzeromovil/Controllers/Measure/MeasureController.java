@@ -19,6 +19,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiMeasure")
+@CrossOrigin
 public class MeasureController {
     @Autowired
     private MeasureUnitService serviceMeasureUnit;
