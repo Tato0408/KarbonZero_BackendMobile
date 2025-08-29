@@ -28,7 +28,7 @@ import static api.karbonzeromovil.Utils.Responses.responseUpdated;
 
 @RestController
 @RequestMapping("/apiCompany")
-
+@CrossOrigin
 public class CompanyController {
     @Autowired
     private CompanyService serviceCompany;
