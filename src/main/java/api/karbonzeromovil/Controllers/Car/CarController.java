@@ -52,7 +52,7 @@ public class CarController {
         return serviceFuelType.getFuelTypeByName(name, page, size);
     }
 
-    @GetMapping("/getCarSize/{name}")
+    @GetMapping("/getCarSizeByName/{name}")
     public Page<CarSizeDTO> getCarSizeByName (@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size <= 0 || size > 50){
             return null;
