@@ -71,7 +71,7 @@ public class FuelTypeService {
         try {
             if (repo.existsById((id))){
                 FuelTypeEntity entity = repo.getById(id);
-                entity.setIdMeasureUnit(MeasureUnitRepo.getReferenceById(entity.getIdMeasureUnit().getIdMeasureUnit()));
+                entity.setIdMeasureUnit(MeasureUnitRepo.getReferenceById(dto.getIdMeasureUnit()));
                 entity.setName(dto.getName());
                 entity.setCarbonFooTprint(dto.getCarbonFootprint());
 
