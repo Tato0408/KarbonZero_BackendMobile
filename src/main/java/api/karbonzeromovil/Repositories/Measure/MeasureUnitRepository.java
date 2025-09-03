@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MeasureUnitRepository extends JpaRepository<MeasureUnitEntity, String > {
-    Page<MeasureUnitEntity> findAll (Pageable pagebale);
-    Page<MeasureUnitEntity> findByNameMeasuresUnit(String nameMeasuresUnit, Pageable pageable);
+    Page<MeasureUnitEntity> findByNameMeasuresUnitContains(String nameMeasuresUnit, Pageable pageable);
 }
