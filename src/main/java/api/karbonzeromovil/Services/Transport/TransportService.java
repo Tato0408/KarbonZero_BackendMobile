@@ -11,9 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 public class TransportService {
@@ -39,7 +36,7 @@ public class TransportService {
     }
     public Page<TransportDTO> getTransportByName(String name, int page, int size){
         Pageable pageable = PageRequest.of(page,size);
-        Page<TransportEntity> trp = repo.findByName(name,pageable);
+        Page<TransportEntity> trp = repo.findByNameContains(name,pageable);
         return trp.map(this::TransportToDTO);
     }
     public TransportDTO insertTransport(TransportDTO dto) throws IllegalAccessException {
