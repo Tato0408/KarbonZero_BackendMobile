@@ -33,7 +33,7 @@ public class MeasureService {
 
     public Page<MeasureDTO> getMeasureByName(String nameMeasure, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<MeasureEntity> users = repo.findByNameMeasure(nameMeasure, pageable);
+        Page<MeasureEntity> users = repo.findByNameMeasureContains(nameMeasure, pageable);
         return users.map(this::MeasureToDTO);
     }
 

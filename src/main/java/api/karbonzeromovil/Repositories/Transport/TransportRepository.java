@@ -8,7 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransportRepository extends JpaRepository<TransportEntity,String> {
-    Page<TransportEntity> findAll(Pageable pageable);
-
-    Page<TransportEntity> findByName(String name, Pageable pageable);
+    Page<TransportEntity> findByNameContains(String name, Pageable pageable);
 }

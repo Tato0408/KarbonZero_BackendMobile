@@ -46,7 +46,7 @@ public class PetTypeService {
     }
     public Page<PetTypeDTO> getPetTypeByName(String namePetType, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PetTypeEntity> users = repo.findByNamePetType(namePetType, pageable);
+        Page<PetTypeEntity> users = repo.findByNamePetTypeContains(namePetType, pageable);
         return users.map(this::PetTypeToDTO);
     }
 

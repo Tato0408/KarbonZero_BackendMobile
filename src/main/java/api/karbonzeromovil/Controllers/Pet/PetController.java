@@ -72,7 +72,7 @@ public class PetController {
     @GetMapping("/getPetTypeById/{id}")
     public PetTypeDTO getPetTypeById(@PathVariable String id) {return servicePetType.getPetTypeById(id);}
 
-    @GetMapping("/getPetTypeByName/{foodName}")
+    @GetMapping("/getPetTypeByName/{namePetType}")
     public Page<PetTypeDTO> getPetTypeByName (@PathVariable String namePetType,
                                         @RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "10") int size) {

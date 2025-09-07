@@ -69,6 +69,24 @@ public class ServiceController {
 
         return ResponseEntity.ok(consumption);
     }
+
+    @GetMapping("/getServiceByName/{serviceName}")
+    public ResponseEntity<Page<ServiceDTO>> getServiceByName (@PathVariable String serviceName,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+
+        Page<ServiceDTO> service = serviceService.getServiceByName(serviceName, page, size);
+        if(service == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
+
+        return ResponseEntity.ok(service);
+    }
+
     @GetMapping("/getMeasureUnitServiceByName/{serviceName}")
     public Page<MeasureUnitServiceDTO> getMeasureUnitServiceByName (@PathVariable String serviceName,
                                                               @RequestParam(defaultValue = "0") int page,
