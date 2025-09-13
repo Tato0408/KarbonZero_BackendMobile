@@ -8,24 +8,24 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 public class CorsConfig {
     @Autowired
     private CompanyService companyService;
 
+    private CorsConfiguration config;
+
     @Bean
     public CorsFilter corsFilter () {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
+        config = new CorsConfiguration();
 
         // Configuración esencial para el FrontEnd
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:5173"); // Para desarrollo
-
-        // Origenes agregados desde producción
-        for (String domain : companyService.getAllCompaniesDomains()) {
-            config.addAllowedOrigin(domain);
-        }
+        reloadDomains();
 
         // Métodos permitidos
         config.addAllowedMethod("GET");
@@ -42,5 +42,14 @@ public class CorsConfig {
 
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }
+
+    public void reloadDomains () {
+        config.setAllowedOrigins(new ArrayList<>());
+
+        config.addAllowedOrigin("http://localhost:5173"); // Para desarrollo
+        for (String domain : companyService.getAllCompaniesDomains()) {
+            config.addAllowedOrigin(domain);
+        }
     }
 }
