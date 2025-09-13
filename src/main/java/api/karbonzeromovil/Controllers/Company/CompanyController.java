@@ -68,6 +68,11 @@ public class CompanyController {
     @GetMapping("/getAllCompaniesSP")
     public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompaniesSp();}
 
+    @GetMapping("/getAllCompaniesDomains")
+    public List<String> getAllCompaniesDomains () {
+        return serviceCompany.getAllCompaniesDomains();
+    }
+
     @GetMapping("/getAllChannel")
     public List<ChannelDTO> dataChannel(){return serviceChannel.getAllChannel(); }
 
