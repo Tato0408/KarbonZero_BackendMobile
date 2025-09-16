@@ -26,7 +26,6 @@ public class AuthController {
 
     @PostMapping("/login")
     private ResponseEntity<Map<String, Object>> login (@RequestBody UserDTO data, HttpServletResponse response) {
-        System.out.println(data);
         if (data.getEmail() == null || data.getEmail().isBlank()) {
             return Responses.responseNotFound("Error, credenciales inválidas");
         }
