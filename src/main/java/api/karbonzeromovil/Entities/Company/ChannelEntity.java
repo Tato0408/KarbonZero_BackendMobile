@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,4 +31,7 @@ public class ChannelEntity {
 
     @Column(name = "IMAGEPATH")
     private String imagePath;
+
+    @OneToMany(mappedBy = "idChannel")
+    private List<ChannelPostEntity> allChannelChannelPost = new ArrayList<>();
 }
