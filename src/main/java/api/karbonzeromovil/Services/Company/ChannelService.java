@@ -87,6 +87,8 @@ public class ChannelService {
         dto.setIdChannel(entity.getIdChannel());
         dto.setIdCompany(entity.getIdCompany().getIdCompany());
         dto.setName(entity.getName());
+        dto.setDescript(entity.getDescript());
+        dto.setImagePath(entity.getImagePath());
         return dto;
     }
     private ChannelEntity DT0ToChannel(ChannelDTO dto){
@@ -94,6 +96,8 @@ public class ChannelService {
         entity.setIdChannel(dto.getIdChannel());
         entity.setIdCompany(CompanyRepo.getReferenceById(dto.getIdCompany()));
         entity.setName(dto.getName());
+        entity.setDescript(dto.getDescript());
+        entity.setImagePath(dto.getImagePath());
         return entity;
     }
 }

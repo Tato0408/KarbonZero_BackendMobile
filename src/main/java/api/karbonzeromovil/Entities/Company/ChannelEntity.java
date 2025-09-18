@@ -24,4 +24,10 @@ public class ChannelEntity {
 
     @Column(name = "NAME", unique = true)
     private String name;
+
+    @Column(name = "DESCRIPT")
+    private String descript;
+
+    @Column(name = "IMAGEPATH")
+    private String imagePath;
 }
