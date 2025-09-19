@@ -39,8 +39,15 @@ public class CompanyService {
 
     public Page<CompanyDTO> getAllCompanies(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
-        Page<CompanyEntity> users = repo.findAll(pageable);
-        return users.map(this::CompanyToDTO);
+        Page<CompanyEntity> companies = repo.findAll(pageable);
+        return companies.map(this::CompanyToDTO);
+    }
+
+    public List<String> getAllCompaniesDomains() {
+        List<CompanyEntity> companies = repo.findAll();
+        return companies.stream()
+                .map(CompanyEntity::getDomain)
+                .toList();
     }
 
     public CompanyDTO getCompanyById(String id){
@@ -57,8 +64,8 @@ public class CompanyService {
         }
         try {
             CompanyEntity entity = DT0ToCompany(dto);
-            CompanyEntity savedCar = repo.save(entity);
-            return CompanyToDTO(savedCar);
+            CompanyEntity savedCompany = repo.save(entity);
+            return CompanyToDTO(savedCompany);
         } catch (Exception e) {
             throw new RuntimeException("The company could not be created"+ e.getMessage());
         }
@@ -108,5 +115,6 @@ public class CompanyService {
         entity.setDomain(dto.getDomain());
         return entity;
     }
+
 
 }

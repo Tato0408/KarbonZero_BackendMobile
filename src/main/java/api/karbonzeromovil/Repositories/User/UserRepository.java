@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<UserEntity, String > {
     List<UserEntity> findByUserNameContainingIgnoreCase(String username);
     Page<UserEntity> findByStatus(int i, Pageable pageable);
     UserEntity getReferenceByIdUserAndStatus(String id, int i);
-
     Page<UserEntity> findByUserNameContains(String name, Pageable pageable);
     Page<UserEntity> findByUserNameContainsAndStatus(String name, int i, Pageable pageable);
+    UserEntity findByEmail(String email);
 }
