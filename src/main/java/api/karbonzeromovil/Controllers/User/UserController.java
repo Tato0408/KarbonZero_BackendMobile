@@ -57,9 +57,44 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/getAllUsersWithStatus/{status}")
+    public ResponseEntity<Page<UserDTO>> getAllUsersWithStatus(@PathVariable int status,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<UserDTO> users = userService.getAllUsersWithStatus(status, page, size);
+        if(users == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay administradores registrados "));
+        }
+
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/getUserById/{id}")
     public UserDTO getUserById(@PathVariable String id){
         return userService.getUserById(id);
+    }
+
+    @GetMapping("/getAdminById/{id}")
+    public UserDTO getAdminById(@PathVariable String id){
+        return userService.getAdminById(id);
+    }
+
+    @GetMapping("/getUsersByName/{name}")
+    public Page<UserDTO> getUsersByName(@PathVariable String name,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size){
+        return userService.getUsersByName(name, page, size);
+    }
+
+    @GetMapping("/getAdminsByName/{name}")
+    public Page<UserDTO> getAdminsByName(@PathVariable String name,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size){
+        return userService.getAdminsByName(name, page, size);
     }
 
     @PostMapping("/insertUser")

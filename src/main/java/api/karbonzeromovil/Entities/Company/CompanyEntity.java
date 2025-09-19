@@ -24,9 +24,6 @@ public class CompanyEntity {
     @Column(name = "DOMAIN", nullable = true, unique = true)
     private String domain;
 
-    @OneToMany(mappedBy = "idCompany")
-    private List<UserEntity> UserList;
-
     @OneToOne(mappedBy = "idCompany")
     private ChannelEntity idCompanyChannel;
 }
