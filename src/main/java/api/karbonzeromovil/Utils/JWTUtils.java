@@ -24,7 +24,7 @@ public class JWTUtils {
      * @param email
      * @return
      */
-    public String create(String id, String email){
+    public String create(String id, String email, String rol){
         //Decodifica el secreto Base64 y crea una clave HMAC-SHA segura
         SecretKey signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(dotenv.get("SECRET_KEY_JWT")));
         long expirationMs = Long.parseLong(dotenv.get("JWT_EXPIRATION"));
@@ -38,10 +38,16 @@ public class JWTUtils {
                 .setIssuedAt(now)                                       // Fecha de emisión
                 .setSubject(email)                                     // Sujeto (usuario)
                 .claim("id", id)
+                .claim("rol", rol)
                 .setIssuer(dotenv.get("SECURITY_JWT_ISSUER"))                                      // Emisor del token
                 .setExpiration(expirationMs >= 0 ? expiration : null)   // Expiración (si es >= 0)
                 .signWith(signingKey, SignatureAlgorithm.HS256)         // Firma con algoritmo HS256
                 .compact();                                             // Convierte a String compacto
+    }
+
+    public String extractRol(String token){
+        Claims claims = parseToken(token);
+        return claims.get("rol",String.class);
     }
 
     /**

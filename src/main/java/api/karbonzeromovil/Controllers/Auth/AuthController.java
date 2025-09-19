@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.query.JSqlParserUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,8 @@ public class AuthController {
         if (user != null) {
             String token = jwtUtils.create(
                     String.valueOf(user.getIdUser()),
-                    user.getEmail()
+                    user.getEmail(),
+                    String.valueOf(user.getStatus())
             );
 
             Cookie cookie = new Cookie("authToken", token);

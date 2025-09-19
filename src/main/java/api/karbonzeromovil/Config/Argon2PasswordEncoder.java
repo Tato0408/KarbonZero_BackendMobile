@@ -13,10 +13,6 @@ public class Argon2PasswordEncoder {
 
     public String HashPassword(String rawPassword) {
         // Configuración de parámetros (ajusta según necesidades)
-        final int ITERATIONS = 10;    // OWASP recomienda ≥ 1
-        final int MEMORY = 32768;     // 4 MB
-        final int PARALLELISM = 1;    // Hilos (1 es suficiente para la mayoría de casos)
-
         // Generar hash (incluye salt automáticamente en el string resultante)
         return argon2.hash(ITERATIONS, MEMORY, PARALLELISM, rawPassword);
     }

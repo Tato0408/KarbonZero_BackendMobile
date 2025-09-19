@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "TBUSERS")
-@Setter @Getter @EqualsAndHashCode
+@Setter @Getter @EqualsAndHashCode @ToString
 public class UserEntity {
     @Id
     @GenericGenerator(name = "db-uuid", strategy = "guid")

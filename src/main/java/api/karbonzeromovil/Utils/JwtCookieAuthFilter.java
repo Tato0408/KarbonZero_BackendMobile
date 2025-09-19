@@ -57,22 +57,19 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter {
             }
 
             Claims claims = jwtUtils.parseToken(token);
-            System.out.println(claims);
+            String rol = jwtUtils.extractRol(token);
 
             // CREAR AUTENTICACIÓN CON AUTHORITIES CORRECTOS
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             claims.getSubject(), // username
                             null, // credentials
-                            null
+                            List.of(new SimpleGrantedAuthority("ROL_" + rol))
                     );
 
             // ESTABLECER AUTENTICACIÓN EN CONTEXTO
-            System.out.println(authentication);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            System.out.println(request);
-            System.out.println(response);
             filterChain.doFilter(request, response);
 
         } catch (ExpiredJwtException e) {
