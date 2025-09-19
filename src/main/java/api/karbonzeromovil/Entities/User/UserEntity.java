@@ -27,9 +27,6 @@ public class UserEntity {
     @Column(name="IDUSER")
     private String idUser;
     @ManyToOne
-    @JoinColumn(name = "IDCOMPANY", referencedColumnName = "IDCOMPANY", nullable = true)
-    private CompanyEntity idCompany;
-    @ManyToOne
     @JoinColumn(name = "IDCOUNTRY", referencedColumnName = "IDCOUNTRY", nullable = true)
     private CountryEntity idCountry;
     @Column(name = "USERNAME", nullable = false)
@@ -42,6 +39,8 @@ public class UserEntity {
     private String email;
     @Column(name = "PASSWORDUSER", nullable = false)
     private String passwordUser;
+    @Column(name = "STATUS", nullable = false)
+    private Integer status;
     @Column(name = "IMAGEPATH", nullable = true)
     private String imagePath;
 

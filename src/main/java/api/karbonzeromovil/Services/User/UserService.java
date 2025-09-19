@@ -1,14 +1,11 @@
 package api.karbonzeromovil.Services.User;
 
 import api.karbonzeromovil.Config.Argon2PasswordEncoder;
-import api.karbonzeromovil.Entities.Car.CarEntity;
-import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.User.CountryEntity;
-import api.karbonzeromovil.Entities.User.UserAchievementEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Exceptions.ExceptionNotFound;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
-import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
@@ -17,7 +14,6 @@ import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.Car.CarRepository;
-import api.karbonzeromovil.Repositories.Car.CarSizeRepository;
 import api.karbonzeromovil.Repositories.Car.FuelConsumptionRepository;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
@@ -28,15 +24,12 @@ import api.karbonzeromovil.Repositories.User.FriendRepository;
 import api.karbonzeromovil.Repositories.User.UserAchievementRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import api.karbonzeromovil.Services.Car.CarService;
-import api.karbonzeromovil.Services.Food.FoodConsumptionFoodService;
 import api.karbonzeromovil.Services.Food.FoodConsumptionService;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceService;
 import api.karbonzeromovil.Services.Pet.UserPetService;
 import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
 import api.karbonzeromovil.Services.Transport.TransportConsumptionService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
-import org.hibernate.boot.model.internal.CreateKeySecondPass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -77,6 +70,25 @@ public class UserService {
         Page<UserEntity> users = repo.findAll(pageable);
         return users.map(this::UsersToDTO);
     }
+
+    public Page<UserDTO> getAllUsersWithStatus(int status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserEntity> users = repo.findByStatus(status, pageable);
+        return users.map(this::UsersToDTO);
+    }
+
+    public Page<UserDTO> getUsersByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserEntity> users = repo.findByUserNameContainsAndStatus(name, 0, pageable);
+        return users.map(this::UsersToDTO);
+    }
+
+    public Page<UserDTO> getAdminsByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<UserEntity> users = repo.findByUserNameContains(name, pageable);
+        return users.map(this::UsersToDTO);
+    }
+
     public int getAllUserConsumptions(String id){
         return foodRepo.countByIdUser_IdUser(id) + serviceRepo.countByIdUser_IdUser(id) +
                 fuelRepo.countByIdTypeCar_IdTypeCar(id) + transportRepo.countByIdUser_IdUser(id);
@@ -96,6 +108,18 @@ public class UserService {
         }catch (Exception err) {
             throw new RuntimeException("The User could not be found" + err.getMessage());
 
+        }
+    }
+
+    public UserDTO getAdminById(String id) {
+        try {
+            if (repo.existsById(id)) {
+                UserEntity entity = repo.getReferenceByIdUserAndStatus(id, 1);
+                return UsersToDTO(entity);
+            }
+            throw new ExceptionNotFound("The admin with the id: " + id + " doesn't exists");
+        } catch (Exception e) {
+            throw new ExceptionNotFound("Error getting the admin");
         }
     }
 
@@ -174,13 +198,13 @@ public class UserService {
         try {
             if (repo.existsById((id))){
                 UserEntity entity = repo.getReferenceById(id);
-                entity.setIdCompany(companyRepo.getReferenceById(dto.getIdCompany()));
                 entity.setIdCountry(countryRepo.getReferenceById(dto.getIdCountry()));
                 entity.setUserName(dto.getUserName());
                 entity.setFirstName(dto.getFirstName());
                 entity.setLastName(dto.getLastName());
                 entity.setEmail(dto.getEmail());
                 entity.setImagePath(dto.getImagePath());
+                entity.setStatus(dto.getStatus());
 
                 if (dto.getPasswordUser() !=null){
                     Argon2PasswordEncoder argon = new Argon2PasswordEncoder();
@@ -216,15 +240,12 @@ public class UserService {
         dto.setEmail(entity.getEmail());
         dto.setPasswordUser(entity.getPasswordUser());
         dto.setImagePath(entity.getImagePath());
-        if(entity.getIdCompany() != null && entity.getIdCountry() != null){
-            dto.setIdCompany(entity.getIdCompany().getIdCompany());
+        dto.setStatus(entity.getStatus());
+        if(entity.getIdCountry() != null){
             dto.setIdCountry(entity.getIdCountry().getIdCountry());
             dto.setCountryName(entity.getIdCountry().getName());
-            dto.setCompanyName(entity.getIdCompany().getName());
         }else{
-            dto.setIdCompany(null);
             dto.setIdCountry(null);
-            dto.setCompanyName("No hay una compañia asociada");
             dto.setIdCountry("No hay un pais asociado");
         }
         return dto;
@@ -237,13 +258,14 @@ public class UserService {
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());
         entity.setPasswordUser(dto.getPasswordUser());
+        entity.setStatus(dto.getStatus());
         entity.setImagePath(dto.getImagePath());
-        if(dto.getIdCompany() != null && dto.getIdCountry() != null){
-            CompanyEntity company = companyRepo.findById(dto.getIdCompany()).orElseThrow(()-> new IllegalArgumentException("No hay una compañia con ese id"+dto.getIdCountry()));
+        if(dto.getIdCountry() != null){
             CountryEntity country = countryRepo.findById(dto.getIdCountry()).orElseThrow(()-> new IllegalArgumentException("No hay un pais con ese id"+ dto.getIdCountry()));
-            entity.setIdCompany(company);
             entity.setIdCountry(country);
         }
         return entity;
     }
+
+
 }
