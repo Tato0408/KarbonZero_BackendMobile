@@ -2,9 +2,11 @@ package api.karbonzeromovil.Controllers.Company;
 
 import api.karbonzeromovil.Config.Cors.CorsConfig;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
+import api.karbonzeromovil.Models.DTO.Company.ChannelPostDTO;
 import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
 import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
-import api.karbonzeromovil.Models.DTO.User.UserDTO;
+import api.karbonzeromovil.Models.DTO.User.FriendDTO;
+import api.karbonzeromovil.Services.Company.ChannelPostService;
 import api.karbonzeromovil.Services.Company.ChannelService;
 import api.karbonzeromovil.Services.Company.ChannelUserService;
 import api.karbonzeromovil.Services.Company.CompanyService;
@@ -42,6 +44,8 @@ public class CompanyController {
 
     @Autowired
     private CorsConfig corsConfig;
+  
+    private ChannelPostService channelPostService;
 
     @GetMapping("/getCompanyByName/{name}")
     public Page<CompanyDTO> getCompanyByName (@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
@@ -143,8 +147,34 @@ public class CompanyController {
         }
     }
 
+    @PostMapping("/insertChannelPost")
+    public ResponseEntity<Map<String,Object>> insertPost(@Valid @RequestBody ChannelPostDTO dto, HttpServletRequest request){
+        try {
+            ChannelPostDTO answer = channelPostService.insertChannelPost(dto);
+            if (answer == null){
+                return responseBadRequest("Invalid data to create a Post object");
+            }
+            return responseCreated(answer);
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot create Post object");
+        }
+    }
 
-
+    @PutMapping("/updateChannelPost/{id}")
+    public ResponseEntity<?>updatePost(@PathVariable String id, @Valid @RequestBody ChannelPostDTO dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return responseBadRequestBinding(bindingResult);
+        }
+        try {
+            ChannelPostDTO answer = channelPostService.updateChannelPost(id,dto);
+            if (answer== null){
+                return responseBadRequest("Invalid data to update a Post object");
+            }
+            return responseUpdated(answer);
+        }catch (Exception e){
+            return responseServerError(e, "Cannot update a Post object");
+        }
+    }
 
     //Metodos PUT para actualizar cada cosa relacionada con la tabla carro
     @PutMapping("/updateCompany/{id}")
@@ -240,5 +270,22 @@ public class CompanyController {
         catch(Exception e){
             return responseServerError(e,"Can't delete the type car object");
         }
+    }
+
+    @DeleteMapping("/deleteChannelPost/{id}")
+    public ResponseEntity<Map<String, Object>> deletePost(@PathVariable String id) {
+        try {
+            if(!channelPostService.deleteChannelPost(id)){
+                return responseNotFound("Post not found");
+            }
+            return responseOK("Post deleted with success");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot delete the Post with the Post Object");
+        }
+    }
+
+    @GetMapping("/getPostByChannel/{id}")
+    public List<ChannelPostDTO> getPostByChannel(@PathVariable String id){
+        return serviceChannel.getAllPostByChannel(id);
     }
 }

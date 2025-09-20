@@ -2,6 +2,7 @@ package api.karbonzeromovil.Services.Company;
 
 import api.karbonzeromovil.Entities.Company.ChannelEntity;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
+import api.karbonzeromovil.Models.DTO.Company.ChannelPostDTO;
 import api.karbonzeromovil.Repositories.Company.ChannelRepository;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +37,12 @@ public class ChannelService {
             return ChannelToDTO(entity);
         }
         return null;
+    }
+
+    public List<ChannelPostDTO> getAllPostByChannel(String id){
+        ChannelEntity post = repo.getReferenceById(id);
+        return post.getAllChannelChannelPost().stream()
+                .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
 
     public ChannelDTO insertChannel(ChannelDTO dto) throws IllegalAccessException {
@@ -87,6 +94,8 @@ public class ChannelService {
         dto.setIdChannel(entity.getIdChannel());
         dto.setIdCompany(entity.getIdCompany().getIdCompany());
         dto.setName(entity.getName());
+        dto.setDescript(entity.getDescript());
+        dto.setImagePath(entity.getImagePath());
         return dto;
     }
     private ChannelEntity DT0ToChannel(ChannelDTO dto){
@@ -94,6 +103,8 @@ public class ChannelService {
         entity.setIdChannel(dto.getIdChannel());
         entity.setIdCompany(CompanyRepo.getReferenceById(dto.getIdCompany()));
         entity.setName(dto.getName());
+        entity.setDescript(dto.getDescript());
+        entity.setImagePath(dto.getImagePath());
         return entity;
     }
 }
