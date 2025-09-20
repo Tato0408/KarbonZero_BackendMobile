@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Controllers.Company;
 
+import api.karbonzeromovil.Config.Cors.CorsConfig;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
 import api.karbonzeromovil.Models.DTO.Company.ChannelPostDTO;
 import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
@@ -42,6 +43,8 @@ public class CompanyController {
     private ChannelUserService serviceChannelUser;
 
     @Autowired
+    private CorsConfig corsConfig;
+  
     private ChannelPostService channelPostService;
 
     @GetMapping("/getCompanyByName/{name}")
@@ -73,6 +76,11 @@ public class CompanyController {
     @GetMapping("/getAllCompaniesSP")
     public List<CompanyDTO> dataCompany(){return serviceCompany.getAllCompaniesSp();}
 
+    @GetMapping("/getAllCompaniesDomains")
+    public List<String> getAllCompaniesDomains () {
+        return serviceCompany.getAllCompaniesDomains();
+    }
+
     @GetMapping("/getAllChannel")
     public List<ChannelDTO> dataChannel(){return serviceChannel.getAllChannel(); }
 
@@ -103,6 +111,7 @@ public class CompanyController {
             if(answer == null){
                 return responseBadRequest("Invalid data to create car type object");
             }
+            corsConfig.reloadDomains();
             return responseCreated(answer);
         }
         catch(Exception e){
@@ -178,6 +187,7 @@ public class CompanyController {
             if(answer == null){
                 return responseBadRequest("Invalid data to update a car object ");
             }
+            corsConfig.reloadDomains();
             return responseUpdated(answer);
         }
         catch(Exception e){
@@ -223,28 +233,29 @@ public class CompanyController {
 
     //Metodos DELETE para borrar cada cosa relacionada con la tabla carro
     @DeleteMapping("/deleteCompany/{id}")
-    public ResponseEntity<Map<String, Object>> deleteCar(@PathVariable String id){
+    public ResponseEntity<Map<String, Object>> deleteCompany(@PathVariable String id){
         try{
             if(!serviceCompany.deleteCompany(id)){
-                return responseNotFound("Car not found");
+                return responseNotFound("Company not found");
             }
-            return responseOK("Car deleted with success");
+            corsConfig.reloadDomains();
+            return responseOK("Company deleted with success");
         }
         catch(Exception e){
-            return responseServerError(e,"Can't delete the car object");
+            return responseServerError(e,"Can't delete the company object");
         }
     }
 
     @DeleteMapping("/deleteChannel/{id}")
-    public ResponseEntity<Map<String, Object>> deleteCarSize(@PathVariable String id){
+    public ResponseEntity<Map<String, Object>> deleteChannel(@PathVariable String id){
         try{
             if(!serviceChannel.deleteChannel(id)){
-                return responseNotFound("Car size not found");
+                return responseNotFound("Channel size not found");
             }
-            return responseOK("Car size deleted with success");
+            return responseOK("Channel size deleted with success");
         }
         catch(Exception e){
-            return responseServerError(e,"Can't delete the car size object");
+            return responseServerError(e,"Can't delete the channel size object");
         }
     }
 

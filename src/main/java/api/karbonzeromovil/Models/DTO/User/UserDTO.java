@@ -3,8 +3,7 @@ package api.karbonzeromovil.Models.DTO.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +15,6 @@ import org.hibernate.annotations.GenericGenerator;
 public class UserDTO {
 
     private String idUser;
-    private String idCompany;
-    private String companyName;
     private String idCountry;
     private String countryName;
     @NotBlank
@@ -33,6 +30,10 @@ public class UserDTO {
     @NotBlank
     @Size(max = 200)
     private String passwordUser;
+    @NotNull
+    @Min(0)
+    @Max(1)
+    private Integer status;
     @Size(max = 200)
     private String imagePath;
 }

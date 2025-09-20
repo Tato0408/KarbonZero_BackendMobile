@@ -12,6 +12,11 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String > {
+    UserEntity findByEmail(String email);
+    UserEntity getReferenceByIdUserAndStatus(String id, int i);
     Page<UserEntity> findAll(Pageable pageable);
+    Page<UserEntity> findByStatus(int i, Pageable pageable);
+    Page<UserEntity> findByUserNameContains(String name, Pageable pageable);
+    Page<UserEntity> findByUserNameContainsAndStatus(String name, int i, Pageable pageable);
     List<UserEntity> findByUserNameContainingIgnoreCase(String username);
 }
