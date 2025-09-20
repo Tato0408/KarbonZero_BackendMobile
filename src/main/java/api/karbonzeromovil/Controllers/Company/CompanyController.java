@@ -44,7 +44,8 @@ public class CompanyController {
 
     @Autowired
     private CorsConfig corsConfig;
-  
+
+    @Autowired
     private ChannelPostService channelPostService;
 
     @GetMapping("/getCompanyByName/{name}")
