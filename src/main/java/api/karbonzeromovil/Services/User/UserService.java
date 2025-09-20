@@ -231,14 +231,14 @@ public class UserService {
             throw new EmptyResultDataAccessException("The User with the ID : " + id + " doesn't exists", 1);
         }
     }
-    private UserDTO UsersToDTO(UserEntity entity){
+    public UserDTO UsersToDTO(UserEntity entity){
         UserDTO dto = new UserDTO();
         dto.setIdUser(entity.getIdUser());
         dto.setUserName(entity.getUserName());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
-        dto.setPasswordUser(entity.getPasswordUser());
+        dto.setPasswordUser(null);
         dto.setImagePath(entity.getImagePath());
         dto.setStatus(entity.getStatus());
         if(entity.getIdCountry() != null){
