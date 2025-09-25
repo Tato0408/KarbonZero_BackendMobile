@@ -15,7 +15,7 @@ public class AuthService {
 
     public boolean Login (String email, String password) {
         Argon2PasswordEncoder objHash = new Argon2PasswordEncoder();
-        UserEntity user = repo.findByEmail(email);
+        UserEntity user = repo.findByEmailAndDisabled(email, 0);
 
         if (user != null) {
             return objHash.decodePassword(user.getPasswordUser(), password);

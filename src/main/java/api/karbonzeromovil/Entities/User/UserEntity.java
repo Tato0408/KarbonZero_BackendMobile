@@ -42,6 +42,8 @@ public class UserEntity {
     private String passwordUser;
     @Column(name = "STATUS", nullable = false)
     private Integer status;
+    @Column(name = "DISABLED", nullable = false)
+    private Integer disabled;
     @Column(name = "IMAGEPATH", nullable = true)
     private String imagePath;
 

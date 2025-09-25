@@ -3,7 +3,9 @@ package api.karbonzeromovil.Services.User;
 import api.karbonzeromovil.Config.Argon2PasswordEncoder;
 import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Exceptions.DeleteException;
 import api.karbonzeromovil.Exceptions.ExceptionNotFound;
+import api.karbonzeromovil.Exceptions.UpdateException;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
@@ -227,8 +229,23 @@ public class UserService {
             }else{
                 return false;
             }
-        }catch (EmptyResultDataAccessException e){
-            throw new EmptyResultDataAccessException("The User with the ID : " + id + " doesn't exists", 1);
+        }catch (Exception e){
+            throw new DeleteException("The User with the ID: " + id + " doesn't exists");
+        }
+    }
+
+    public boolean updateDisabled(String id, UserDTO dto) {
+        try {
+            if (repo.existsById(id)) {
+                UserEntity entity = repo.getReferenceById(id);
+                entity.setDisabled(dto.getDisabled());
+                repo.save(entity);
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            throw new UpdateException("The User with the ID: " + id + " can't be blocked");
         }
     }
     public UserDTO UsersToDTO(UserEntity entity){
@@ -239,8 +256,10 @@ public class UserService {
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
         dto.setPasswordUser(null);
-        dto.setImagePath(entity.getImagePath());
         dto.setStatus(entity.getStatus());
+        dto.setDisabled(entity.getDisabled());
+        dto.setImagePath(entity.getImagePath());
+
         if(entity.getIdCountry() != null){
             dto.setIdCountry(entity.getIdCountry().getIdCountry());
             dto.setCountryName(entity.getIdCountry().getName());
@@ -259,13 +278,14 @@ public class UserService {
         entity.setEmail(dto.getEmail());
         entity.setPasswordUser(dto.getPasswordUser());
         entity.setStatus(dto.getStatus());
+        entity.setDisabled(dto.getDisabled());
         entity.setImagePath(dto.getImagePath());
+
         if(dto.getIdCountry() != null){
             CountryEntity country = countryRepo.findById(dto.getIdCountry()).orElseThrow(()-> new IllegalArgumentException("No hay un pais con ese id"+ dto.getIdCountry()));
             entity.setIdCountry(country);
         }
         return entity;
     }
-
 
 }
