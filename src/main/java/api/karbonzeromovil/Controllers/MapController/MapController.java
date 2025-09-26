@@ -22,13 +22,7 @@ public class MapController {
 
     @GetMapping("/getCountryGeo/{name}")
     public JsonNode getCountryJson (@PathVariable String name) {
-
-        JsonNode data = service.loadGeoJson(name);
-
-        if (data == null) {
-            return null;
-        }
-        return data;
+        return service.loadGeoJson(name);
     }
 
 }
