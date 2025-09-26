@@ -34,6 +34,10 @@ public class UserDTO {
     @Min(0)
     @Max(1)
     private Integer status;
+    @NotNull
+    @Min(0)
+    @Max(1)
+    private Integer disabled;
     @Size(max = 200)
     private String imagePath;
 }

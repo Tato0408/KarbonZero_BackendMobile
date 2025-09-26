@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String > {
     UserEntity findByEmail(String email);
+    UserEntity findByEmailAndDisabled(String email, int i);
     UserEntity getReferenceByIdUserAndStatus(String id, int i);
     Page<UserEntity> findAll(Pageable pageable);
     Page<UserEntity> findByStatus(int i, Pageable pageable);

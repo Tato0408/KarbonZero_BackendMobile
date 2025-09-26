@@ -137,6 +137,19 @@ public class UserController {
             return responseServerError(e, "Cannot delete the user with the User Object");
         }
     }
+
+    @PostMapping("/updateDisabled/{id}")
+    public ResponseEntity<Map<String,Object>> banUser(@PathVariable String id,  @RequestBody UserDTO dto){
+        try {
+            if (!userService.updateDisabled(id, dto)) {
+                return responseNotFound("user not found");
+            }
+            return responseOK("User updated with succes");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot block the user object");
+        }
+    }
+
     //endregion
     //region Summary: FRIENDCRUD
 
