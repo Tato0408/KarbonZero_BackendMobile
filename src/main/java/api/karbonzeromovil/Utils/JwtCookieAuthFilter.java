@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -109,6 +110,8 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter {
 
         // Endpoints públicos
         return (path.equals("/apiAuth/login") && "POST".equals(method) ||
-                path.equals("/apiAuth/logout") && "POST".equals(method));
+                path.equals("/apiAuth/logout") && "POST".equals(method) ||
+                path.startsWith("/apiMap/getCountryGeo") && "GET".equals(method))
+        ;
     }
 }

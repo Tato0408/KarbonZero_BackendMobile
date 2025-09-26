@@ -24,6 +24,13 @@ public class Responses {
 
         return ResponseEntity.badRequest().body(errors);
     }
+    public static ResponseEntity<Map<String, Object>> responseObtained (Object answer) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "status", "success",
+                "data", answer
+        ));
+    }
+
 
     public static ResponseEntity<Map<String, Object>> responseCreated (Object answer) {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
