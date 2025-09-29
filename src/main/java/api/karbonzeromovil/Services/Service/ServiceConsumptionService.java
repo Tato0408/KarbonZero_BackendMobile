@@ -13,6 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 @Slf4j
 @Service
 public class ServiceConsumptionService {
@@ -40,6 +44,23 @@ public class ServiceConsumptionService {
 
         }
     }
+
+    public List<HashMap<?,?>> getServiceConsumptionsCO2WithLocation(Double minX, Double maxX, Double minY, Double maxY) {
+        List<HashMap<?, ?>> consumptionsWithLocation = new ArrayList<>();
+
+        // Filtramos los consumos de servicio para mejor rendimiento
+        repo.findByLongitudeBetweenAndLatitudeBetween(minX, maxX, minY, maxY)
+                .forEach(consumption -> {
+                    // Devolvemos la respuesta en un formato más limpio
+                    HashMap<String, Double> answer = new HashMap<>();
+                    answer.put("longitude", consumption.getLongitude());
+                    answer.put("latitude", consumption.getLatitude());
+                    answer.put("total", consumption.getQuantity() * consumption.getIdMeasureUnitService().getCarbonFootprint());
+                    consumptionsWithLocation.add(answer);
+                });
+        return consumptionsWithLocation;
+    }
+
     public ServiceConsumptionDTO insertServiceConsumption(ServiceConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Service Consumption cannot be null or empty");
@@ -109,4 +130,6 @@ public class ServiceConsumptionService {
         entity.setLongitude(dto.getLongitude());
         return entity;
     }
+
+
 }

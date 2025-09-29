@@ -49,7 +49,6 @@ public class ServiceService {
         Page<ServiceEntity> services = repo.findByNameContains(serviceName, pageable);
         return services.map(this::ServiceToDTO);
     }
-
     public ServiceDTO insertService(ServiceDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Service cannot be null or empty");
@@ -99,6 +98,4 @@ public class ServiceService {
         entity.setName(dto.getName());
         return entity;
     }
-
-
 }

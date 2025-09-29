@@ -138,6 +138,15 @@ public class CarController {
         return serviceFuelConsumption.getFuelConsumptionById(id);
     }
 
+    @GetMapping("/getFuelConsumptionsCO2WithLocation")
+    public List<HashMap<?, ?>> getFuelConsumptionsCO2WithLocation (
+            @RequestParam Double minX,
+            @RequestParam Double maxX,
+            @RequestParam Double minY,
+            @RequestParam Double maxY
+    ) {
+        return serviceFuelConsumption.getFuelConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
+    }
 
     //Metodos POST para insertar cada cosa relacionada con la tabla carro
     @PostMapping("/insertCar")

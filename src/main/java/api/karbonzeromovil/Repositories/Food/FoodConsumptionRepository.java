@@ -9,10 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface FoodConsumptionRepository extends JpaRepository<FoodConsumptionEntity, String> {
     Page<FoodConsumptionEntity> findAll (Pageable pagebale);
     int countByIdUser_IdUser(String userId);
+    List<FoodConsumptionEntity> findByLongitudeBetweenAndLatitudeBetween(Double minX, Double maxX, Double minY, Double maxY);
 
 //    @Query("""
 //        select coalesce(sum(o.quantity), 0)
