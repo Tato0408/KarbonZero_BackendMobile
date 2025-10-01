@@ -45,6 +45,16 @@ public class ChannelService {
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
 
+    public List<ChannelPostDTO> getNoApprovedPosts(String id){
+        ChannelEntity post = repo.getReferenceById(id);
+        return post.getNoApprovedPosts().stream()
+                .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
+    }
+    public List<ChannelPostDTO> getApprovedPosts(String id){
+        ChannelEntity post = repo.getReferenceById(id);
+        return post.getApprovedPosts().stream()
+                .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
+    }
     public ChannelDTO insertChannel(ChannelDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Channel cannot be null or empty");
@@ -62,10 +72,11 @@ public class ChannelService {
     public ChannelDTO updateChannel(String id, ChannelDTO dto){
         try {
             if (repo.existsById((id))){
-                ChannelEntity entity = repo.getById(id);
+                ChannelEntity entity = repo.getReferenceById(id);
                 entity.setIdCompany(CompanyRepo.getReferenceById(dto.getIdCompany()));
                 entity.setName(dto.getName());
-
+                entity.setDescript(dto.getDescript());
+                entity.setImagePath(dto.getImagePath());
                 ChannelEntity savedChannel = repo.save(entity);
                 return ChannelToDTO(savedChannel);
             }
@@ -92,7 +103,10 @@ public class ChannelService {
     private ChannelDTO ChannelToDTO(ChannelEntity entity){
         ChannelDTO dto = new ChannelDTO();
         dto.setIdChannel(entity.getIdChannel());
-        dto.setIdCompany(entity.getIdCompany().getIdCompany());
+        if(entity.getIdCompany() != null){
+            dto.setIdCompany(entity.getIdCompany().getIdCompany());
+            dto.setCompanyName(entity.getIdCompany().getName());
+        }
         dto.setName(entity.getName());
         dto.setDescript(entity.getDescript());
         dto.setImagePath(entity.getImagePath());

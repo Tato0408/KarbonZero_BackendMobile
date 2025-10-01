@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,11 @@ public class TransportController {
         }
 
         return ResponseEntity.ok(consumption);
+    }
+    @GetMapping("/getAllC02TransportByUser/{id}")
+    public HashMap<String, Double> getAllC02TransportByUser(@PathVariable String id){
+
+        return transportConsumptionService.getAllTransportConsumptionsByUser(id);
     }
     @GetMapping("/getTransportByName/{name}")
     public Page<TransportDTO>getTransportByName(@PathVariable String name,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size ){

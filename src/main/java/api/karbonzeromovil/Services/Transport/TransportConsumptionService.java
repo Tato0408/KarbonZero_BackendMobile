@@ -1,6 +1,11 @@
 package api.karbonzeromovil.Services.Transport;
 
+import api.karbonzeromovil.Entities.Food.FoodCategoryEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionFoodEntity;
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.Transport.TransportConsumptionEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Repositories.Transport.TransportConsumptionRepository;
 import api.karbonzeromovil.Repositories.Transport.TransportRepository;
@@ -12,6 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -39,6 +47,19 @@ public class TransportConsumptionService {
             throw new RuntimeException("The Consumption could not be found" + err.getMessage());
 
         }
+    }
+    public HashMap<String, Double> getAllTransportConsumptionsByUser(String idUser){
+        HashMap<String, Double> hashMap = new HashMap<>();
+        UserEntity entity = repoUser.getReferenceById(idUser);
+        hashMap.put(entity.getIdUser(), 0.00);
+
+        List<TransportConsumptionEntity> transportConsumptionEntityList = entity.getAllUserTransportConsumption();
+        transportConsumptionEntityList.forEach(tranportConsumption->{
+            hashMap.put(entity.getIdUser(), (tranportConsumption.getIdTransport().getCarbonFootprint())+ hashMap.get(entity.getIdUser()));
+        });
+
+
+        return hashMap;
     }
     public TransportConsumptionDTO insertTransportConsumption(TransportConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){

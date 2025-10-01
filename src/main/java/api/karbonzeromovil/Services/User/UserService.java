@@ -5,6 +5,7 @@ import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Exceptions.ExceptionNotFound;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
+import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
@@ -24,6 +25,7 @@ import api.karbonzeromovil.Repositories.User.FriendRepository;
 import api.karbonzeromovil.Repositories.User.UserAchievementRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import api.karbonzeromovil.Services.Car.CarService;
+import api.karbonzeromovil.Services.Company.ChannelUserService;
 import api.karbonzeromovil.Services.Food.FoodConsumptionService;
 import api.karbonzeromovil.Services.LivingSpace.LivingSpaceService;
 import api.karbonzeromovil.Services.Pet.UserPetService;
@@ -146,6 +148,10 @@ public class UserService {
                 .map(new UserAchievementService()::AchievementToDTO).collect(Collectors.toList());
     }
 
+    public List<ChannelUserDTO> getAllChannelUser(String id){
+        UserEntity user = repo.getReferenceById(id);
+        return user.getGetAllChannelsByUser().stream().map(new ChannelUserService()::ChannelUserToDTO).collect(Collectors.toList());
+    }
     ///Aca van todos los de gets de x cosnumo
     public List<LivingSpaceDTO> getAllLivingSpacesUser (String id){
         UserEntity user = repo.getReferenceById(id);

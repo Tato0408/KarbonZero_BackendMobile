@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,11 @@ public class ServiceController {
             ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
         }
         return ResponseEntity.ok(service);
+    }
+    @GetMapping("/getAllC02ServiceByUser/{id}")
+    public HashMap<String, Double> getAllC02ServiceByUser(@PathVariable String id){
+
+        return serviceConsumptionService.getAllFoodConsumptionsByUser(id);
     }
     @GetMapping("/getMeasureUnitService")
     public ResponseEntity<Page<MeasureUnitServiceDTO>> getAllMeasureUnitService(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){

@@ -27,7 +27,6 @@ public class UserDTO {
     @NotBlank
     @Size(max = 200)
     private String email;
-    @NotBlank
     @Size(max = 200)
     private String passwordUser;
     @NotNull

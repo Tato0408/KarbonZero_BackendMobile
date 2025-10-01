@@ -40,6 +40,10 @@ public class ChannelUserService {
         }
         return null;
     }
+    public ChannelUserDTO getUserChannelRelation(String idChannel, String idUser){
+        return ChannelUserToDTO(repo.findByIdChannel_IdChannelAndIdUser_IdUser(idChannel, idUser));
+    }
+
 
     public ChannelUserDTO insertChannelUser(ChannelUserDTO dto) throws IllegalAccessException {
         if(dto == null){
@@ -85,10 +89,14 @@ public class ChannelUserService {
     }
 
 
-    private ChannelUserDTO ChannelUserToDTO(ChannelUserEntity entity){
+    public ChannelUserDTO ChannelUserToDTO(ChannelUserEntity entity){
         ChannelUserDTO dto = new ChannelUserDTO();
         dto.setIdChannelUser(entity.getIdChannelUser());
-        dto.setIdChannel(entity.getIdChannel().getIdChannel());
+        if(entity.getIdChannel() != null){
+            dto.setIdChannel(entity.getIdChannel().getIdChannel());
+            dto.setName(entity.getIdChannel().getName());
+            dto.setChannelImage(entity.getIdChannel().getImagePath());
+        }
         dto.setIdUser(entity.getIdUser().getIdUser());
         return dto;
     }
