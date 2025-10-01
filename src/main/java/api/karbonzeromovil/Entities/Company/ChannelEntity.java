@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,4 +35,12 @@ public class ChannelEntity {
 
     @OneToMany(mappedBy = "idChannel")
     private List<ChannelPostEntity> allChannelChannelPost = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idChannel")
+    @Where(clause = "ISAPPROVED = 0")
+    private List<ChannelPostEntity> noApprovedPosts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idChannel")
+    @Where(clause = "ISAPPROVED = 1")
+    private List<ChannelPostEntity> ApprovedPosts = new ArrayList<>();
 }

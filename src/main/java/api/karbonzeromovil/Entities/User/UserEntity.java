@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Entities.User;
 
 import api.karbonzeromovil.Entities.Car.CarEntity;
+import api.karbonzeromovil.Entities.Company.ChannelUserEntity;
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
 import api.karbonzeromovil.Entities.LivingSpace.LivingSpaceEntity;
@@ -73,4 +74,7 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "idUser")
     private List<CarEntity> getAllUserCars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idUser")
+    private List<ChannelUserEntity> getAllChannelsByUser = new ArrayList<>();
 }
