@@ -27,13 +27,16 @@ public class UserDTO {
     @NotBlank
     @Size(max = 200)
     private String email;
-    @NotBlank
     @Size(max = 200)
     private String passwordUser;
     @NotNull
     @Min(0)
     @Max(1)
     private Integer status;
+    @NotNull
+    @Min(0)
+    @Max(1)
+    private Integer disabled;
     @Size(max = 200)
     private String imagePath;
 }

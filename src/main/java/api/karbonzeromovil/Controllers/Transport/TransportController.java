@@ -65,6 +65,11 @@ public class TransportController {
         return transportConsumptionService.getTransportConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
     }
 
+    @GetMapping("/getAllC02TransportByUser/{id}")
+    public HashMap<String, Double> getAllC02TransportByUser(@PathVariable String id){
+
+        return transportConsumptionService.getAllTransportConsumptionsByUser(id);
+    }
     @GetMapping("/getTransportByName/{name}")
     public Page<TransportDTO>getTransportByName(@PathVariable String name,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size ){
         if(size<=0 || size>50){

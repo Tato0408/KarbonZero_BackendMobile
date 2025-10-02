@@ -15,6 +15,8 @@ public class ChannelUserDTO {
 
     @NotNull
     private String idChannel;
+    private String name;
+    private String channelImage;
 
     @NotNull
     private String idUser;

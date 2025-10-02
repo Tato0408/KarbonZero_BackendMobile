@@ -44,6 +44,11 @@ public class ServiceController {
         }
         return ResponseEntity.ok(service);
     }
+    @GetMapping("/getAllC02ServiceByUser/{id}")
+    public HashMap<String, Double> getAllC02ServiceByUser(@PathVariable String id){
+
+        return serviceConsumptionService.getAllFoodConsumptionsByUser(id);
+    }
     @GetMapping("/getMeasureUnitService")
     public ResponseEntity<Page<MeasureUnitServiceDTO>> getAllMeasureUnitService(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size<=0 || size>50){

@@ -23,10 +23,8 @@ public class FoodConsumptionDTO {
     @NotNull
     private LocalDateTime consumptionDate;
 
-    @Min(0)
     private Double latitude;
 
-    @Min(0)
     private Double longitude;
 
     private String userName;

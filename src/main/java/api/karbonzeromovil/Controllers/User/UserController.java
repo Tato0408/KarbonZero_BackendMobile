@@ -2,6 +2,7 @@ package api.karbonzeromovil.Controllers.User;
 
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
+import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
@@ -137,6 +138,19 @@ public class UserController {
             return responseServerError(e, "Cannot delete the user with the User Object");
         }
     }
+
+    @PostMapping("/updateDisabled/{id}")
+    public ResponseEntity<Map<String,Object>> banUser(@PathVariable String id,  @RequestBody UserDTO dto){
+        try {
+            if (!userService.updateDisabled(id, dto)) {
+                return responseNotFound("user not found");
+            }
+            return responseOK("User updated with succes");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot block the user object");
+        }
+    }
+
     //endregion
     //region Summary: FRIENDCRUD
 
@@ -365,6 +379,10 @@ public class UserController {
         return userService.getAllFriendsMainUser(id);
     }
 
+    @GetMapping("/getAllChannelsByUser/{id}")
+    public List<ChannelUserDTO> getAllChannelsByUser(@PathVariable String id){
+        return userService.getAllChannelUser(id);
+    }
     @GetMapping("/getFriendsBySecondaryUser/{id}")
     public List<FriendDTO> getFriendsBySecondaryUser( @PathVariable String id){
         return userService.getAllFriendsSecondaryUser(id);
