@@ -6,23 +6,23 @@
   },
   "properties": {
     "axis": {
-        "x": {
-            "min": -90.5,
-            "max": -87.5
-        },
-        "y" : {
-            "min": 13,
-            "max": 14.6
-        }
+      "x": {
+        "min": -90.5,
+        "max": -87.5
+      },
+      "y": {
+        "min": 13,
+        "max": 14.6
+      }
     },
-    "center" : [-89, 13.8],
+    "center": [-89, 13.8],
     "scale": 15000
   },
   "features": [
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Cuscatlán",
+        "shapeName": "Cuscatlán",
         "shapeISO": "",
         "shapeID": "98794003B76410579323989",
         "shapeGroup": "SLV",
@@ -1827,7 +1827,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Usulután",
+        "shapeName": "Usulután",
         "shapeISO": "",
         "shapeID": "98794003B42513633485886",
         "shapeGroup": "SLV",
@@ -7273,7 +7273,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Ahuachapán",
+        "shapeName": "Ahuachapán",
         "shapeISO": "",
         "shapeID": "98794003B28533173695218",
         "shapeGroup": "SLV",
@@ -10079,7 +10079,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Sonsonate",
+        "shapeName": "Sonsonate",
         "shapeISO": "",
         "shapeID": "98794003B56835012218806",
         "shapeGroup": "SLV",
@@ -14961,7 +14961,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de San Miguel",
+        "shapeName": "San Miguel",
         "shapeISO": "",
         "shapeID": "98794003B50968784291710",
         "shapeGroup": "SLV",
@@ -17797,7 +17797,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de La Unión",
+        "shapeName": "La Unión",
         "shapeISO": "",
         "shapeID": "98794003B34340758390936",
         "shapeGroup": "SLV",
@@ -23021,7 +23021,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Morazán",
+        "shapeName": "Morazán",
         "shapeISO": "",
         "shapeID": "98794003B29271110155916",
         "shapeGroup": "SLV",
@@ -25617,7 +25617,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de La Paz",
+        "shapeName": "La Paz",
         "shapeISO": "",
         "shapeID": "98794003B62092818645437",
         "shapeGroup": "SLV",
@@ -27914,7 +27914,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Santa Ana",
+        "shapeName": "Santa Ana",
         "shapeISO": "",
         "shapeID": "98794003B21631961307422",
         "shapeGroup": "SLV",
@@ -32380,7 +32380,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Chalatenango",
+        "shapeName": "Chalatenango",
         "shapeISO": "",
         "shapeID": "98794003B29721732456698",
         "shapeGroup": "SLV",
@@ -36043,7 +36043,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de San Salvador",
+        "shapeName": "San Salvador",
         "shapeISO": "",
         "shapeID": "98794003B39565856515381",
         "shapeGroup": "SLV",
@@ -38888,7 +38888,7 @@
     {
       "type": "Feature",
       "properties": {
-        "shapeName": "Departamento de Cabañas",
+        "shapeName": "Cabañas",
         "shapeISO": "",
         "shapeID": "98794003B16890138661932",
         "shapeGroup": "SLV",
