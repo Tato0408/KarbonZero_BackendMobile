@@ -1,0 +1,15 @@
+package api.karbonzeromovil.Models.DTO.recoveryPassword;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter @Setter
+@ToString
+@EqualsAndHashCode
+public class ResetPasswordDTO {
+    private String token;
+
+    private String newPassword;
+}

@@ -37,6 +37,9 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ← Permite preflight requests
                             .requestMatchers(HttpMethod.POST, "/apiAuth/login").permitAll()
                             .requestMatchers(HttpMethod.POST, "/apiAuth/logout").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/apiUser/confirmPassword").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/apiAuth/forgotPassword").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/apiAuth/verifyCode").permitAll()
                             .requestMatchers(HttpMethod.GET, "/apiMap/getCountryGeo/{name}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/apiTransport/getTransportConsumptionsCO2WithLocation").permitAll()
                             .requestMatchers(HttpMethod.GET, "/apiService/getServiceConsumptionsCO2WithLocation").permitAll()

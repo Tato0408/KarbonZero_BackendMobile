@@ -2,7 +2,9 @@ package api.karbonzeromovil.Controllers.Auth;
 
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
+import api.karbonzeromovil.Models.DTO.recoveryPassword.ForgotPasswordDTO;
 import api.karbonzeromovil.Services.Auth.AuthService;
+import api.karbonzeromovil.Services.Auth.PasswordRecoveryService;
 import api.karbonzeromovil.Services.User.UserService;
 import api.karbonzeromovil.Utils.JWTUtils;
 import api.karbonzeromovil.Utils.Responses;
@@ -33,6 +35,8 @@ public class AuthController {
 
     @Autowired
     private JWTUtils jwtUtils;
+    @Autowired
+    private PasswordRecoveryService passwordRecoveryService;
 
     @PostMapping("/login")
     private ResponseEntity<Map<String, Object>> login (@RequestBody UserDTO data, HttpServletResponse response) {
@@ -114,5 +118,30 @@ public class AuthController {
             response.setHeader("Access-Control-Allow-Origin", origin);
         }
         return Responses.responseOK("logout exitoso");
+    }
+    //ENDPOINTS DE RECUPERACION DE CONTRASEÑA
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDTO dto) {
+        boolean sent = passwordRecoveryService.generateAndSendCode(dto.getEmail());
+        if (!sent) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Correo no registrado"));
+        }
+        return ResponseEntity.ok(Map.of("message", "Código enviado"));
+    }
+
+
+    @PostMapping("/verifyCode")
+    public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> body) {
+        String code = body.get("code");
+
+        boolean valid = passwordRecoveryService.verifyCode(code);
+
+        if (!valid) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("message", "Código inválido o expirado"));
+        }
+
+        return ResponseEntity.ok(Map.of("message", "Código válido"));
     }
 }
