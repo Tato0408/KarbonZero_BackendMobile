@@ -134,6 +134,16 @@ public class FoodController {
     @GetMapping("/getAllfoodConsumptionFoodByFoodConsumption/{id}")
     public List<FoodConsumptionFoodDTO> getAllfoodConsumptionFoodByFoodConsumption(@PathVariable String id){ return serviceConsumption.getAllfoodConsumptionFoodByFoodConsumption(id);}
 
+    @GetMapping("/getFoodConsumptionsCO2WithLocation")
+    public List<HashMap<?, ?>> getFoodConsumptionsCO2WithLocation (
+            @RequestParam Double minX,
+            @RequestParam Double maxX,
+            @RequestParam Double minY,
+            @RequestParam Double maxY
+    ) {
+        return serviceConsumption.getFoodConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
+    }
+
     @GetMapping("/getFoodByFoodName/{foodName}")
     public Page<FoodDTO> getFoodByName (@PathVariable String foodName,
                                              @RequestParam(defaultValue = "0") int page,

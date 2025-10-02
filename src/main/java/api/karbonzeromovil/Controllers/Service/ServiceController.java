@@ -118,6 +118,17 @@ public class ServiceController {
     public ServiceConsumptionDTO geServiceConsumptionById(@PathVariable String id){
         return serviceConsumptionService.getServiceConsumptionById(id);
     }
+
+    @GetMapping("/getServiceConsumptionsCO2WithLocation")
+    public List<HashMap<?, ?>> getServiceConsumptionsCO2WithLocation (
+            @RequestParam Double minX,
+            @RequestParam Double maxX,
+            @RequestParam Double minY,
+            @RequestParam Double maxY
+    ) {
+        return serviceConsumptionService.getServiceConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
+    }
+
     @PostMapping("/insertService")
     public ResponseEntity<Map<String,Object>> insertService(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){
         try {

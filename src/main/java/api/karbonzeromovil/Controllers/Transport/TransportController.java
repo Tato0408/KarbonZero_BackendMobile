@@ -40,6 +40,7 @@ public class TransportController {
 
         return ResponseEntity.ok(transports);
     }
+
     @GetMapping("/getTransportConsumption")
     public ResponseEntity<Page<TransportConsumptionDTO>> getAllTransportConsumption(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
         if(size<=0 || size>50){
@@ -53,6 +54,17 @@ public class TransportController {
 
         return ResponseEntity.ok(consumption);
     }
+
+    @GetMapping("/getTransportConsumptionsCO2WithLocation")
+    public List<HashMap<?, ?>> getTransportConsumptionsCO2WithLocation (
+            @RequestParam Double minX,
+            @RequestParam Double maxX,
+            @RequestParam Double minY,
+            @RequestParam Double maxY
+    ) {
+        return transportConsumptionService.getTransportConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
+    }
+
     @GetMapping("/getAllC02TransportByUser/{id}")
     public HashMap<String, Double> getAllC02TransportByUser(@PathVariable String id){
 
@@ -65,10 +77,12 @@ public class TransportController {
         }
         return transportService.getTransportByName(name, page, size);
     }
+
     @GetMapping("/getTransportById/{id}")
     public TransportDTO getTransportById(@PathVariable String id){
         return transportService.getTransportById(id);
     }
+
     @GetMapping("/getTransportConsumptionById/{id}")
     public TransportConsumptionDTO getConsumptionById(@PathVariable String id){
         return transportConsumptionService.getTransportConsumptionById(id);

@@ -31,8 +31,8 @@ public class FuelConsumptionEntity {
     private Date consumsuptionDate;
 
     @Column(name = "LATITUDE")
-    private String latitude;
+    private Double latitude;
 
     @Column(name = "LONGITUDE")
-    private String longitude;
+    private Double longitude;
 }
