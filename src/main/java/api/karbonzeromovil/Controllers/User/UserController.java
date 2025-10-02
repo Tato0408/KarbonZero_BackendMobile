@@ -24,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiUser")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = " http://localhost:5173", allowCredentials = "true")
 public class UserController {
     @Autowired
     private CountryService countryService;
@@ -109,6 +110,8 @@ public class UserController {
             return responseServerError(e, "Cannot create user object");
         }
     }
+
+
 
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<?>updateUser(@PathVariable String id, @Valid @RequestBody UserDTO dto, BindingResult bindingResult){
@@ -420,5 +423,14 @@ public class UserController {
     public List<ServiceConsumptionDTO> getAllUserServiceConsumption(@PathVariable String id){
         return userService.getAllUserServiceConsumptions(id);
     }
-    //endregion
+
+    @PostMapping("/confirmPassword")
+    public HashMap<String, Boolean> confirmPassword (@RequestParam String idUser,
+                                                     @RequestParam String password) {
+        HashMap<String, Boolean> answer = new HashMap<>();
+        answer.put("authenticated", userService.confirmPassword(idUser, password));
+        return answer;
+    }
 }
+    //endregion
+

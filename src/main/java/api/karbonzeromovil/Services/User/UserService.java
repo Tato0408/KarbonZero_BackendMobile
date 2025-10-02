@@ -40,6 +40,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -220,6 +221,18 @@ public class UserService {
         }catch (Exception e){
             throw new RuntimeException("The User could not be updated" + e.getMessage());
         }
+    }
+
+    public Boolean confirmPassword(String idUser, String password) {
+        Argon2PasswordEncoder argonObj = new Argon2PasswordEncoder();
+
+        if (!repo.existsById(idUser)) {
+            return false;
+        }
+
+        UserEntity user = repo.getReferenceById(idUser);
+        String databaseHashedPassword = user.getPasswordUser();
+        return argonObj.decodePassword(databaseHashedPassword, password);
     }
     public boolean deleteUser(String id){
         try{
