@@ -1,6 +1,11 @@
 package api.karbonzeromovil.Services.Transport;
 
+import api.karbonzeromovil.Entities.Food.FoodCategoryEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionFoodEntity;
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.Transport.TransportConsumptionEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Repositories.Transport.TransportConsumptionRepository;
 import api.karbonzeromovil.Repositories.Transport.TransportRepository;
@@ -12,6 +17,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Slf4j
 @Service
@@ -25,9 +36,26 @@ public class TransportConsumptionService {
 
     public Page<TransportConsumptionDTO> getAllTransportConsumption(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
-        Page<TransportConsumptionEntity> users = repo.findAll(pageable);
-        return users.map(this::TransportConsumptionToDTO);
+        Page<TransportConsumptionEntity> consumptions = repo.findAll(pageable);
+        return consumptions.map(this::TransportConsumptionToDTO);
     }
+
+    public List<HashMap<?, ?>> getTransportConsumptionsCO2WithLocation(Double minX, Double maxX, Double minY, Double maxY) {
+        List<HashMap<?, ?>> consumptionsWithLocation = new ArrayList<>();
+
+        // Filtramos los consumos de transporte para mejor rendimiento
+        repo.findByLongitudeBetweenAndLatitudeBetween(minX, maxX, minY, maxY)
+                .forEach(consumption -> {
+                    // Devolvemos la respuesta en un formato más limpio
+                    HashMap<String, Double> answer = new HashMap<>();
+                    answer.put("longitude", consumption.getLongitude());
+                    answer.put("latitude", consumption.getLatitude());
+                    answer.put("total", consumption.getDistance() * consumption.getIdTransport().getCarbonFootprint());
+                    consumptionsWithLocation.add(answer);
+                });
+        return consumptionsWithLocation;
+    }
+
     public TransportConsumptionDTO getTransportConsumptionById(String id){
         try {
             if(repo.existsById(id)){
@@ -39,6 +67,19 @@ public class TransportConsumptionService {
             throw new RuntimeException("The Consumption could not be found" + err.getMessage());
 
         }
+    }
+    public HashMap<String, Double> getAllTransportConsumptionsByUser(String idUser){
+        HashMap<String, Double> hashMap = new HashMap<>();
+        UserEntity entity = repoUser.getReferenceById(idUser);
+        hashMap.put(entity.getIdUser(), 0.00);
+
+        List<TransportConsumptionEntity> transportConsumptionEntityList = entity.getAllUserTransportConsumption();
+        transportConsumptionEntityList.forEach(tranportConsumption->{
+            hashMap.put(entity.getIdUser(), (tranportConsumption.getIdTransport().getCarbonFootprint())+ hashMap.get(entity.getIdUser()));
+        });
+
+
+        return hashMap;
     }
     public TransportConsumptionDTO insertTransportConsumption(TransportConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){
@@ -83,6 +124,7 @@ public class TransportConsumptionService {
             throw new EmptyResultDataAccessException("The Transport Consumption with the ID : " + id + " doesn't exists", 1);
         }
     }
+
     public TransportConsumptionDTO TransportConsumptionToDTO(TransportConsumptionEntity entity){
         TransportConsumptionDTO dto = new TransportConsumptionDTO();
         dto.setIdTransportConsumption(entity.getIdTransportConsumption());
@@ -97,6 +139,7 @@ public class TransportConsumptionService {
         dto.setLongitude(entity.getLongitude());
         return dto;
     }
+
     private TransportConsumptionEntity DTOToTransportConsumption(TransportConsumptionDTO dto){
         TransportConsumptionEntity entity = new TransportConsumptionEntity();
         entity.setIdTransportConsumption(dto.getIdTransportConsumption());

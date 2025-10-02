@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,22 @@ public class FuelConsumptionService {
             return FuelConsumptionToDTO(entity);
         }
         return null;
+    }
+
+    public List<HashMap<?,?>> getFuelConsumptionsCO2WithLocation(Double minX, Double maxX, Double minY, Double maxY) {
+        List<HashMap<?, ?>> consumptionsWithLocation = new ArrayList<>();
+
+        // Filtramos los consumos de combustible para mejor rendimiento
+        repo.findByLongitudeBetweenAndLatitudeBetween(minX, maxX, minY, maxY)
+                .forEach(consumption -> {
+                    // Devolvemos la respuesta en un formato más limpio
+                    HashMap<String, Double> answer = new HashMap<>();
+                    answer.put("longitude", consumption.getLongitude());
+                    answer.put("latitude", consumption.getLatitude());
+                    answer.put("total", consumption.getQuantity() * consumption.getIdTypeCar().getIdFuelType().getCarbonFooTprint());
+                    consumptionsWithLocation.add(answer);
+                });
+        return consumptionsWithLocation;
     }
 
     public FuelConsumptionDTO insertFuelConsumption(FuelConsumptionDTO dto) throws IllegalAccessException {

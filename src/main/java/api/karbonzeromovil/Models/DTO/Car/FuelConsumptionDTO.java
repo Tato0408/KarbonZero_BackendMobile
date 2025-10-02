@@ -32,6 +32,6 @@ public class FuelConsumptionDTO {
     @NotNull
     private Date consumptionDate;
 
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
 }

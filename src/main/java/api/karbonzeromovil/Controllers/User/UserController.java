@@ -2,6 +2,7 @@ package api.karbonzeromovil.Controllers.User;
 
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
+import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
@@ -381,6 +382,10 @@ public class UserController {
         return userService.getAllFriendsMainUser(id);
     }
 
+    @GetMapping("/getAllChannelsByUser/{id}")
+    public List<ChannelUserDTO> getAllChannelsByUser(@PathVariable String id){
+        return userService.getAllChannelUser(id);
+    }
     @GetMapping("/getFriendsBySecondaryUser/{id}")
     public List<FriendDTO> getFriendsBySecondaryUser( @PathVariable String id){
         return userService.getAllFriendsSecondaryUser(id);

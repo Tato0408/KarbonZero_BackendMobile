@@ -56,6 +56,20 @@ public class CompanyController {
         return serviceCompany.getCompanyByName(name, page, size);
     }
 
+
+    @GetMapping("/getAllChannelPost/{id}")
+    public List<ChannelPostDTO> getAllChannelPost(@PathVariable String id){
+        return serviceChannel.getAllPostByChannel(id);
+    }
+
+    @GetMapping("/getChannelPostAproved/{id}")
+    public List<ChannelPostDTO> getChannelPostAproved(@PathVariable String id){
+        return serviceChannel.getApprovedPosts(id);
+    }
+    @GetMapping("/getChannelPostNoAproved/{id}")
+    public List<ChannelPostDTO> getChannelPostNoAproved(@PathVariable String id){
+        return serviceChannel.getNoApprovedPosts(id);
+    }
     //Metodos Get para obtener cada cosa relacionada con la tabla company
     @GetMapping("/getAllCompany")
     public ResponseEntity<Page<CompanyDTO>> dataCompany(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
@@ -103,7 +117,10 @@ public class CompanyController {
     public ChannelUserDTO getChannelUserById(@PathVariable String id){
         return serviceChannelUser.getChannelUserById(id);
     }
-
+    @GetMapping("/getUserChannelRelation/{idChannel}/{idUser}")
+    public ChannelUserDTO getUserChannelRelation( @PathVariable String idChannel,@PathVariable String idUser){
+        return serviceChannelUser.getUserChannelRelation(idChannel, idUser);
+    }
     //Metodos POST para insertar cada cosa relacionada con la tabla carro
     @PostMapping("/insertCompany")
     public ResponseEntity<Map<String, Object>> insertCompany(@Valid @RequestBody CompanyDTO dto, HttpServletRequest request){
