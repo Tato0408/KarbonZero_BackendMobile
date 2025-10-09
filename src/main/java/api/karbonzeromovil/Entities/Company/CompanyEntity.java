@@ -23,6 +23,8 @@ public class CompanyEntity {
     private String name;
     @Column(name = "DOMAIN", nullable = true, unique = true)
     private String domain;
+    @Column(name = "APIKEY", nullable = false, unique = true)
+    private String apiKey;
 
     @OneToOne(mappedBy = "idCompany")
     private ChannelEntity idCompanyChannel;

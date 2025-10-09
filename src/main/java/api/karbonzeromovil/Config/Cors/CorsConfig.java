@@ -18,7 +18,7 @@ public class CorsConfig {
     @Autowired
     private CompanyService companyService;
 
-    private CorsConfiguration config;
+    public CorsConfiguration config;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -46,6 +46,10 @@ public class CorsConfig {
                 "http://localhost:*", // Cubre todos los puertos en localhost
                 "http://127.0.0.1:*"  // También la IP directa
         ));
+
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedOrigin("http://localhost:5174");
+
 
         for (String domain : companyService.getAllCompaniesDomains()) {
             config.addAllowedOrigin(domain);

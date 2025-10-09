@@ -19,4 +19,7 @@ public class CompanyDTO {
     @NotBlank()
     @Size(max = 200)
     private String domain;
+
+    @NotBlank()
+    private String apiKey;
 }

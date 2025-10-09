@@ -1,13 +1,18 @@
 package api.karbonzeromovil.Controllers.Auth;
 
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Models.DTO.recoveryPassword.ForgotPasswordDTO;
 import api.karbonzeromovil.Services.Auth.AuthService;
 import api.karbonzeromovil.Services.Auth.PasswordRecoveryService;
+import api.karbonzeromovil.Services.Company.CompanyService;
 import api.karbonzeromovil.Services.User.UserService;
 import api.karbonzeromovil.Utils.JWTUtils;
+import api.karbonzeromovil.Utils.JwtCookieAuthFilter;
 import api.karbonzeromovil.Utils.Responses;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,6 +37,8 @@ public class AuthController {
 
     @Autowired
     private AuthService service;
+    @Autowired
+    private CompanyService companyService;
 
     @Autowired
     private JWTUtils jwtUtils;
@@ -73,6 +80,42 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/authenticateCompany")
+    public ResponseEntity<?> authenticateCompany (HttpServletRequest request, HttpServletResponse response) {
+        String apiKey = request.getHeader("X-API-KEY");
+        String origin = request.getHeader("X-Company-Domain");
+
+        if (apiKey == null) {
+            return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+        }
+        if (origin == null) {
+            return Responses.responseNotAuthenticated("Error, origen inválido");
+        }
+
+        CompanyEntity company = service.getCompany(apiKey, origin);
+        if (company != null) {
+            addTokenCookieForCompany(response, company);
+            return Responses.responseOK("Inicio de sesión exitoso");
+        }
+        return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+
+    }
+
+    private void addTokenCookieForCompany (HttpServletResponse response, CompanyEntity company) {
+        String token = jwtUtils.create(
+                String.valueOf(company.getIdCompany()),
+                company.getApiKey(),
+                "2"
+        );
+
+        Cookie cookie = new Cookie("channelToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(86400);
+        response.addCookie(cookie);
+    }
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         try {
@@ -99,6 +142,42 @@ public class AuthController {
         } catch (Exception e) {
             //log.error("Error en /me endpoint: ", e);
             return Responses.responseServerError(e, "Error obteniendo datos de usuario");
+        }
+    }
+
+    @GetMapping("/company")
+    public ResponseEntity<?> getCurrentCompany(HttpServletRequest request) {
+        try {
+
+            String apiKey = null;
+            // Intentar obtener el apiKey de las cookies
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("channelToken".equals(cookie.getName())) {
+                        apiKey = jwtUtils.getValue(cookie.getValue());
+                        break;
+                    }
+                }
+            }
+
+            CompanyEntity company = service.getCompanyByApiKey(apiKey);
+            if (company == null) {
+                return Responses.responseNotAuthenticated("No autenticado");
+            }
+
+            return ResponseEntity.ok(Map.of(
+                    "authenticated", true,
+                    "company", Map.of(
+                            "id", company.getIdCompany(),
+                            "name", company.getName(),
+                            "domain", company.getDomain()
+                    )
+            ));
+
+        } catch (Exception e) {
+            //log.error("Error en /me endpoint: ", e);
+            return Responses.responseServerError(e, "Error obteniendo datos de canal");
         }
     }
 

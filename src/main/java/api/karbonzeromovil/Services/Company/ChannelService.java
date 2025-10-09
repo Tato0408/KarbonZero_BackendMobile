@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Services.Company;
 
 import api.karbonzeromovil.Entities.Company.ChannelEntity;
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
 import api.karbonzeromovil.Models.DTO.Company.ChannelPostDTO;
 import api.karbonzeromovil.Repositories.Company.ChannelRepository;
@@ -39,19 +40,27 @@ public class ChannelService {
         return null;
     }
 
-    public List<ChannelPostDTO> getAllPostByChannel(String id){
-        ChannelEntity post = repo.getReferenceById(id);
+    public ChannelDTO getChannelByCompany(String id) {
+        CompanyEntity company = CompanyRepo.getReferenceById(id);
+        return ChannelToDTO(company.getIdCompanyChannel());
+    }
+
+    public List<ChannelPostDTO> getAllPostByChannel(String apiKey){
+        CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+        ChannelEntity post = company.getIdCompanyChannel();
         return post.getAllChannelChannelPost().stream()
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
 
-    public List<ChannelPostDTO> getNoApprovedPosts(String id){
-        ChannelEntity post = repo.getReferenceById(id);
+    public List<ChannelPostDTO> getNoApprovedPosts(String apiKey){
+        CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+        ChannelEntity post = company.getIdCompanyChannel();
         return post.getNoApprovedPosts().stream()
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
-    public List<ChannelPostDTO> getApprovedPosts(String id){
-        ChannelEntity post = repo.getReferenceById(id);
+    public List<ChannelPostDTO> getApprovedPosts(String apiKey){
+        CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+        ChannelEntity post = company.getIdCompanyChannel();
         return post.getApprovedPosts().stream()
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
@@ -121,4 +130,6 @@ public class ChannelService {
         entity.setImagePath(dto.getImagePath());
         return entity;
     }
+
+
 }
