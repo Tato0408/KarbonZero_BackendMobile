@@ -114,6 +114,11 @@ public class CompanyController {
         return serviceChannel.getChannelById(id);
     }
 
+    @GetMapping("/getChannelByApiKey/{apiKey}")
+    public ChannelDTO getChannelByApiKey(@PathVariable String apiKey){
+        return serviceChannel.getChannelByApiKey(apiKey);
+    }
+
     @GetMapping("/getChannelByCompany/{id}")
     public ChannelDTO getChannelByCompany (@PathVariable String id) {
         return serviceChannel.getChannelByCompany(id);

@@ -45,6 +45,11 @@ public class ChannelService {
         return ChannelToDTO(company.getIdCompanyChannel());
     }
 
+    public ChannelDTO getChannelByApiKey (String apikey) {
+        CompanyEntity company = CompanyRepo.findByApiKey(apikey);
+        return ChannelToDTO(company.getIdCompanyChannel());
+    }
+
     public List<ChannelPostDTO> getAllPostByChannel(String apiKey){
         CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
         ChannelEntity post = company.getIdCompanyChannel();
