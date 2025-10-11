@@ -13,8 +13,6 @@ import lombok.ToString;
 @Getter @Setter
 public class ChannelDTO {
     private String idChannel;
-
-    @NotNull
     private String idCompany;
 
     private String companyName;

@@ -6,6 +6,7 @@ import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
 import api.karbonzeromovil.Models.DTO.Company.ChannelPostDTO;
 import api.karbonzeromovil.Repositories.Company.ChannelRepository;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -87,7 +88,6 @@ public class ChannelService {
         try {
             if (repo.existsById((id))){
                 ChannelEntity entity = repo.getReferenceById(id);
-                entity.setIdCompany(CompanyRepo.getReferenceById(dto.getIdCompany()));
                 entity.setName(dto.getName());
                 entity.setDescript(dto.getDescript());
                 entity.setImagePath(dto.getImagePath());
@@ -95,6 +95,20 @@ public class ChannelService {
                 return ChannelToDTO(savedChannel);
             }
             throw new IllegalArgumentException("The channel could not be updated"+id+" check if it exist");
+        }catch (Exception e){
+            throw new RuntimeException("The channel could not be updated" + e.getMessage());
+        }
+    }
+
+    public ChannelDTO updateChannelByApiKey(String apiKey, @Valid ChannelDTO dto) {
+        try {
+            CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+            ChannelEntity entity = company.getIdCompanyChannel();
+            entity.setName(dto.getName());
+            entity.setDescript(dto.getDescript());
+            entity.setImagePath(dto.getImagePath());
+            ChannelEntity savedChannel = repo.save(entity);
+            return ChannelToDTO(savedChannel);
         }catch (Exception e){
             throw new RuntimeException("The channel could not be updated" + e.getMessage());
         }
@@ -135,6 +149,7 @@ public class ChannelService {
         entity.setImagePath(dto.getImagePath());
         return entity;
     }
+
 
 
 }

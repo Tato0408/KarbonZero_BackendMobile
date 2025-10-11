@@ -257,6 +257,23 @@ public class CompanyController {
         }
     }
 
+    @PutMapping("/updateChannelByApiKey/{apiKey}")
+    public ResponseEntity<?> updateChannelByApiKey(@PathVariable String apiKey, @Valid @RequestBody ChannelDTO dto, BindingResult bindingresult){
+        if (bindingresult.hasErrors()){
+            return responseBadRequestBinding(bindingresult);
+        }
+        try{
+            ChannelDTO answer = serviceChannel.updateChannelByApiKey(apiKey, dto);
+            if(answer == null){
+                return responseBadRequest("Invalid data to update a size car object ");
+            }
+            return responseUpdated(answer);
+        }
+        catch(Exception e){
+            return responseServerError(e,"Can't update a size car object");
+        }
+    }
+
     @PutMapping("/updateChannelUser/{id}")
     public ResponseEntity<?> updateChannelUser(@PathVariable String id, @Valid @RequestBody ChannelUserDTO dto, BindingResult bindingresult){
         if (bindingresult.hasErrors()){

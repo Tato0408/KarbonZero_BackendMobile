@@ -118,6 +118,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/apiCompany/updateChannelPost/**").hasAnyAuthority("ROL_0", "ROL_1")
                             .requestMatchers(HttpMethod.PUT, "/apiCompany/updateCompany/**").hasAnyAuthority("ROL_0", "ROL_1")
                             .requestMatchers(HttpMethod.PUT, "/apiCompany/updateChannel/**").hasAnyAuthority("ROL_0", "ROL_1")
+                            .requestMatchers(HttpMethod.PUT, "/apiCompany/updateChannelByApiKey/**").hasAnyAuthority("ROL_2")
                             .requestMatchers(HttpMethod.PUT, "/apiCompany/updateChannelUser/**").hasAnyAuthority("ROL_0", "ROL_1")
 
                             .requestMatchers(HttpMethod.DELETE, "/apiCompany/deleteCompany/**").hasAnyAuthority("ROL_0", "ROL_1")
