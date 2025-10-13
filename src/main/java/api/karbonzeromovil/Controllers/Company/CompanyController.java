@@ -109,6 +109,12 @@ public class CompanyController {
         return serviceCompany.getCompanyById(id);
     }
 
+    @GetMapping("/getApiKey/{id}")
+    public Map<String, String> getApiKey(@PathVariable String id){
+        return serviceCompany.getApiKey(id);
+    }
+
+
     @GetMapping("/getChannelById/{id}")
     public ChannelDTO getChannelById(@PathVariable String id){
         return serviceChannel.getChannelById(id);

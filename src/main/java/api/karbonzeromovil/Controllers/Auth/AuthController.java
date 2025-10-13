@@ -171,7 +171,7 @@ public class AuthController {
                     "company", Map.of(
                             "id", company.getIdCompany(),
                             "name", company.getName(),
-                            "domain", company.getDomain()
+                            "domain", company.getBackendDomain()
                     )
             ));
 

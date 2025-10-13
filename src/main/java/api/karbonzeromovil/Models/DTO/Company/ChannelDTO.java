@@ -21,10 +21,8 @@ public class ChannelDTO {
     @Size(max = 200)
     private String name;
 
-    @NotBlank
     @Size(max = 200)
     private String descript;
 
-    @NotBlank
     private String imagePath;
 }

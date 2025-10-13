@@ -116,12 +116,11 @@ public class ChannelService {
 
     public boolean deleteChannel(String id){
         try{
-            if(repo.existsById(id)){
+            if (repo.existsById(id)) {
                 repo.deleteById(id);
                 return true;
-            }else{
-                return false;
             }
+            return false;
         }catch (EmptyResultDataAccessException e){
             throw new EmptyResultDataAccessException("The Channel with the ID : " + id + " doesn't exists", 1);
         }
