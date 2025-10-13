@@ -25,7 +25,6 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
 
-        // Configuración esencial
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost");
         config.addAllowedOrigin("https://localhost/");
@@ -35,7 +34,6 @@ public class CorsConfig {
         config.addAllowedOrigin("https://learn-api-steel.vercel.app/");
         config.addAllowedOrigin("https://karbon-zero-front-end.vercel.app/");
         config.addAllowedOrigin("https://karbon-zero-managment-front-end-teal.vercel.app");
-
 
         // Métodos HTTP permitidos
         config.addAllowedMethod("GET");
@@ -87,6 +85,16 @@ public class CorsConfig {
 
     public void reloadDomains () {
         config.setAllowedOrigins(new ArrayList<>());
+
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost");
+        config.addAllowedOrigin("https://localhost/");
+        config.addAllowedOrigin("http://localhost:3000"); // React
+        config.addAllowedOrigin("http://localhost:8080"); // Vue
+        config.addAllowedOrigin("http://localhost:4200"); // Angular
+        config.addAllowedOrigin("https://learn-api-steel.vercel.app/");
+        config.addAllowedOrigin("https://karbon-zero-front-end.vercel.app/");
+        config.addAllowedOrigin("https://karbon-zero-managment-front-end-teal.vercel.app");
 
         config.setAllowedOriginPatterns(Arrays.asList( // Para el desarrollo
                 "http://localhost:*", // Cubre todos los puertos en localhost
