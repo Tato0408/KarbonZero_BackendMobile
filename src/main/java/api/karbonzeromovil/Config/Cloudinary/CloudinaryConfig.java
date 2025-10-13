@@ -29,6 +29,7 @@ public class CloudinaryConfig {
      * @return
      */
 
+    @Bean
     public Cloudinary cloudinary(){
         //Crear un objeto de para leer las variables del archivo .env
 
