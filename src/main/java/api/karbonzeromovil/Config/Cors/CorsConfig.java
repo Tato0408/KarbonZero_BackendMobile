@@ -34,6 +34,8 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost:4200"); // Angular
         config.addAllowedOrigin("https://learn-api-steel.vercel.app/");
         config.addAllowedOrigin("https://karbon-zero-front-end.vercel.app/");
+        config.addAllowedOrigin("karbon-zero-managment-front-end-teal.vercel.app");
+
 
         // Métodos HTTP permitidos
         config.addAllowedMethod("GET");
