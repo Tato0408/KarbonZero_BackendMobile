@@ -1,11 +1,11 @@
 package api.karbonzeromovil.Utils;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -14,8 +14,12 @@ import java.util.Date;
 
 @Component
 public class JWTUtils {
-
-    private final Dotenv dotenv = Dotenv.load();
+    @Value("${security.jwt.secret}")
+    private String jwtSecreto;                  // 32 caracteres por seguridad
+    @Value("${security.jwt.issuer}")
+    private String issuer;                      // Firma del token
+    @Value("${security.jwt.expiration}")
+    private long expiracionMs;
     private final Logger log = LoggerFactory.getLogger(JWTUtils.class);
 
     /**
@@ -26,11 +30,10 @@ public class JWTUtils {
      */
     public String create(String id, String email, String rol){
         //Decodifica el secreto Base64 y crea una clave HMAC-SHA segura
-        SecretKey signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(dotenv.get("SECRET_KEY_JWT")));
-        long expirationMs = Long.parseLong(dotenv.get("JWT_EXPIRATION"));
+        SecretKey signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecreto));
         //Obtiene la fecha catual y calcula la fecha de expiración
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + expirationMs);
+        Date expiration = new Date(now.getTime() + expiracionMs);
 
         //Construye el token con sus componentes
         return Jwts.builder()
@@ -39,8 +42,8 @@ public class JWTUtils {
                 .setSubject(email)                                     // Sujeto (usuario)
                 .claim("id", id)
                 .claim("rol", rol)
-                .setIssuer(dotenv.get("SECURITY_JWT_ISSUER"))                                      // Emisor del token
-                .setExpiration(expirationMs >= 0 ? expiration : null)   // Expiración (si es >= 0)
+                .setIssuer(issuer)                                      // Emisor del token
+                .setExpiration(expiracionMs >= 0 ? expiration : null)   // Expiración (si es >= 0)
                 .signWith(signingKey, SignatureAlgorithm.HS256)         // Firma con algoritmo HS256
                 .compact();                                             // Convierte a String compacto
     }
@@ -108,7 +111,7 @@ public class JWTUtils {
     private Claims parseClaims(String jwt) {
         //Configura el parse con la clave de firma y parsea el token
         return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(dotenv.get("SECRET_KEY_JWT"))))  // Clave de firma
+                .setSigningKey(Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecreto)))  // Clave de firma
                 .build()
                 .parseClaimsJws(jwt)
                 .getBody();

@@ -71,12 +71,20 @@ public class AuthController {
                     String.valueOf(user.getStatus())
             );
 
-            Cookie cookie = new Cookie("authToken", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(86400);
-            response.addCookie(cookie);
+            String cookieValue = String.format(
+                    "authToken=%s; " +
+                            "Path=/; " +
+                            "HttpOnly; " +
+                            "Secure; " +
+                            "SameSite=None; " +
+                            "MaxAge=86400; " +
+                            "Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com",
+                    token
+            );
+
+            response.addHeader("Set-Cookie", cookieValue);
+            //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
+            response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
         }
     }
 
@@ -108,12 +116,19 @@ public class AuthController {
                 "2"
         );
 
-        Cookie cookie = new Cookie("channelToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(86400);
-        response.addCookie(cookie);
+        String cookieValue = String.format(
+                "channelToken=%s; " +
+                        "Path=/; " +
+                        "HttpOnly; " +
+                        "Secure; " +
+                        "SameSite=None; " +
+                        "MaxAge=86400; " +
+                        "Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com",
+                token
+        );
+
+        response.addHeader("Set-Cookie", cookieValue);
+        response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
     }
 
     @GetMapping("/me")
@@ -184,7 +199,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request, HttpServletResponse response) {
         // Crear cookie de expiración con SameSite=None
-        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=localhost";
+        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com";
 
         response.addHeader("Set-Cookie", cookieValue);
         //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
