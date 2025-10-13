@@ -119,7 +119,11 @@ public class CompanyController {
     }
     @GetMapping("/getUserChannelRelation/{idChannel}/{idUser}")
     public ChannelUserDTO getUserChannelRelation( @PathVariable String idChannel,@PathVariable String idUser){
-        return serviceChannelUser.getUserChannelRelation(idChannel, idUser);
+        return serviceChannelUser.getUserChannelRelationObj(idChannel, idUser);
+    }
+    @GetMapping("/getUserChannelRelationBool/{idChannel}/{idUser}")
+    public boolean getUserChannelRelationBool( @PathVariable String idChannel,@PathVariable String idUser){
+        return serviceChannelUser.getUserChannelRelationBool(idChannel, idUser);
     }
     //Metodos POST para insertar cada cosa relacionada con la tabla carro
     @PostMapping("/insertCompany")
