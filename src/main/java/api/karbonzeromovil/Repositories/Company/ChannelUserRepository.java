@@ -10,4 +10,4 @@ import org.springframework.stereotype.Repository;
 public interface ChannelUserRepository extends JpaRepository<ChannelUserEntity, String> {
     Page<ChannelUserEntity> findAll (Pageable pageable);
     ChannelUserEntity findByIdChannel_IdChannelAndIdUser_IdUser (String idChannel, String idUser);
-}
+    boolean existsByIdChannel_IdChannelAndIdUser_IdUser (String idChannel, String idUser);}
