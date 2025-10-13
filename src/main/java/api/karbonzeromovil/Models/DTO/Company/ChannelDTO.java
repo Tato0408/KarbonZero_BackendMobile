@@ -13,8 +13,6 @@ import lombok.ToString;
 @Getter @Setter
 public class ChannelDTO {
     private String idChannel;
-
-    @NotNull
     private String idCompany;
 
     private String companyName;
@@ -23,10 +21,8 @@ public class ChannelDTO {
     @Size(max = 200)
     private String name;
 
-    @NotBlank
     @Size(max = 200)
     private String descript;
 
-    @NotBlank
     private String imagePath;
 }

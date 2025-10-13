@@ -16,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,6 +26,13 @@ import java.util.stream.Collectors;
 public class CompanyService {
     @Autowired
     private CompanyRepository repo;
+
+    public Map<String, String> getApiKey(String id) {
+        Map<String, String> answer = new HashMap<>();
+        CompanyEntity company = repo.getReferenceById(id);
+        answer.put("apiKey", company.getApiKey());
+        return answer;
+    }
 
     public Page<CompanyDTO> getCompanyByName(String name, int page, int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -46,7 +55,7 @@ public class CompanyService {
     public List<String> getAllCompaniesDomains() {
         List<CompanyEntity> companies = repo.findAll();
         return companies.stream()
-                .map(CompanyEntity::getDomain)
+                .map(CompanyEntity::getFrontendDomain)
                 .toList();
     }
 
@@ -77,7 +86,8 @@ public class CompanyService {
             if (repo.existsById((id))){
                 CompanyEntity entity = repo.getById(id);
                 entity.setName(dto.getName());
-                entity.setDomain(dto.getDomain());
+                entity.setBackendDomain(dto.getBackendDomain());
+                entity.setFrontendDomain(dto.getFrontendDomain());
 
                 CompanyEntity savedCompany = repo.save(entity);
                 return CompanyToDTO(savedCompany);
@@ -105,16 +115,18 @@ public class CompanyService {
         CompanyDTO dto = new CompanyDTO();
         dto.setIdCompany(entity.getIdCompany());
         dto.setName(entity.getName());
-        dto.setDomain(entity.getDomain());
+        dto.setBackendDomain(entity.getBackendDomain());
+        dto.setFrontendDomain(entity.getFrontendDomain());
         return dto;
     }
     private CompanyEntity DT0ToCompany(CompanyDTO dto){
         CompanyEntity entity = new CompanyEntity();
         entity.setIdCompany(dto.getIdCompany());
         entity.setName(dto.getName());
-        entity.setDomain(dto.getDomain());
+        entity.setBackendDomain(dto.getBackendDomain());
+        entity.setFrontendDomain(dto.getFrontendDomain());
+        entity.setApiKey(dto.getApiKey());
         return entity;
     }
-
 
 }

@@ -20,6 +20,16 @@ public class ChannelPostService {
     @Autowired
     private UserRepository userRepository;
 
+    public ChannelPostDTO savedPost(String id)  {
+        try {
+            ChannelPostEntity entity = repo.getReferenceById(id);
+            ChannelPostEntity savedPost = repo.save(entity);
+            return ChannelPostToDTO(savedPost);
+        } catch (Exception e) {
+            throw new RuntimeException("The Post could not be created"+ e.getMessage());
+        }
+    }
+
     public ChannelPostDTO insertChannelPost(ChannelPostDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Post cannot be null or empty");
@@ -72,6 +82,7 @@ public class ChannelPostService {
         dto.setIsApproved(entity.getIsApproved());
         dto.setIdChannel(entity.getIdChannel().getIdChannel());
         dto.setIdUser(entity.getIdUser().getIdUser());
+        dto.setUserName(entity.getIdUser().getUserName());
         return dto;
     }
     public ChannelPostEntity DTOToChannelPost(ChannelPostDTO dto){

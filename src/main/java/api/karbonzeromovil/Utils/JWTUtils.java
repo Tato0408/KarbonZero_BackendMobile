@@ -47,7 +47,7 @@ public class JWTUtils {
 
     public String extractRol(String token){
         Claims claims = parseToken(token);
-        return claims.get("rol",String.class);
+        return claims.get("rol", String.class);
     }
 
     /**
