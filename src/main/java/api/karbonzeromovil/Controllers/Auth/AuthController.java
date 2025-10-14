@@ -29,11 +29,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/apiAuth")
 public class AuthController {
+    private static final Logger logger = Logger.getLogger(AuthController.class.getName());
 
     @Autowired
     private AuthService service;
@@ -94,13 +96,16 @@ public class AuthController {
         String origin = request.getHeader("X-Company-Domain");
 
         if (apiKey == null) {
+            logger.warning(apiKey + "--" + origin);
             return Responses.responseNotAuthenticated("Error, credenciales inválidas");
         }
         if (origin == null) {
+            logger.warning(apiKey + "--" + origin);
             return Responses.responseNotAuthenticated("Error, origen inválido");
         }
 
         CompanyEntity company = service.getCompany(apiKey, origin);
+        logger.info("compañia: " + company.getName() + " registrada");
         if (company != null) {
             addTokenCookieForCompany(response, company);
             return Responses.responseOK("Inicio de sesión exitoso");
