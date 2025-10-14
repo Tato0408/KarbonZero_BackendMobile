@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompanyRepository extends JpaRepository<CompanyEntity, String> {
     Page<CompanyEntity> findAll (Pageable pageable);
-
     Page<CompanyEntity> findByNameContains(String name, Pageable pageable);
+    CompanyEntity findByApiKeyAndBackendDomain(String apiKey, String domain);
+    CompanyEntity findByApiKey(String apiKey);
 }

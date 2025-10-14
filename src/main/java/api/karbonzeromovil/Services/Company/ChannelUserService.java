@@ -40,7 +40,11 @@ public class ChannelUserService {
         }
         return null;
     }
-    public ChannelUserDTO getUserChannelRelation(String idChannel, String idUser){
+    public boolean getUserChannelRelationBool(String idChannel, String idUser){
+        return repo.existsByIdChannel_IdChannelAndIdUser_IdUser(idChannel, idUser);
+    }
+
+    public ChannelUserDTO getUserChannelRelationObj(String idChannel, String idUser){
         return ChannelUserToDTO(repo.findByIdChannel_IdChannelAndIdUser_IdUser(idChannel, idUser));
     }
 

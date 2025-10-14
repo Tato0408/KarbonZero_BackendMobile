@@ -1,10 +1,12 @@
 package api.karbonzeromovil.Services.Company;
 
 import api.karbonzeromovil.Entities.Company.ChannelEntity;
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Models.DTO.Company.ChannelDTO;
 import api.karbonzeromovil.Models.DTO.Company.ChannelPostDTO;
 import api.karbonzeromovil.Repositories.Company.ChannelRepository;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -39,19 +41,32 @@ public class ChannelService {
         return null;
     }
 
-    public List<ChannelPostDTO> getAllPostByChannel(String id){
-        ChannelEntity post = repo.getReferenceById(id);
+    public ChannelDTO getChannelByCompany(String id) {
+        CompanyEntity company = CompanyRepo.getReferenceById(id);
+        return ChannelToDTO(company.getIdCompanyChannel());
+    }
+
+    public ChannelDTO getChannelByApiKey (String apikey) {
+        CompanyEntity company = CompanyRepo.findByApiKey(apikey);
+        return ChannelToDTO(company.getIdCompanyChannel());
+    }
+
+    public List<ChannelPostDTO> getAllPostByChannel(String apiKey){
+        CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+        ChannelEntity post = company.getIdCompanyChannel();
         return post.getAllChannelChannelPost().stream()
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
 
-    public List<ChannelPostDTO> getNoApprovedPosts(String id){
-        ChannelEntity post = repo.getReferenceById(id);
+    public List<ChannelPostDTO> getNoApprovedPosts(String apiKey){
+        CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+        ChannelEntity post = company.getIdCompanyChannel();
         return post.getNoApprovedPosts().stream()
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
-    public List<ChannelPostDTO> getApprovedPosts(String id){
-        ChannelEntity post = repo.getReferenceById(id);
+    public List<ChannelPostDTO> getApprovedPosts(String apiKey){
+        CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+        ChannelEntity post = company.getIdCompanyChannel();
         return post.getApprovedPosts().stream()
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
@@ -73,7 +88,6 @@ public class ChannelService {
         try {
             if (repo.existsById((id))){
                 ChannelEntity entity = repo.getReferenceById(id);
-                entity.setIdCompany(CompanyRepo.getReferenceById(dto.getIdCompany()));
                 entity.setName(dto.getName());
                 entity.setDescript(dto.getDescript());
                 entity.setImagePath(dto.getImagePath());
@@ -86,14 +100,27 @@ public class ChannelService {
         }
     }
 
+    public ChannelDTO updateChannelByApiKey(String apiKey, @Valid ChannelDTO dto) {
+        try {
+            CompanyEntity company = CompanyRepo.findByApiKey(apiKey);
+            ChannelEntity entity = company.getIdCompanyChannel();
+            entity.setName(dto.getName());
+            entity.setDescript(dto.getDescript());
+            entity.setImagePath(dto.getImagePath());
+            ChannelEntity savedChannel = repo.save(entity);
+            return ChannelToDTO(savedChannel);
+        }catch (Exception e){
+            throw new RuntimeException("The channel could not be updated" + e.getMessage());
+        }
+    }
+
     public boolean deleteChannel(String id){
         try{
-            if(repo.existsById(id)){
+            if (repo.existsById(id)) {
                 repo.deleteById(id);
                 return true;
-            }else{
-                return false;
             }
+            return false;
         }catch (EmptyResultDataAccessException e){
             throw new EmptyResultDataAccessException("The Channel with the ID : " + id + " doesn't exists", 1);
         }
@@ -121,4 +148,7 @@ public class ChannelService {
         entity.setImagePath(dto.getImagePath());
         return entity;
     }
+
+
+
 }

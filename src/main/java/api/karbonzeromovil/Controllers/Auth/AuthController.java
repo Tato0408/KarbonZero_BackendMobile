@@ -1,13 +1,18 @@
 package api.karbonzeromovil.Controllers.Auth;
 
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Models.DTO.recoveryPassword.ForgotPasswordDTO;
 import api.karbonzeromovil.Services.Auth.AuthService;
 import api.karbonzeromovil.Services.Auth.PasswordRecoveryService;
+import api.karbonzeromovil.Services.Company.CompanyService;
 import api.karbonzeromovil.Services.User.UserService;
 import api.karbonzeromovil.Utils.JWTUtils;
+import api.karbonzeromovil.Utils.JwtCookieAuthFilter;
 import api.karbonzeromovil.Utils.Responses;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,17 +26,24 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/apiAuth")
 public class AuthController {
+    private static final Logger logger = Logger.getLogger(AuthController.class.getName());
 
     @Autowired
     private AuthService service;
+    @Autowired
+    private CompanyService companyService;
 
     @Autowired
     private JWTUtils jwtUtils;
@@ -64,13 +76,76 @@ public class AuthController {
                     String.valueOf(user.getStatus())
             );
 
-            Cookie cookie = new Cookie("authToken", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(86400);
-            response.addCookie(cookie);
+            String cookieValue = String.format(
+                    "authToken=%s; " +
+                            "Path=/; " +
+                            "HttpOnly; " +
+                            "Secure; " +
+                            "SameSite=None; " +
+                            "MaxAge=86400; " +
+                            "Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com",
+                    token
+            );
+
+            response.addHeader("Set-Cookie", cookieValue);
+            //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
+            response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
         }
+    }
+
+    @PostMapping("/authenticateCompany")
+    public ResponseEntity<?> authenticateCompany (HttpServletRequest request, HttpServletResponse response) {
+        String apiKey = request.getHeader("X-API-KEY");
+        String origin = request.getHeader("X-Company-Domain");
+
+        if (apiKey == null) {
+            logger.warning(apiKey + "--" + origin);
+            return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+        }
+        if (origin == null) {
+            logger.warning(apiKey + "--" + origin);
+            return Responses.responseNotAuthenticated("Error, origen inválido");
+        }
+
+        CompanyEntity company = service.getCompany(apiKey, origin);
+        logger.info("La compañia se intentó registrar: " + apiKey + "---" + origin);
+        if (company != null) {
+            logger.info("Compañia registrada: " + company.getName());
+            addTokenCookieForCompany(response, company);
+            return Responses.responseOK("Inicio de sesión exitoso");
+        }
+        return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+
+    }
+
+    private void addTokenCookieForCompany (HttpServletResponse response, CompanyEntity company) {
+        String token = jwtUtils.create(
+                String.valueOf(company.getIdCompany()),
+                company.getApiKey(),
+                "2"
+        );
+
+        Instant now = Instant.now();
+        Instant exp = now.plusSeconds(86400);
+        String expiresRfc1123 = DateTimeFormatter.RFC_1123_DATE_TIME
+                .withZone(ZoneOffset.UTC)
+                .format(exp);
+
+        String cookieValue = String.format(
+                "channelToken=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400; Expires=%s",
+                token,
+                expiresRfc1123
+        );
+
+        // Reemplaza cualquier Set-Cookie previo
+        response.setHeader("Set-Cookie", cookieValue);
+
+        // Para exponer la cabecera al proxy/frontend
+        response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+
+        // Evitar caching
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
     }
 
     @GetMapping("/me")
@@ -102,10 +177,49 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/company")
+    public ResponseEntity<?> getCurrentCompany(HttpServletRequest request) {
+        try {
+
+            String apiKey = null;
+            // Intentar obtener el apiKey de las cookies
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("channelToken".equals(cookie.getName())) {
+                        apiKey = jwtUtils.getValue(cookie.getValue());
+                        break;
+                    }
+                }
+            }
+
+            logger.warning("Obteniendo la compañia: " + apiKey);
+            CompanyEntity company = service.getCompanyByApiKey(apiKey);
+            if (company == null) {
+                logger.warning("No se pudo obtener la compañia: " + apiKey);
+                return Responses.responseNotAuthenticated("No autenticado");
+            }
+            logger.warning("Se obtuvo la compañia: " + company.getName());
+
+            return ResponseEntity.ok(Map.of(
+                    "authenticated", true,
+                    "company", Map.of(
+                            "id", company.getIdCompany(),
+                            "name", company.getName(),
+                            "domain", company.getBackendDomain()
+                    )
+            ));
+
+        } catch (Exception e) {
+            //log.error("Error en /me endpoint: ", e);
+            return Responses.responseServerError(e, "Error obteniendo datos de canal");
+        }
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request, HttpServletResponse response) {
         // Crear cookie de expiración con SameSite=None
-        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=localhost";
+        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com";
 
         response.addHeader("Set-Cookie", cookieValue);
         //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO

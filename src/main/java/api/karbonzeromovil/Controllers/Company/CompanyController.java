@@ -12,6 +12,7 @@ import api.karbonzeromovil.Services.Company.ChannelUserService;
 import api.karbonzeromovil.Services.Company.CompanyService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -56,19 +57,19 @@ public class CompanyController {
         return serviceCompany.getCompanyByName(name, page, size);
     }
 
-
-    @GetMapping("/getAllChannelPost/{id}")
-    public List<ChannelPostDTO> getAllChannelPost(@PathVariable String id){
-        return serviceChannel.getAllPostByChannel(id);
+    @GetMapping("/getAllChannelPost/{apiKey}")
+    public List<ChannelPostDTO> getAllChannelPost(@PathVariable String apiKey){
+        return serviceChannel.getAllPostByChannel(apiKey);
     }
 
-    @GetMapping("/getChannelPostAproved/{id}")
-    public List<ChannelPostDTO> getChannelPostAproved(@PathVariable String id){
-        return serviceChannel.getApprovedPosts(id);
+    @GetMapping("/getChannelPostApproved/{apiKey}")
+    public List<ChannelPostDTO> getChannelPostApproved(@PathVariable String apiKey){
+        return serviceChannel.getApprovedPosts(apiKey);
     }
-    @GetMapping("/getChannelPostNoAproved/{id}")
-    public List<ChannelPostDTO> getChannelPostNoAproved(@PathVariable String id){
-        return serviceChannel.getNoApprovedPosts(id);
+
+    @GetMapping("/getChannelPostNoApproved/{apiKey}")
+    public List<ChannelPostDTO> getChannelPostNoApproved(@PathVariable String apiKey){
+        return serviceChannel.getNoApprovedPosts(apiKey);
     }
     //Metodos Get para obtener cada cosa relacionada con la tabla company
     @GetMapping("/getAllCompany")
@@ -108,9 +109,25 @@ public class CompanyController {
         return serviceCompany.getCompanyById(id);
     }
 
+    @GetMapping("/getApiKey/{id}")
+    public Map<String, String> getApiKey(@PathVariable String id){
+        return serviceCompany.getApiKey(id);
+    }
+
+
     @GetMapping("/getChannelById/{id}")
     public ChannelDTO getChannelById(@PathVariable String id){
         return serviceChannel.getChannelById(id);
+    }
+
+    @GetMapping("/getChannelByApiKey/{apiKey}")
+    public ChannelDTO getChannelByApiKey(@PathVariable String apiKey){
+        return serviceChannel.getChannelByApiKey(apiKey);
+    }
+
+    @GetMapping("/getChannelByCompany/{id}")
+    public ChannelDTO getChannelByCompany (@PathVariable String id) {
+        return serviceChannel.getChannelByCompany(id);
     }
 
     @GetMapping("/getChannelUserById/{id}")
@@ -119,7 +136,11 @@ public class CompanyController {
     }
     @GetMapping("/getUserChannelRelation/{idChannel}/{idUser}")
     public ChannelUserDTO getUserChannelRelation( @PathVariable String idChannel,@PathVariable String idUser){
-        return serviceChannelUser.getUserChannelRelation(idChannel, idUser);
+        return serviceChannelUser.getUserChannelRelationObj(idChannel, idUser);
+    }
+    @GetMapping("/getUserChannelRelationBool/{idChannel}/{idUser}")
+    public boolean getUserChannelRelationBool( @PathVariable String idChannel,@PathVariable String idUser){
+        return serviceChannelUser.getUserChannelRelationBool(idChannel, idUser);
     }
     //Metodos POST para insertar cada cosa relacionada con la tabla carro
     @PostMapping("/insertCompany")
@@ -194,6 +215,22 @@ public class CompanyController {
         }
     }
 
+    @PutMapping("/approvePost/{id}")
+    public ResponseEntity<?> approvePost (@PathVariable String id) {
+        try {
+            ChannelPostDTO post = channelPostService.savedPost(id);
+            post.setIsApproved(1);
+            ChannelPostDTO answer = channelPostService.updateChannelPost(id, post);
+
+            if (answer== null){
+                return responseBadRequest("Invalid data to update a Post object");
+            }
+            return responseUpdated(answer);
+        } catch (Exception e){
+            return responseServerError(e, "Cannot update a Post object");
+        }
+    }
+
     //Metodos PUT para actualizar cada cosa relacionada con la tabla carro
     @PutMapping("/updateCompany/{id}")
     public ResponseEntity<?> updateCompany(@PathVariable String id, @Valid @RequestBody CompanyDTO dto, BindingResult bindingresult){
@@ -220,6 +257,23 @@ public class CompanyController {
         }
         try{
             ChannelDTO answer = serviceChannel.updateChannel(id, dto);
+            if(answer == null){
+                return responseBadRequest("Invalid data to update a size car object ");
+            }
+            return responseUpdated(answer);
+        }
+        catch(Exception e){
+            return responseServerError(e,"Can't update a size car object");
+        }
+    }
+
+    @PutMapping("/updateChannelByApiKey/{apiKey}")
+    public ResponseEntity<?> updateChannelByApiKey(@PathVariable String apiKey, @Valid @RequestBody ChannelDTO dto, BindingResult bindingresult){
+        if (bindingresult.hasErrors()){
+            return responseBadRequestBinding(bindingresult);
+        }
+        try{
+            ChannelDTO answer = serviceChannel.updateChannelByApiKey(apiKey, dto);
             if(answer == null){
                 return responseBadRequest("Invalid data to update a size car object ");
             }

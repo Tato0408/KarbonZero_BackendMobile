@@ -21,4 +21,5 @@ public class ChannelPostDTO {
     private String idChannel;
     @NotBlank
     private String idUser;
+    private String userName;
 }

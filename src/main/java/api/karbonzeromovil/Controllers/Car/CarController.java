@@ -31,16 +31,12 @@ import static api.karbonzeromovil.Utils.Responses.*;
 public class CarController {
     @Autowired
     private CarService serviceCar;
-
     @Autowired
     private CarSizeService serviceSizeCar;
-
     @Autowired
     private TypeCarService serviceTypeCar;
-
     @Autowired
     private FuelTypeService serviceFuelType;
-
     @Autowired
     private FuelConsumptionService serviceFuelConsumption;
 
@@ -109,9 +105,9 @@ public class CarController {
     public List<FuelTypeDTO> dataCompanySP(){
         return serviceFuelType.getAllFuelTypeSP();
     }
+
     @GetMapping("/getAllFuelConsumption")
     public List<FuelConsumptionDTO> dataFuelConsumption(){return serviceFuelConsumption.getAllFuelConsumption();}
-
 
     @GetMapping("/getCarById/{id}")
     public CarDTO getCarById(@PathVariable String id){
@@ -218,9 +214,6 @@ public class CarController {
             return responseServerError(e,"Can't create fuel consumption type object");
         }
     }
-
-
-
 
     //Metodos PUT para actualizar cada cosa relacionada con la tabla carro
     @PutMapping("/updateCar/{id}")
@@ -380,6 +373,7 @@ public class CarController {
     public List<TypeCarDTO> getAllTypeCarsByCar(@PathVariable String id){
         return serviceCar.getAllTypeCarsByCar(id);
     }
+
     @GetMapping("/getAllFuelConsumptionsByTypeCar/{id}")
     public List<FuelConsumptionDTO> getAllFuelConsumptionsByTypeCar(@PathVariable String id){
         return serviceTypeCar.getAllFuelConsumptionsByTypeCar(id);
