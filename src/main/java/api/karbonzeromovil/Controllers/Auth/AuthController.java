@@ -129,7 +129,7 @@ public class AuthController {
                         "Secure; " +
                         "SameSite=None; " +
                         "MaxAge=86400; " +
-                        "Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com",
+                        "Domain=" + company.getFrontendDomain(),
                 token
         );
 
