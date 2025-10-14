@@ -39,6 +39,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/apiAuth/logout").permitAll()
                             .requestMatchers(HttpMethod.POST, "/apiUser/confirmPassword").permitAll()
                             .requestMatchers(HttpMethod.POST, "/apiAuth/forgotPassword").permitAll()
+                            .requestMatchers(HttpMethod.PUT, "/apiUser/updateUserPassword/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/apiAuth/verifyCode").permitAll()
                             .requestMatchers(HttpMethod.GET, "/apiMap/getCountryGeo/{name}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/apiTransport/getTransportConsumptionsCO2WithLocation").permitAll()

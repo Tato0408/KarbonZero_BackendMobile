@@ -117,7 +117,8 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter {
                 path.startsWith("/apiTransport/getTransportConsumptionsCO2WithLocation") && "GET".equals(method) ||
                 path.startsWith("/apiService/getServiceConsumptionsCO2WithLocation") && "GET".equals(method) ||
                 path.startsWith("/apiCar/getFuelConsumptionsCO2WithLocation") && "GET".equals(method) ||
-                path.startsWith("/apiFood/getFoodConsumptionsCO2WithLocation") && "GET".equals(method))
+                path.startsWith("/apiFood/getFoodConsumptionsCO2WithLocation") && "GET".equals(method))||
+                path.startsWith("/apiUser/updateUserPassword/") && "PUT".equals(method)
         ;
     }
 }

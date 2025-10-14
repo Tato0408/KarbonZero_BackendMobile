@@ -3,6 +3,7 @@ package api.karbonzeromovil.Services.User;
 import api.karbonzeromovil.Config.Argon2PasswordEncoder;
 import api.karbonzeromovil.Entities.User.CountryEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Exceptions.BadIdException;
 import api.karbonzeromovil.Exceptions.DeleteException;
 import api.karbonzeromovil.Exceptions.ExceptionNotFound;
 import api.karbonzeromovil.Exceptions.UpdateException;
@@ -227,6 +228,19 @@ public class UserService {
         }catch (Exception e){
             throw new RuntimeException("The User could not be updated" + e.getMessage());
         }
+    }
+
+    public void updateUserPassword(String id, String newPassword) {
+        if (!repo.existsById(id)) {
+            throw new BadIdException("El usuario con ID " + id + " no existe");
+        }
+
+        UserEntity entity = repo.getReferenceById(id);
+
+        Argon2PasswordEncoder encoder = new Argon2PasswordEncoder();
+        entity.setPasswordUser(encoder.HashPassword(newPassword));
+
+        repo.save(entity);
     }
 
     public Boolean confirmPassword(String idUser, String password) {
