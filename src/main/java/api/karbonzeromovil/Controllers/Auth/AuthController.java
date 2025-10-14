@@ -248,14 +248,26 @@ public class AuthController {
     public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> body) {
         String code = body.get("code");
 
-        boolean valid = passwordRecoveryService.verifyCode(code);
+        String result = passwordRecoveryService.verifyCode(code);
 
-        if (!valid) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Código inválido o expirado"));
+        switch (result) {
+            case "expired":
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("message", "El código ha expirado"));
+
+            case "invalid":
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("message", "Código inválido"));
+
+            case "valid":
+                return ResponseEntity.ok(Map.of("message", "Código válido"));
+
+            default:
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("message", "Error interno al verificar el código"));
         }
-
-        return ResponseEntity.ok(Map.of("message", "Código válido"));
     }
 }

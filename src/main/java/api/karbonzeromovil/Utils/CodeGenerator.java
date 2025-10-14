@@ -5,8 +5,7 @@ public class CodeGenerator {
 
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             + "abcdefghijklmnopqrstuvwxyz"
-            + "0123456789"
-            + "!@#$%^&*";
+            + "0123456789";
 
     private static final SecureRandom random = new SecureRandom();
 
