@@ -36,6 +36,9 @@ public class JWTUtils {
         Instant now = Instant.now();
         Date expiration = Date.from(now.plusSeconds(86400));
 
+        System.out.println("IssuedAt UTC: " + now);
+        System.out.println("Expiration UTC: " + expiration);
+
         //Construye el token con sus componentes
         return Jwts.builder()
                 .setId(id)                                              // ID único (JWT ID)
