@@ -182,10 +182,13 @@ public class AuthController {
                 }
             }
 
+            logger.warning("Obteniendo la compañia: " + apiKey);
             CompanyEntity company = service.getCompanyByApiKey(apiKey);
             if (company == null) {
+                logger.warning("No se pudo obtener la compañia: " + apiKey);
                 return Responses.responseNotAuthenticated("No autenticado");
             }
+            logger.warning("Se obtuvo la compañia: " + company.getName());
 
             return ResponseEntity.ok(Map.of(
                     "authenticated", true,
