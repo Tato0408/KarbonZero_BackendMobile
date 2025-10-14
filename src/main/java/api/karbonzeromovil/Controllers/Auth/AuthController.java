@@ -128,8 +128,8 @@ public class AuthController {
                         "HttpOnly; " +
                         "Secure; " +
                         "SameSite=None; " +
-                        "MaxAge=86400; " +
-                        "Domain=" + company.getFrontendDomain(),
+                        "Max-Age=86400; " +
+                        "Domain=" + company.getFrontendDomain().replace("https://", ""),
                 token
         );
 
