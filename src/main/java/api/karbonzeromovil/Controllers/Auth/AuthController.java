@@ -26,6 +26,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -122,19 +125,27 @@ public class AuthController {
                 "2"
         );
 
+        Instant now = Instant.now();
+        Instant exp = now.plusSeconds(86400);
+        String expiresRfc1123 = DateTimeFormatter.RFC_1123_DATE_TIME
+                .withZone(ZoneOffset.UTC)
+                .format(exp);
+
         String cookieValue = String.format(
-                "channelToken=%s; " +
-                        "Path=/; " +
-                        "HttpOnly; " +
-                        "Secure; " +
-                        "SameSite=None; " +
-                        "Max-Age=86400; " +
-                        "Domain=" + company.getFrontendDomain().replace("https://", ""),
-                token
+                "channelToken=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400; Expires=%s",
+                token,
+                expiresRfc1123
         );
 
-        response.addHeader("Set-Cookie", cookieValue);
-        response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
+        // Reemplaza cualquier Set-Cookie previo
+        response.setHeader("Set-Cookie", cookieValue);
+
+        // Para exponer la cabecera al proxy/frontend
+        response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+
+        // Evitar caching
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
     }
 
     @GetMapping("/me")
