@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.swing.text.html.parser.Parser;
+import java.time.Instant;
 import java.util.Date;
 
 @Component
@@ -32,18 +33,18 @@ public class JWTUtils {
         //Decodifica el secreto Base64 y crea una clave HMAC-SHA segura
         SecretKey signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecreto));
         //Obtiene la fecha catual y calcula la fecha de expiración
-        Date now = new Date();
-        Date expiration = new Date(now.getTime() + expiracionMs);
+        Instant now = Instant.now();
+        Date expiration = Date.from(now.plusSeconds(86400));
 
         //Construye el token con sus componentes
         return Jwts.builder()
                 .setId(id)                                              // ID único (JWT ID)
-                .setIssuedAt(now)                                       // Fecha de emisión
+                .setIssuedAt(Date.from(now))                                       // Fecha de emisión
                 .setSubject(email)                                     // Sujeto (usuario)
                 .claim("id", id)
                 .claim("rol", rol)
                 .setIssuer(issuer)                                      // Emisor del token
-                .setExpiration(expiracionMs >= 0 ? expiration : null)   // Expiración (si es >= 0)
+                .setExpiration(expiration)   // Expiración (si es >= 0)
                 .signWith(signingKey, SignatureAlgorithm.HS256)         // Firma con algoritmo HS256
                 .compact();                                             // Convierte a String compacto
     }
