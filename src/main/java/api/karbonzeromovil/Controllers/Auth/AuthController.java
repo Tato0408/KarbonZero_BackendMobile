@@ -105,8 +105,9 @@ public class AuthController {
         }
 
         CompanyEntity company = service.getCompany(apiKey, origin);
-        logger.info("compañia: " + company.getName() + " registrada");
+        logger.info("La compañia se intentó registrar: " + apiKey + "---" + origin);
         if (company != null) {
+            logger.info("Compañia registrada: " + company.getName());
             addTokenCookieForCompany(response, company);
             return Responses.responseOK("Inicio de sesión exitoso");
         }
