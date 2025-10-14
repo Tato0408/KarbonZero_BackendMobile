@@ -42,6 +42,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/apiAuth/company").hasAnyAuthority("ROL_2")
 
                             .requestMatchers(HttpMethod.POST, "/apiUser/confirmPassword").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/apiUser/insertUser").permitAll()
                             .requestMatchers(HttpMethod.POST, "/apiAuth/forgotPassword").permitAll()
                             .requestMatchers(HttpMethod.POST, "/apiAuth/verifyCode").permitAll()
 
