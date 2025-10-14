@@ -284,7 +284,7 @@ public class UserService {
             dto.setCountryName(entity.getIdCountry().getName());
         }else{
             dto.setIdCountry(null);
-            dto.setIdCountry("No hay un pais asociado");
+            dto.setCountryName("No hay un pais asociado");
         }
         return dto;
     }
