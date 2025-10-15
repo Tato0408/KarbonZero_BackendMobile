@@ -47,11 +47,11 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/apiUser/updateUserPassword/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/apiAuth/verifyCode").permitAll()
 
-                            .requestMatchers(HttpMethod.GET, "/apiMap/getCountryGeo/{name}").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/apiTransport/getTransportConsumptionsCO2WithLocation").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/apiService/getServiceConsumptionsCO2WithLocation").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/apiCar/getFuelConsumptionsCO2WithLocation").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/apiFood/getFoodConsumptionsCO2WithLocation").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/apiMap/getCountryGeo/{name}").hasAnyAuthority("ROL_2")
+                            .requestMatchers(HttpMethod.GET, "/apiTransport/getTransportConsumptionsCO2WithLocation").hasAnyAuthority("ROL_2")
+                            .requestMatchers(HttpMethod.GET, "/apiService/getServiceConsumptionsCO2WithLocation").hasAnyAuthority("ROL_2")
+                            .requestMatchers(HttpMethod.GET, "/apiCar/getFuelConsumptionsCO2WithLocation").hasAnyAuthority("ROL_2")
+                            .requestMatchers(HttpMethod.GET, "/apiFood/getFoodConsumptionsCO2WithLocation").hasAnyAuthority("ROL_2")
 
                             // API CAR
                             .requestMatchers(HttpMethod.GET, "/apiCar/getFuelTypeByName/**").hasAnyAuthority("ROL_0", "ROL_1")
