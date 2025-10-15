@@ -82,7 +82,7 @@ public class AuthController {
                             "HttpOnly; " +
                             "Secure; " +
                             "SameSite=None; " +
-                            "MaxAge=86400; " +
+                            "Max-Age=86400; " +
                             "Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com",
                     token
             );
