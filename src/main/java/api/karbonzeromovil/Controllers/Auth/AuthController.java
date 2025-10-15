@@ -247,27 +247,33 @@ public class AuthController {
     @PostMapping("/verifyCode")
     public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> body) {
         String code = body.get("code");
+        String email = body.get("email");
 
-        String result = passwordRecoveryService.verifyCode(code);
+        Object result = passwordRecoveryService.verifyCode(email, code);
 
-        switch (result) {
-            case "expired":
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("message", "El código ha expirado"));
-
-            case "invalid":
-                return ResponseEntity
-                        .status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("message", "Código inválido"));
-
-            case "valid":
-                return ResponseEntity.ok(Map.of("message", "Código válido"));
-
-            default:
-                return ResponseEntity
-                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(Map.of("message", "Error interno al verificar el código"));
+        if (result instanceof String) {
+            String status = (String) result;
+            switch (status) {
+                case "expired":
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("message", "El código ha expirado"));
+                case "invalid":
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("message", "Código inválido"));
+                default:
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(Map.of("message", "Error interno"));
+            }
+        } else if (result instanceof UserEntity user) {
+            return ResponseEntity.ok(Map.of(
+                    "message", "Código válido",
+                    "idUser", user.getIdUser(),
+                    "email", user.getEmail()
+            ));
         }
+
+        // 🔹 Return por defecto si result no es String ni UserEntity
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Resultado inesperado al verificar el código"));
     }
 }

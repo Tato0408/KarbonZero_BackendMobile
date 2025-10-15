@@ -1,6 +1,7 @@
 package api.karbonzeromovil.Services.Auth;
 
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Repositories.User.UserRepository;
 import api.karbonzeromovil.Services.Mail.MailService;
 import api.karbonzeromovil.Services.User.UserService;
 import api.karbonzeromovil.Utils.CodeGenerator;
@@ -24,6 +25,9 @@ public class PasswordRecoveryService {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private UserRepository repoUser;
 
     // Código temporal en memoria
     private final ConcurrentHashMap<String, CodeEntry> codes = new ConcurrentHashMap<>();
@@ -53,8 +57,9 @@ public class PasswordRecoveryService {
     }
 
     // Verificar código
-    public String verifyCode(String code) {
+    public Object verifyCode(String email,String code) {
         for (Map.Entry<String, CodeEntry> entry : codes.entrySet()) {
+            CodeEntry stored2 = codes.get(email);
             CodeEntry stored = entry.getValue();
 
             if (stored.code.equals(code)) {
@@ -62,9 +67,9 @@ public class PasswordRecoveryService {
                     codes.remove(entry.getKey());
                     return "expired"; // código expirado
                 }
-
+                UserEntity user = repoUser.findByEmail(email);
                 codes.remove(entry.getKey());
-                return "valid"; // código correcto
+                return user; // código correcto
             }
         }
         return "invalid"; // no se encontró el código
