@@ -98,7 +98,7 @@ public class SecurityConfig {
                             // API COMPANY
                             .requestMatchers(HttpMethod.GET, "/apiCompany/getCompanyByName/**").hasAnyAuthority("ROL_0", "ROL_1")
                             .requestMatchers(HttpMethod.GET, "/apiCompany/getAllChannelPost/**").hasAnyAuthority("ROL_2")
-                            .requestMatchers(HttpMethod.GET, "/apiCompany/getChannelPostAproved/**").hasAnyAuthority("ROL_2")
+                            .requestMatchers(HttpMethod.GET, "/apiCompany/getChannelPostAproved/**").hasAnyAuthority("ROL_2", "ROL_1", "ROL_0")
                             .requestMatchers(HttpMethod.GET, "/apiCompany/getChannelPostNoAproved/**").hasAnyAuthority("ROL_2")
                             .requestMatchers(HttpMethod.GET, "/apiCompany/getAllCompany").hasAnyAuthority("ROL_0", "ROL_1")
                             .requestMatchers(HttpMethod.GET, "/apiCompany/getAllCompaniesSP").hasAnyAuthority("ROL_0", "ROL_1")
