@@ -70,6 +70,11 @@ public class ChannelService {
         return post.getApprovedPosts().stream()
                 .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
     }
+    public List<ChannelPostDTO> getApprovedPostsWithId(String apiKey){
+        ChannelEntity post = repo.getById(apiKey);
+        return post.getApprovedPosts().stream()
+                .map(new ChannelPostService()::ChannelPostToDTO).collect(Collectors.toList());
+    }
     public ChannelDTO insertChannel(ChannelDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Channel cannot be null or empty");
