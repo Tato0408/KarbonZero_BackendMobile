@@ -66,6 +66,10 @@ public class CompanyController {
     public List<ChannelPostDTO> getChannelPostApproved(@PathVariable String apiKey){
         return serviceChannel.getApprovedPosts(apiKey);
     }
+    @GetMapping("/getChannelPostApprovedWithIdChannel/{idChannel}")
+    public List<ChannelPostDTO> getChannelPostApprovedWithIdChannel(@PathVariable String idChannel){
+        return serviceChannel.getApprovedPosts(idChannel);
+    }
 
     @GetMapping("/getChannelPostNoApproved/{apiKey}")
     public List<ChannelPostDTO> getChannelPostNoApproved(@PathVariable String apiKey){
