@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.query.JSqlParserUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/apiAuth")
 public class AuthController {
+    // Dominio de la cookie de sesión. Vacío en local (la cookie queda ligada a localhost);
+    // en producción se define con la variable COOKIE_DOMAIN.
+    @Value("${COOKIE_DOMAIN:}")
+    private String cookieDomain;
+
+    private String cookieDomainAttribute() {
+        return (cookieDomain == null || cookieDomain.isBlank()) ? "" : "; Domain=" + cookieDomain;
+    }
+
     private static final Logger logger = Logger.getLogger(AuthController.class.getName());
 
     @Autowired
@@ -82,8 +92,8 @@ public class AuthController {
                             "HttpOnly; " +
                             "Secure; " +
                             "SameSite=None; " +
-                            "Max-Age=86400; " +
-                            "Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com",
+                            "Max-Age=86400" +
+                            cookieDomainAttribute(),
                     token
             );
 
@@ -219,7 +229,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request, HttpServletResponse response) {
         // Crear cookie de expiración con SameSite=None
-        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com";
+        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0" + cookieDomainAttribute();
 
         response.addHeader("Set-Cookie", cookieValue);
         //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
