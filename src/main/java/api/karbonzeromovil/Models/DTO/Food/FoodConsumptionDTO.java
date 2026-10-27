@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @ToString   @EqualsAndHashCode
 @Getter @Setter
@@ -19,14 +20,11 @@ public class FoodConsumptionDTO {
     @NotBlank()
     private String idUser;
 
-    @NotBlank
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private String consumptionDate;
+    @NotNull
+    private LocalDateTime consumptionDate;
 
-    @Min(0)
     private Double latitude;
 
-    @Min(0)
     private Double longitude;
 
     private String userName;

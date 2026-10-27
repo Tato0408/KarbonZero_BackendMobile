@@ -1,10 +1,6 @@
 package api.karbonzeromovil.Services.Measure;
 
-import api.karbonzeromovil.Entities.Food.FoodEntity;
-import api.karbonzeromovil.Entities.Measure.MeasureEntity;
 import api.karbonzeromovil.Entities.Measure.MeasureUnitEntity;
-import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
-import api.karbonzeromovil.Models.DTO.Measure.MeasureDTO;
 import api.karbonzeromovil.Models.DTO.Measure.MeasureUnitDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureRepository;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
@@ -39,6 +35,19 @@ public class MeasureUnitService {
             return MeasureUnitToDTO(entity);
         }
         return null;
+    }
+
+    public Page<MeasureUnitDTO> getMeasureUnitByName(String nameMeasuresUnit, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureUnitEntity> users = repo.findByNameMeasuresUnitContains(nameMeasuresUnit, pageable);
+        return users.map(this::MeasureUnitToDTO);
+    }
+
+    public List<MeasureUnitDTO> getAllMeasureUnitNP(){
+        List<MeasureUnitEntity> entity = repo.findAll();
+        return entity.stream()
+                .map(this::MeasureUnitToDTO)
+                .collect(Collectors.toList());
     }
 
     public MeasureUnitDTO insertMeasureUnit(MeasureUnitDTO dto){

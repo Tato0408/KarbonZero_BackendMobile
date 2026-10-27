@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -131,6 +132,38 @@ public class FoodController {
     @GetMapping("/getFoodConsumptionFoodById/{id}")
     public FoodConsumptionFoodDTO getFoodConsumptionFoodById(@PathVariable String id){ return serviceFoodConsumption.getFoodConsumptionFoodById(id);}
 
+    @GetMapping("/getAllfoodConsumptionFoodByFoodConsumption/{id}")
+    public List<FoodConsumptionFoodDTO> getAllfoodConsumptionFoodByFoodConsumption(@PathVariable String id){ return serviceConsumption.getAllfoodConsumptionFoodByFoodConsumption(id);}
+
+    @GetMapping("/getFoodConsumptionsCO2WithLocation")
+    public List<HashMap<?, ?>> getFoodConsumptionsCO2WithLocation (
+            @RequestParam Double minX,
+            @RequestParam Double maxX,
+            @RequestParam Double minY,
+            @RequestParam Double maxY
+    ) {
+        return serviceConsumption.getFoodConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
+    }
+
+    @GetMapping("/getFoodByFoodName/{foodName}")
+    public Page<FoodDTO> getFoodByName (@PathVariable String foodName,
+                                             @RequestParam(defaultValue = "0") int page,
+                                             @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return service.getFoodByName(foodName, page, size);
+    }
+
+    @GetMapping("/getFoodCategoryByFoodCategoryName/{foodCategoryName}")
+    public Page<FoodCategoryDTO> getFoodCategoryByName (@PathVariable String foodCategoryName,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return serviceCategory.getCategoryByName(foodCategoryName, page, size);
+    }
     @PostMapping("/insertFood")
     public ResponseEntity<Map<String, Object >> insertFood(@Valid @RequestBody FoodDTO dto, HttpServletRequest request){
         try{
@@ -301,5 +334,10 @@ public class FoodController {
         }catch(Exception e){
             return responseServerError(e, "Can't delete the food consumption food object");
         }
+    }
+    @GetMapping("/getAllC02FoodByUser/{id}")
+    public HashMap<String, Double> getAllC02FoodByUser(@PathVariable String id){
+
+        return serviceConsumption.getAllFoodConsumptionsByUser(id);
     }
 }

@@ -25,6 +25,10 @@ public class CountryService {
         Page<CountryEntity> countries = repo.findAll(pageable);
         return countries.map(this::CountryToDTO);
     }
+    public List<CountryDTO>getAllCountriesSP(){
+        List<CountryEntity> countries = repo.findAll();
+        return countries.stream().map(this::CountryToDTO).collect(Collectors.toList());
+    }
     public CountryDTO getCountryById (String id){
         try {
             if(repo.existsById(id)){
@@ -36,6 +40,13 @@ public class CountryService {
             throw new RuntimeException("The Country could not be found" + err.getMessage());
         }
     }
+
+    public Page<CountryDTO> getCountryByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CountryEntity> users = repo.findByNameContains(name, pageable);
+        return users.map(this::CountryToDTO);
+    }
+
     public CountryDTO insertCountry(CountryDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Country cannot be null or empty");

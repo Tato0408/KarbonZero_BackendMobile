@@ -1,13 +1,21 @@
 package api.karbonzeromovil.Services.Food;
 
+import api.karbonzeromovil.Entities.Food.FoodCategoryEntity;
 import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionFoodEntity;
 import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionFoodDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
+import api.karbonzeromovil.Models.DTO.User.FriendDTO;
+import api.karbonzeromovil.Repositories.Food.FoodCategoryRepository;
+import api.karbonzeromovil.Repositories.Food.FoodConsumptionFoodRepository;
 import api.karbonzeromovil.Repositories.Food.FoodConsumptionRepository;
+import api.karbonzeromovil.Repositories.Food.FoodRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
+import api.karbonzeromovil.Services.User.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,6 +24,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +36,14 @@ public class FoodConsumptionService {
     private FoodConsumptionRepository repo;
     @Autowired
     private UserRepository repoUser;
-
+    @Autowired
+    private FoodRepository foodRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private FoodCategoryRepository foodCategoryRepository;
+    @Autowired
+    private FoodConsumptionFoodRepository foodCfoodRepo;
     public Page<FoodConsumptionDTO> getAllFoodConsumption(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
         Page<FoodConsumptionEntity> entity = repo.findAll(pageable);
@@ -40,6 +57,67 @@ public class FoodConsumptionService {
             return foodConsumptionToDTO(entity);
         }
         return null;
+    }
+
+    public List<FoodConsumptionFoodDTO> getAllfoodConsumptionFoodByFoodConsumption(String id){
+        FoodConsumptionEntity foodC = repo.getReferenceById(id);
+        return foodC.getFoodConsumptionFood().stream()
+                .map(new FoodConsumptionFoodService()::foodConsumptionFoodToDTO).collect(Collectors.toList());
+    }
+    public HashMap<String, Double> getAllFoodConsumptionsByUser(String idUser){
+            HashMap<String, Double> hashMap = new HashMap<>();
+            UserEntity entity = repoUser.getReferenceById(idUser);
+            hashMap.put(entity.getIdUser(), 0.00);
+
+            List<FoodConsumptionEntity> foodConsumptions = entity.getFoodConsumpionsUser();
+
+            foodConsumptions.forEach(foodConsumption ->{
+
+                FoodConsumptionEntity foodConsumptionEntity = repo.getReferenceById(foodConsumption.getIdFoodConsumption());
+
+                List<FoodConsumptionFoodEntity> foodConsumptionsFood = foodConsumptionEntity.getFoodConsumptionFood();
+
+                foodConsumptionsFood.forEach(foodConsumptionFood->{
+
+                    FoodEntity foodEntity = foodRepository.getReferenceById(foodConsumptionFood.getFood().getIdFood());
+
+                    List<FoodConsumptionFoodEntity> foods = foodEntity.getFoodConsumptionFood();
+
+                    foods.forEach(foodsConsumptions->{
+
+                        FoodCategoryEntity foodCategory = foodCategoryRepository.getReferenceById(foodsConsumptions.getFood().getFoodCategory().getIdFoodCategory());
+
+                        List<FoodEntity> foodsList = foodCategory.getFoodCategoryList();
+
+                        foodsList.forEach(foodCat ->{
+                            hashMap.put(entity.getIdUser(), (foodCat.getFoodCategory().getCarbonFootPrint())+ hashMap.get(entity.getIdUser()));
+                        });
+                    });
+                });
+            });
+        return hashMap;
+    }
+
+
+    public List<HashMap<?,?>> getFoodConsumptionsCO2WithLocation(Double minX, Double maxX, Double minY, Double maxY) {
+        List<HashMap<?, ?>> consumptionsWithLocation = new ArrayList<>();
+
+        // Filtramos los consumos de comida para mejor rendimiento
+        repo.findByLongitudeBetweenAndLatitudeBetween(minX, maxX, minY, maxY)
+                .forEach(consumption -> {
+                    // Devolvemos la respuesta en un formato más limpio
+                    HashMap<String, Double> answer = new HashMap<>();
+                    answer.put("longitude", consumption.getLongitude());
+                    answer.put("latitude", consumption.getLatitude());
+                    answer.put("total", 0.0);
+
+                    consumption.getFoodConsumptionFood().forEach( food -> {
+                        // Una forma de tener actualizar una variable dentro de un lambda es con un hashmap
+                        answer.put("total", food.getFood().getFoodCategory().getCarbonFootPrint() + answer.get("total"));
+                    });
+                    consumptionsWithLocation.add(answer);
+                });
+        return consumptionsWithLocation;
     }
 
     public FoodConsumptionDTO insertFooConsumption(FoodConsumptionDTO dto){

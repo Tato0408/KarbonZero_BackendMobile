@@ -19,6 +19,7 @@ public class TransportConsumptionDTO {
     private String idTransportConsumption;
     @NotBlank
     private String idTransport;
+    private String transportName;
     @NotBlank
     private String idUser;
     @NotNull @Positive @DecimalMax(value = "40075.017", inclusive = true)

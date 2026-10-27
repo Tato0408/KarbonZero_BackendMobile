@@ -22,6 +22,8 @@ public class FuelConsumptionDTO {
 
     @NotNull
     private String idTypeCar;
+    private String typeFuel;
+    private String typeSize;
 
     @Positive
     @NotNull
@@ -30,6 +32,6 @@ public class FuelConsumptionDTO {
     @NotNull
     private Date consumptionDate;
 
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
 }

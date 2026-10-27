@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FoodRepository extends JpaRepository<FoodEntity, String> {
     Page<FoodEntity> findAll (Pageable pagebale);
+    Page<FoodEntity> findFoodByFoodNameContains(String foodName, Pageable pageable);
 }

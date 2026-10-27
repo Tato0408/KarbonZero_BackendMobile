@@ -24,6 +24,13 @@ public class Responses {
 
         return ResponseEntity.badRequest().body(errors);
     }
+    public static ResponseEntity<Map<String, Object>> responseObtained (Object answer) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "status", "success",
+                "data", answer
+        ));
+    }
+
 
     public static ResponseEntity<Map<String, Object>> responseCreated (Object answer) {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
@@ -54,6 +61,14 @@ public class Responses {
                 "timestamp", Instant.now().toString()
         ));
     }
+
+    public static ResponseEntity<Map<String, Object>> responseNotAuthenticated (String message) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of(
+                        "authenticated", false,
+                        "message", message));
+    }
+
 
     public static ResponseEntity<Map<String, Object>> responseOK (String message) {
         return ResponseEntity.ok().body(Map.of(

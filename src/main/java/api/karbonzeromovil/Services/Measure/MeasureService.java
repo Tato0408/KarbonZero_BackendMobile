@@ -31,6 +31,12 @@ public class MeasureService {
         return null;
     }
 
+    public Page<MeasureDTO> getMeasureByName(String nameMeasure, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<MeasureEntity> users = repo.findByNameMeasureContains(nameMeasure, pageable);
+        return users.map(this::MeasureToDTO);
+    }
+
     public MeasureDTO insertMeasure(MeasureDTO dto){
         if(dto == null){
             throw new IllegalArgumentException("Measure can't be null or empty");

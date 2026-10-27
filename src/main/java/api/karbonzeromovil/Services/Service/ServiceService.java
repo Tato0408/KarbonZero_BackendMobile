@@ -25,6 +25,12 @@ public class ServiceService {
         Page<ServiceEntity> users = repo.findAll(pageable);
         return users.map(this::ServiceToDTO);
     }
+    public List<ServiceDTO> getAllServiceNP(){
+        List<ServiceEntity> entity = repo.findAll();
+        return entity.stream()
+                .map(this::ServiceToDTO)
+                .collect(Collectors.toList());
+    }
     public ServiceDTO getServiceById(String id){
         try {
             if(repo.existsById(id)){
@@ -36,6 +42,12 @@ public class ServiceService {
             throw new RuntimeException("The Service could not be found" + err.getMessage());
 
         }
+    }
+
+    public Page<ServiceDTO> getServiceByName(String serviceName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ServiceEntity> services = repo.findByNameContains(serviceName, pageable);
+        return services.map(this::ServiceToDTO);
     }
     public ServiceDTO insertService(ServiceDTO dto) throws IllegalAccessException {
         if(dto == null){

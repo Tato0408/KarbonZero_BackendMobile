@@ -3,6 +3,7 @@ package api.karbonzeromovil.Controllers.Service;
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
+import api.karbonzeromovil.Models.DTO.Transport.TransportDTO;
 import api.karbonzeromovil.Services.Service.MeasureUnitServiceService;
 import api.karbonzeromovil.Services.Service.ServiceConsumptionService;
 import api.karbonzeromovil.Services.Service.ServiceService;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static api.karbonzeromovil.Utils.Responses.*;
@@ -39,8 +42,12 @@ public class ServiceController {
         if(service == null){
             ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
         }
-
         return ResponseEntity.ok(service);
+    }
+    @GetMapping("/getAllC02ServiceByUser/{id}")
+    public HashMap<String, Double> getAllC02ServiceByUser(@PathVariable String id){
+
+        return serviceConsumptionService.getAllFoodConsumptionsByUser(id);
     }
     @GetMapping("/getMeasureUnitService")
     public ResponseEntity<Page<MeasureUnitServiceDTO>> getAllMeasureUnitService(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
@@ -68,8 +75,39 @@ public class ServiceController {
 
         return ResponseEntity.ok(consumption);
     }
+
+    @GetMapping("/getServiceByName/{serviceName}")
+    public ResponseEntity<Page<ServiceDTO>> getServiceByName (@PathVariable String serviceName,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+
+        Page<ServiceDTO> service = serviceService.getServiceByName(serviceName, page, size);
+        if(service == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay usuarios registrados "));
+        }
+
+        return ResponseEntity.ok(service);
+    }
+
+    @GetMapping("/getMeasureUnitServiceByName/{serviceName}")
+    public Page<MeasureUnitServiceDTO> getMeasureUnitServiceByName (@PathVariable String serviceName,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size >= 50) {
+            return null;
+        }
+        return measureUnitServiceService.getMeasureUnitServiceByName(serviceName, page, size);
+    }
+    @GetMapping("/getAllServiceList")
+    public List<ServiceDTO> getServiceNP() {return serviceService.getAllServiceNP();}
+
     @GetMapping("/getServiceById/{id}")
     public ServiceDTO getServiceById(@PathVariable String id){
+
         return serviceService.getServiceById(id);
     }
     @GetMapping("/getMeasureUnitServiceById/{id}")
@@ -80,6 +118,17 @@ public class ServiceController {
     public ServiceConsumptionDTO geServiceConsumptionById(@PathVariable String id){
         return serviceConsumptionService.getServiceConsumptionById(id);
     }
+
+    @GetMapping("/getServiceConsumptionsCO2WithLocation")
+    public List<HashMap<?, ?>> getServiceConsumptionsCO2WithLocation (
+            @RequestParam Double minX,
+            @RequestParam Double maxX,
+            @RequestParam Double minY,
+            @RequestParam Double maxY
+    ) {
+        return serviceConsumptionService.getServiceConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
+    }
+
     @PostMapping("/insertService")
     public ResponseEntity<Map<String,Object>> insertService(@Valid @RequestBody ServiceDTO dto, HttpServletRequest request){
         try {

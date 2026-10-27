@@ -2,15 +2,20 @@ package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.CarEntity;
 import api.karbonzeromovil.Entities.Car.CarSizeEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
+import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
+import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Repositories.Car.CarRepository;
 import api.karbonzeromovil.Repositories.Car.CarSizeRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
+import api.karbonzeromovil.Services.Pet.UserPetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +46,10 @@ public class CarService {
             return CarsToDTO(entity);
         }
         return null;
+    }
+    public List<TypeCarDTO>getAllTypeCarsByCar(String id){
+        CarEntity carEntity = repo.getReferenceById(id);
+        return carEntity.getTypeCarList().stream().map(new TypeCarService():: TypeCarToDTO).collect(Collectors.toList());
     }
 
     public CarDTO insertCar(CarDTO dto) throws IllegalAccessException {
@@ -85,11 +94,21 @@ public class CarService {
         }
     }
 
-    private CarDTO CarsToDTO(CarEntity entity){
+    public CarDTO CarsToDTO(CarEntity entity){
         CarDTO dto = new CarDTO();
         dto.setIdCar(entity.getIdCar());
-        dto.setIdUser(entity.getIdUser().getIdUser());
-        dto.setIdCarSize(entity.getIdCarSize().getIdCarSize());
+        if(entity.getIdCar() != null && entity.getIdCarSize() != null){
+            dto.setIdUser(entity.getIdUser().getIdUser());
+            dto.setIdCarSize(entity.getIdCarSize().getIdCarSize());
+            dto.setUsername(entity.getIdUser().getUserName());
+            dto.setSizeC02(entity.getIdCarSize().getName());
+        }else{
+            dto.setIdUser(null);
+            dto.setIdCarSize(null);
+            dto.setUsername("no hay relacion");
+            dto.setSizeC02("No hay relacion");
+        }
+
         return dto;
     }
     private CarEntity DT0ToCars(CarDTO dto){

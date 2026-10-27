@@ -1,5 +1,6 @@
 package api.karbonzeromovil.Controllers.Pet;
 
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Models.DTO.Pet.PetTypeDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Services.Pet.PetTypeService;
@@ -70,6 +71,16 @@ public class PetController {
 
     @GetMapping("/getPetTypeById/{id}")
     public PetTypeDTO getPetTypeById(@PathVariable String id) {return servicePetType.getPetTypeById(id);}
+
+    @GetMapping("/getPetTypeByName/{namePetType}")
+    public Page<PetTypeDTO> getPetTypeByName (@PathVariable String namePetType,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return servicePetType.getPetTypeByName(namePetType, page, size);
+    }
 
 
     @PostMapping("/insertUserPet")

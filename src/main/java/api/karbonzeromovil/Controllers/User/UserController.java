@@ -1,10 +1,13 @@
 package api.karbonzeromovil.Controllers.User;
 
 import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Car.CarDTO;
+import api.karbonzeromovil.Models.DTO.Company.ChannelUserDTO;
 import api.karbonzeromovil.Models.DTO.Food.FoodConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.LivingSpace.LivingSpaceDTO;
 import api.karbonzeromovil.Models.DTO.Pet.UserPetDTO;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
+import api.karbonzeromovil.Models.DTO.Transport.TransportConsumptionDTO;
 import api.karbonzeromovil.Models.DTO.User.CountryDTO;
 import api.karbonzeromovil.Models.DTO.User.FriendDTO;
 import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
@@ -22,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +33,7 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiUser")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = " http://localhost:5173", allowCredentials = "true")
 public class UserController {
     @Autowired
     private CountryService countryService;
@@ -55,9 +59,44 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @GetMapping("/getAllUsersWithStatus/{status}")
+    public ResponseEntity<Page<UserDTO>> getAllUsersWithStatus(@PathVariable int status,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size){
+        if(size<=0 || size>50){
+            ResponseEntity.badRequest().body(Map.of("status","El tamaño de la pagina debe de estar entre 1 y 50"));
+            return ResponseEntity.ok(null);
+        }
+        Page<UserDTO> users = userService.getAllUsersWithStatus(status, page, size);
+        if(users == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay administradores registrados "));
+        }
+
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/getUserById/{id}")
     public UserDTO getUserById(@PathVariable String id){
         return userService.getUserById(id);
+    }
+
+    @GetMapping("/getAdminById/{id}")
+    public UserDTO getAdminById(@PathVariable String id){
+        return userService.getAdminById(id);
+    }
+
+    @GetMapping("/getUsersByName/{name}")
+    public Page<UserDTO> getUsersByName(@PathVariable String name,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size){
+        return userService.getUsersByName(name, page, size);
+    }
+
+    @GetMapping("/getAdminsByName/{name}")
+    public Page<UserDTO> getAdminsByName(@PathVariable String name,
+                                   @RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size){
+        return userService.getAdminsByName(name, page, size);
     }
 
     @PostMapping("/insertUser")
@@ -72,6 +111,8 @@ public class UserController {
             return responseServerError(e, "Cannot create user object");
         }
     }
+
+
 
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<?>updateUser(@PathVariable String id, @Valid @RequestBody UserDTO dto, BindingResult bindingResult){
@@ -100,6 +141,19 @@ public class UserController {
             return responseServerError(e, "Cannot delete the user with the User Object");
         }
     }
+
+    @PostMapping("/updateDisabled/{id}")
+    public ResponseEntity<Map<String,Object>> banUser(@PathVariable String id,  @RequestBody UserDTO dto){
+        try {
+            if (!userService.updateDisabled(id, dto)) {
+                return responseNotFound("user not found");
+            }
+            return responseOK("User updated with succes");
+        } catch (Exception e) {
+            return responseServerError(e, "Cannot block the user object");
+        }
+    }
+
     //endregion
     //region Summary: FRIENDCRUD
 
@@ -238,10 +292,28 @@ public class UserController {
         return ResponseEntity.ok(countries);
 
     }
+    @GetMapping("/getAllCountriesSP")
+    public ResponseEntity<List<CountryDTO>> getAllCountriesSP(){
+        List<CountryDTO> countries = countryService.getAllCountriesSP();
+        if(countries == null){
+            ResponseEntity.badRequest().body(Map.of("status", "No hay logros registrados"));
+        }
+        return ResponseEntity.ok(countries);
 
+    }
     @GetMapping("/getCountryById/{id}")
     public CountryDTO getCountryById(@PathVariable String id){
         return countryService.getCountryById(id);
+    }
+
+    @GetMapping("/getCountryByName/{name}")
+    public Page<CountryDTO> getFoodByName (@PathVariable String name,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
+        if (size <= 0 || size > 50) {
+            return null;
+        }
+        return countryService.getCountryByName(name, page, size);
     }
 
     @PostMapping("/insertCountry")
@@ -272,6 +344,18 @@ public class UserController {
         }
     }
 
+    @PutMapping("/updateUserPassword/{id}")
+    public ResponseEntity<?> updateUserPassword(@PathVariable String id, @RequestBody Map<String, String> body) {
+        String newPassword = body.get("passwordUser");
+
+        if (newPassword == null || newPassword.isBlank()) {
+            return ResponseEntity.badRequest().body("La nueva contraseña no puede estar vacía");
+        }
+
+        userService.updateUserPassword(id, newPassword);
+        return ResponseEntity.ok("Contraseña actualizada correctamente");
+    }
+
     @DeleteMapping("/deleteCountry/{id}")
     public ResponseEntity<Map<String, Object>> deleteCountry(@PathVariable String id) {
         try {
@@ -289,6 +373,10 @@ public class UserController {
     public int getCountAllFollowersByUser(@PathVariable String id)  {
         return friendService.countFollowers(id);
     }
+    @GetMapping("/searchUsers/{variable}")
+    public List<UserDTO> searchUsers(@PathVariable String variable) {
+        return userService.getAllUsersSearch(variable);
+    }
     @GetMapping("/getCountAllFollowingsByUser/{id}")
     public int getCountAllFollowingByUser(@PathVariable String id)  {
         return friendService.countFollowing(id);
@@ -297,12 +385,19 @@ public class UserController {
     public List<UserAchievementDTO> getAllAchivementsByUser( @PathVariable String id){
         return userService.getAllUserAchievements(id);
     }
-
+    @GetMapping("/getAllCarsByUser/{id}")
+    public List<CarDTO> getAllCarsByUser(@PathVariable String id){
+        return userService.getAllUserCars(id);
+    }
     @GetMapping("/getFriendsByMainUser/{id}")
     public List<FriendDTO> getFriendsByMaiNuSER( @PathVariable String id){
         return userService.getAllFriendsMainUser(id);
     }
 
+    @GetMapping("/getAllChannelsByUser/{id}")
+    public List<ChannelUserDTO> getAllChannelsByUser(@PathVariable String id){
+        return userService.getAllChannelUser(id);
+    }
     @GetMapping("/getFriendsBySecondaryUser/{id}")
     public List<FriendDTO> getFriendsBySecondaryUser( @PathVariable String id){
         return userService.getAllFriendsSecondaryUser(id);
@@ -311,6 +406,10 @@ public class UserController {
     @GetMapping("/getAllUserLivingConsumptions/{id}")
     public List<LivingSpaceDTO>getAllUserLivingConsumptions(@PathVariable String id){
         return userService.getAllLivingSpacesUser(id);
+    }
+    @GetMapping("/getAllTransportConsumptionsByUser/{id}")
+    public List<TransportConsumptionDTO>getAllTransportConsumptionsByUser(@PathVariable String id){
+        return userService.getAllTransportConsumptionsByUser(id);
     }
 
     @GetMapping("/getAllUserFoodConsumptions/{id}")
@@ -323,9 +422,32 @@ public class UserController {
         return userService.getAllUserPets(id);
     }
 
-//    @GetMapping("/getAllUserServiceConsumption/{id}")
-//    public List<ServiceConsumptionDTO> getAllUserServiceConsumption(@PathVariable String id){
-//        return userService.getAllUserServiceConsumptions(id);
-//    }
-    //endregion
+
+    @GetMapping("/getExistRelation/{idUser1}/{idUser2}")
+    public boolean getExistRelation(@PathVariable String idUser1, @PathVariable String idUser2){
+        return friendService.getExistRelationUser1AndUser2(idUser1, idUser2);
+    }
+    @GetMapping("/getRelation/{idUser1}/{idUser2}")
+    public FriendDTO getRelation(@PathVariable String idUser1, @PathVariable String idUser2){
+        return friendService.getRelationUser1AndUser2(idUser1, idUser2);
+    }
+
+    @GetMapping("/getCountUserConsumptions/{id}")
+    public int getCountUserConsumptions(@PathVariable String id){
+        return userService.getAllUserConsumptions(id);
+    }
+    @GetMapping("/getAllUserServiceConsumption/{id}")
+    public List<ServiceConsumptionDTO> getAllUserServiceConsumption(@PathVariable String id){
+        return userService.getAllUserServiceConsumptions(id);
+    }
+
+    @PostMapping("/confirmPassword")
+    public HashMap<String, Boolean> confirmPassword (@RequestParam String idUser,
+                                                     @RequestParam String password) {
+        HashMap<String, Boolean> answer = new HashMap<>();
+        answer.put("authenticated", userService.confirmPassword(idUser, password));
+        return answer;
+    }
 }
+    //endregion
+

@@ -11,9 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 public class TransportService {
@@ -22,8 +19,8 @@ public class TransportService {
 
     public Page<TransportDTO> getAllTransports(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
-        Page<TransportEntity> users = repo.findAll(pageable);
-        return users.map(this::TransportToDTO);
+        Page<TransportEntity> transport = repo.findAll(pageable);
+        return transport.map(this::TransportToDTO);
     }
     public TransportDTO getTransportById(String id){
         try {
@@ -36,6 +33,11 @@ public class TransportService {
             throw new RuntimeException("The Transport could not be found" + err.getMessage());
 
         }
+    }
+    public Page<TransportDTO> getTransportByName(String name, int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<TransportEntity> trp = repo.findByNameContains(name,pageable);
+        return trp.map(this::TransportToDTO);
     }
     public TransportDTO insertTransport(TransportDTO dto) throws IllegalAccessException {
         if(dto == null){

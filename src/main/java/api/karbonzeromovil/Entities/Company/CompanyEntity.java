@@ -21,11 +21,12 @@ public class CompanyEntity {
     private String idCompany;
     @Column(name = "NAME", nullable = true, unique = true)
     private String name;
-    @Column(name = "DOMAIN", nullable = true, unique = true)
-    private String domain;
-
-    @OneToMany(mappedBy = "idCompany")
-    private List<UserEntity> UserList;
+    @Column(name = "BACKENDDOMAIN", nullable = true, unique = true)
+    private String backendDomain;
+    @Column(name = "FRONTENDDOMAIN", nullable = true, unique = true)
+    private String frontendDomain;
+    @Column(name = "APIKEY", nullable = false, unique = true)
+    private String apiKey;
 
     @OneToOne(mappedBy = "idCompany")
     private ChannelEntity idCompanyChannel;

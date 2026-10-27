@@ -1,21 +1,25 @@
 package api.karbonzeromovil.Controllers.Car;
 
-import api.karbonzeromovil.Entities.Car.FuelConsumptionEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarDTO;
 import api.karbonzeromovil.Models.DTO.Car.CarSizeDTO;
 import api.karbonzeromovil.Models.DTO.Car.TypeCarDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelTypeDTO;
 import api.karbonzeromovil.Models.DTO.Car.FuelConsumptionDTO;
 
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.User.UserAchievementDTO;
 import api.karbonzeromovil.Services.Car.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,41 +27,87 @@ import static api.karbonzeromovil.Utils.Responses.*;
 
 @RestController
 @RequestMapping("/apiCar")
+@CrossOrigin
 public class CarController {
     @Autowired
     private CarService serviceCar;
-
     @Autowired
     private CarSizeService serviceSizeCar;
-
     @Autowired
     private TypeCarService serviceTypeCar;
-
     @Autowired
     private FuelTypeService serviceFuelType;
-
     @Autowired
     private FuelConsumptionService serviceFuelConsumption;
 
+    @GetMapping("/getFuelTypeByName/{name}")
+    public Page<FuelTypeDTO> getFuelTypeByName (@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            return null;
+        }
+        return serviceFuelType.getFuelTypeByName(name, page, size);
+    }
 
+    @GetMapping("/getCarSizeByName/{name}")
+    public Page<CarSizeDTO> getCarSizeByName (@PathVariable String name, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            return null;
+        }
+        return serviceSizeCar.getCarSizeByName(name, page, size);
+    }
 
 
     //Metodos Get para obtener cada cosa relacionada con la tabla carro
     @GetMapping("/getAllCar")
     public List<CarDTO> dataCar(){return serviceCar.getAllCar();}
 
-    @GetMapping("/getAllCarSizeService")
-    public List<CarSizeDTO> dataCarSize(){return serviceSizeCar.getAllCarSize(); }
-
+    @GetMapping("/getAllCarSize")
+    public ResponseEntity<Page<CarSizeDTO>> dataCarSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la pagina debe ser entre 1 y 50"
+            ));
+            return ResponseEntity.ok(null);
+        }
+        Page<CarSizeDTO> dto = serviceSizeCar.getAllCarSize(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
+    @GetMapping("/getCarSizeSp")
+    public List<CarSizeDTO> getAllCarSizeSP(){
+        return serviceSizeCar.getAllCarSizeSP();
+    }
     @GetMapping("/getAllTypeCar")
     public List<TypeCarDTO> dateTypeCar(){return serviceTypeCar.getAllTypeCar();}
 
     @GetMapping("/getAllFuelType")
-    public List<FuelTypeDTO> dataFuelType(){return serviceFuelType.getAllFuelType(); }
+    public ResponseEntity<Page<FuelTypeDTO>> dataCompany(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        if(size <= 0 || size > 50){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "El tamaño de la pagina debe ser entre 1 y 50"
+            ));
+            return ResponseEntity.ok(null);
+        }
+        Page<FuelTypeDTO> dto = serviceFuelType.getAllFuelType(page, size);
+        if(dto == null){
+            ResponseEntity.badRequest().body(Map.of(
+                    "status", "No hay registros"
+            ));
+        }
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/getAllFuelTypeSP")
+    public List<FuelTypeDTO> dataCompanySP(){
+        return serviceFuelType.getAllFuelTypeSP();
+    }
 
     @GetMapping("/getAllFuelConsumption")
     public List<FuelConsumptionDTO> dataFuelConsumption(){return serviceFuelConsumption.getAllFuelConsumption();}
-
 
     @GetMapping("/getCarById/{id}")
     public CarDTO getCarById(@PathVariable String id){
@@ -84,6 +134,15 @@ public class CarController {
         return serviceFuelConsumption.getFuelConsumptionById(id);
     }
 
+    @GetMapping("/getFuelConsumptionsCO2WithLocation")
+    public List<HashMap<?, ?>> getFuelConsumptionsCO2WithLocation (
+            @RequestParam Double minX,
+            @RequestParam Double maxX,
+            @RequestParam Double minY,
+            @RequestParam Double maxY
+    ) {
+        return serviceFuelConsumption.getFuelConsumptionsCO2WithLocation(minX, maxX, minY, maxY);
+    }
 
     //Metodos POST para insertar cada cosa relacionada con la tabla carro
     @PostMapping("/insertCar")
@@ -155,9 +214,6 @@ public class CarController {
             return responseServerError(e,"Can't create fuel consumption type object");
         }
     }
-
-
-
 
     //Metodos PUT para actualizar cada cosa relacionada con la tabla carro
     @PutMapping("/updateCar/{id}")
@@ -312,4 +368,21 @@ public class CarController {
             return responseServerError(e,"Can't delete the fuel consumption object");
         }
     }
+
+    @GetMapping("/getAllTypeCarsByCar/{id}")
+    public List<TypeCarDTO> getAllTypeCarsByCar(@PathVariable String id){
+        return serviceCar.getAllTypeCarsByCar(id);
+    }
+
+    @GetMapping("/getAllFuelConsumptionsByTypeCar/{id}")
+    public List<FuelConsumptionDTO> getAllFuelConsumptionsByTypeCar(@PathVariable String id){
+        return serviceTypeCar.getAllFuelConsumptionsByTypeCar(id);
+    }
+
+    @GetMapping("/getAllC02CarsByUser/{id}")
+    public HashMap<String, Double> getAllCarsC02ByUserCar(@PathVariable String id){
+
+        return serviceTypeCar.getAllCarsC02ByUserCar(id);
+    }
+
 }

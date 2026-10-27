@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +98,7 @@ public class FoodConsumptionFoodService {
     }
 
 
-    private FoodConsumptionFoodDTO foodConsumptionFoodToDTO(FoodConsumptionFoodEntity entity){
+    public FoodConsumptionFoodDTO foodConsumptionFoodToDTO(FoodConsumptionFoodEntity entity){
         FoodConsumptionFoodDTO dto = new FoodConsumptionFoodDTO();
 
         dto.setIdFoodConsumptionsFood(entity.getIdFoodConsumptionsFood());

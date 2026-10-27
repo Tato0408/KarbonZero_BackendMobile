@@ -17,6 +17,8 @@ public class ServiceConsumptionDTO {
     private String idServiceConsumption;
     @NotBlank
     private String idMeasureUnitService;
+    private String serviceName;
+    private String measureUnitName;
     @NotBlank
     private String idUser;
     @NotNull @Positive

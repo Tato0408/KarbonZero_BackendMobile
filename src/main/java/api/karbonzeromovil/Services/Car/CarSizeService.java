@@ -1,11 +1,16 @@
 package api.karbonzeromovil.Services.Car;
 
 import api.karbonzeromovil.Entities.Car.CarSizeEntity;
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
 import api.karbonzeromovil.Models.DTO.Car.CarSizeDTO;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
 import api.karbonzeromovil.Repositories.Car.CarSizeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +23,24 @@ public class CarSizeService {
     @Autowired
     private CarSizeRepository repo;
 
-    public List<CarSizeDTO> getAllCarSize(){
-        List<CarSizeEntity> carSize = repo.findAll();
-        return carSize.stream()
-                .map(this::CarSizeToDTO)
-                .collect(Collectors.toList());
+    public Page<CarSizeDTO> getCarSizeByName(String name, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CarSizeEntity> carSize = repo.findByNameContains(name, pageable);
+        return carSize.map(this::CarSizeToDTO);
     }
+
+    public Page<CarSizeDTO> getAllCarSize(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CarSizeEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::CarSizeToDTO);
+    }
+    public List<CarSizeDTO> getAllCarSizeSP(){
+        List<CarSizeEntity> entity = repo.findAll();
+
+        return entity.stream().map(this::CarSizeToDTO).collect(Collectors.toList());
+    }
+
 
     public CarSizeDTO getCarSizeById(String id){
         if(repo.existsById(id)){

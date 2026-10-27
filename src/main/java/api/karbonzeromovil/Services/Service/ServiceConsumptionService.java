@@ -1,9 +1,16 @@
 package api.karbonzeromovil.Services.Service;
 
+import api.karbonzeromovil.Entities.Food.FoodCategoryEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionEntity;
+import api.karbonzeromovil.Entities.Food.FoodConsumptionFoodEntity;
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Entities.Service.ServiceConsumptionEntity;
+import api.karbonzeromovil.Entities.Service.ServiceEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
 import api.karbonzeromovil.Models.DTO.Service.ServiceConsumptionDTO;
 import api.karbonzeromovil.Repositories.Service.MeasureUnitServiceRepository;
 import api.karbonzeromovil.Repositories.Service.ServiceConsumptionRepository;
+import api.karbonzeromovil.Repositories.Service.ServiceRepository;
 import api.karbonzeromovil.Repositories.User.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +19,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -22,7 +33,8 @@ public class ServiceConsumptionService {
     private MeasureUnitServiceRepository repoMeasureUnit;
     @Autowired
     private UserRepository repoUser;
-
+    @Autowired
+    private ServiceRepository serviceRepository;
     public Page<ServiceConsumptionDTO> getAllServiceConsumption(int page, int size){
         Pageable pageable = PageRequest.of(page,size);
         Page<ServiceConsumptionEntity> service = repo.findAll(pageable);
@@ -40,7 +52,36 @@ public class ServiceConsumptionService {
 
         }
     }
-    public ServiceConsumptionDTO insertServiceConsumption(ServiceConsumptionDTO dto) throws IllegalAccessException {
+
+    public List<HashMap<?,?>> getServiceConsumptionsCO2WithLocation(Double minX, Double maxX, Double minY, Double maxY) {
+        List<HashMap<?, ?>> consumptionsWithLocation = new ArrayList<>();
+
+        // Filtramos los consumos de servicio para mejor rendimiento
+        repo.findByLongitudeBetweenAndLatitudeBetween(minX, maxX, minY, maxY)
+                .forEach(consumption -> {
+                    // Devolvemos la respuesta en un formato más limpio
+                    HashMap<String, Double> answer = new HashMap<>();
+                    answer.put("longitude", consumption.getLongitude());
+                    answer.put("latitude", consumption.getLatitude());
+                    answer.put("total", consumption.getQuantity() * consumption.getIdMeasureUnitService().getCarbonFootprint());
+                    consumptionsWithLocation.add(answer);
+                });
+        return consumptionsWithLocation;
+    }
+
+    public HashMap<String, Double> getAllFoodConsumptionsByUser(String idUser){
+        HashMap<String, Double> hashMap = new HashMap<>();
+        UserEntity entity = repoUser.getReferenceById(idUser);
+        hashMap.put(entity.getIdUser(), 0.00);
+
+        List<ServiceConsumptionEntity> serviceConsumptions = entity.getAllUserServiceConsumption();
+        serviceConsumptions.forEach(serviceConsumption -> {
+            hashMap.put(entity.getIdUser(), (serviceConsumption.getIdMeasureUnitService().getCarbonFootprint())+hashMap.get(entity.getIdUser()));
+        });
+        return hashMap;
+    }
+
+  public ServiceConsumptionDTO insertServiceConsumption(ServiceConsumptionDTO dto) throws IllegalAccessException {
         if(dto == null){
             throw new IllegalAccessException("Service Consumption cannot be null or empty");
         }
@@ -83,10 +124,14 @@ public class ServiceConsumptionService {
             throw new EmptyResultDataAccessException("The Service Consumption with the ID : " + id + " doesn't exists", 1);
         }
     }
-    private ServiceConsumptionDTO ServiceConsumptionToDTO(ServiceConsumptionEntity entity){
+    public ServiceConsumptionDTO ServiceConsumptionToDTO(ServiceConsumptionEntity entity){
         ServiceConsumptionDTO dto = new ServiceConsumptionDTO();
         dto.setIdServiceConsumption(entity.getIdServiceConsumption());
-        dto.setIdMeasureUnitService(entity.getIdMeasureUnitService().getIdMeasureUnitService());
+        if(entity.getIdMeasureUnitService() != null){
+            dto.setIdMeasureUnitService(entity.getIdMeasureUnitService().getIdMeasureUnitService());
+            dto.setServiceName(entity.getIdMeasureUnitService().getIdService().getName());
+            dto.setMeasureUnitName(entity.getIdMeasureUnitService().getIdMeasureUnit().getNameMeasuresUnit());
+        }
         dto.setIdUser(entity.getIdUser().getIdUser());
         dto.setQuantity(entity.getQuantity());
         dto.setConsumptionDate(entity.getConsumptionDate());
@@ -105,4 +150,6 @@ public class ServiceConsumptionService {
         entity.setLongitude(dto.getLongitude());
         return entity;
     }
+
+
 }

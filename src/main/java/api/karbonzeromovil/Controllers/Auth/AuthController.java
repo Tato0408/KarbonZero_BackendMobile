@@ -1,0 +1,279 @@
+package api.karbonzeromovil.Controllers.Auth;
+
+import api.karbonzeromovil.Entities.Company.CompanyEntity;
+import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
+import api.karbonzeromovil.Models.DTO.recoveryPassword.ForgotPasswordDTO;
+import api.karbonzeromovil.Services.Auth.AuthService;
+import api.karbonzeromovil.Services.Auth.PasswordRecoveryService;
+import api.karbonzeromovil.Services.Company.CompanyService;
+import api.karbonzeromovil.Services.User.UserService;
+import api.karbonzeromovil.Utils.JWTUtils;
+import api.karbonzeromovil.Utils.JwtCookieAuthFilter;
+import api.karbonzeromovil.Utils.Responses;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.query.JSqlParserUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/apiAuth")
+public class AuthController {
+    private static final Logger logger = Logger.getLogger(AuthController.class.getName());
+
+    @Autowired
+    private AuthService service;
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private JWTUtils jwtUtils;
+    @Autowired
+    private PasswordRecoveryService passwordRecoveryService;
+
+    @PostMapping("/login")
+    private ResponseEntity<Map<String, Object>> login (@RequestBody UserDTO data, HttpServletResponse response) {
+        if (data.getEmail() == null || data.getEmail().isBlank()) {
+            return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+        }
+        if (data.getPasswordUser() == null || data.getPasswordUser().isBlank()) {
+            return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+        }
+
+        if (service.Login(data.getEmail(), data.getPasswordUser())) {
+            addTokenCookie(response, data.getEmail());
+            return Responses.responseOK("Inicio de sesión exitoso");
+        }
+        return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+    }
+
+    private void addTokenCookie (HttpServletResponse response, String email) {
+        UserEntity user = service.getUser(email);
+
+        if (user != null) {
+            String token = jwtUtils.create(
+                    String.valueOf(user.getIdUser()),
+                    user.getEmail(),
+                    String.valueOf(user.getStatus())
+            );
+
+            String cookieValue = String.format(
+                    "authToken=%s; " +
+                            "Path=/; " +
+                            "HttpOnly; " +
+                            "Secure; " +
+                            "SameSite=None; " +
+                            "Max-Age=86400; " +
+                            "Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com",
+                    token
+            );
+
+            response.addHeader("Set-Cookie", cookieValue);
+            //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
+            response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
+        }
+    }
+
+    @PostMapping("/authenticateCompany")
+    public ResponseEntity<?> authenticateCompany (HttpServletRequest request, HttpServletResponse response) {
+        String apiKey = request.getHeader("X-API-KEY");
+        String origin = request.getHeader("X-Company-Domain");
+
+        if (apiKey == null) {
+            logger.warning(apiKey + "--" + origin);
+            return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+        }
+        if (origin == null) {
+            logger.warning(apiKey + "--" + origin);
+            return Responses.responseNotAuthenticated("Error, origen inválido");
+        }
+
+        CompanyEntity company = service.getCompany(apiKey, origin);
+        logger.info("La compañia se intentó registrar: " + apiKey + "---" + origin);
+        if (company != null) {
+            logger.info("Compañia registrada: " + company.getName());
+            addTokenCookieForCompany(response, company);
+            return Responses.responseOK("Inicio de sesión exitoso");
+        }
+        return Responses.responseNotAuthenticated("Error, credenciales inválidas");
+
+    }
+
+    private void addTokenCookieForCompany (HttpServletResponse response, CompanyEntity company) {
+        String token = jwtUtils.create(
+                String.valueOf(company.getIdCompany()),
+                company.getApiKey(),
+                "2"
+        );
+
+        Instant now = Instant.now();
+        Instant exp = now.plusSeconds(86400);
+        String expiresRfc1123 = DateTimeFormatter.RFC_1123_DATE_TIME
+                .withZone(ZoneOffset.UTC)
+                .format(exp);
+
+        String cookieValue = String.format(
+                "channelToken=%s; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400; Expires=%s",
+                token,
+                expiresRfc1123
+        );
+
+        // Reemplaza cualquier Set-Cookie previo
+        response.setHeader("Set-Cookie", cookieValue);
+
+        // Para exponer la cabecera al proxy/frontend
+        response.setHeader("Access-Control-Expose-Headers", "Set-Cookie");
+
+        // Evitar caching
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        try {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return Responses.responseNotAuthenticated("No autenticado");
+            }
+
+            // Manejar diferentes tipos de Principal
+            String email;
+            if (authentication.getPrincipal() instanceof UserDetails userDetails) {
+                email = userDetails.getUsername();
+            } else {
+                email = authentication.getName();
+            }
+
+            UserEntity user = service.getUser(email);
+
+            if (user == null) {
+                return Responses.responseNotAuthenticated("No autenticado");
+            }
+
+            return ResponseEntity.ok(new UserService().UsersToDTO(user));
+
+        } catch (Exception e) {
+            //log.error("Error en /me endpoint: ", e);
+            return Responses.responseServerError(e, "Error obteniendo datos de usuario");
+        }
+    }
+
+    @GetMapping("/company")
+    public ResponseEntity<?> getCurrentCompany(HttpServletRequest request) {
+        try {
+
+            String apiKey = null;
+            // Intentar obtener el apiKey de las cookies
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("channelToken".equals(cookie.getName())) {
+                        apiKey = jwtUtils.getValue(cookie.getValue());
+                        break;
+                    }
+                }
+            }
+
+            logger.warning("Obteniendo la compañia: " + apiKey);
+            CompanyEntity company = service.getCompanyByApiKey(apiKey);
+            if (company == null) {
+                logger.warning("No se pudo obtener la compañia: " + apiKey);
+                return Responses.responseNotAuthenticated("No autenticado");
+            }
+            logger.warning("Se obtuvo la compañia: " + company.getName());
+
+            return ResponseEntity.ok(Map.of(
+                    "authenticated", true,
+                    "company", Map.of(
+                            "id", company.getIdCompany(),
+                            "name", company.getName(),
+                            "domain", company.getBackendDomain()
+                    )
+            ));
+
+        } catch (Exception e) {
+            //log.error("Error en /me endpoint: ", e);
+            return Responses.responseServerError(e, "Error obteniendo datos de canal");
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Crear cookie de expiración con SameSite=None
+        String cookieValue = "authToken=; Path=/; HttpOnly; Secure; SameSite=None; MaxAge=0; Domain=karbonzero-management-14fb5e6b8dab.herokuapp.com";
+
+        response.addHeader("Set-Cookie", cookieValue);
+        //response.addHeader("Access-Control-Allow-Credentials", "true"); <-- ESTO NO DEBEN AGREGARLO
+        response.addHeader("Access-Control-Expose-Headers", "Set-Cookie");
+
+        // También agregar headers CORS para la respuesta
+        String origin = request.getHeader("Origin");
+        if (origin != null &&
+                (origin.contains("localhost") || origin.contains("herokuapp.com"))) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+        }
+        return Responses.responseOK("logout exitoso");
+    }
+    //ENDPOINTS DE RECUPERACION DE CONTRASEÑA
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordDTO dto) {
+        boolean sent = passwordRecoveryService.generateAndSendCode(dto.getEmail());
+        if (!sent) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Correo no registrado"));
+        }
+        return ResponseEntity.ok(Map.of("message", "Código enviado"));
+    }
+
+
+    @PostMapping("/verifyCode")
+    public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> body) {
+        String code = body.get("code");
+        String email = body.get("email");
+
+        Object result = passwordRecoveryService.verifyCode(email, code);
+
+        if (result instanceof String) {
+            String status = (String) result;
+            switch (status) {
+                case "expired":
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("message", "El código ha expirado"));
+                case "invalid":
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("message", "Código inválido"));
+                default:
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(Map.of("message", "Error interno"));
+            }
+        } else if (result instanceof UserEntity user) {
+            return ResponseEntity.ok(Map.of(
+                    "message", "Código válido",
+                    "idUser", user.getIdUser(),
+                    "email", user.getEmail()
+            ));
+        }
+
+        // 🔹 Return por defecto si result no es String ni UserEntity
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("message", "Resultado inesperado al verificar el código"));
+    }
+}

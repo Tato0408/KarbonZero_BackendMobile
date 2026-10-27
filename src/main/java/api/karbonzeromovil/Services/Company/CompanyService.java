@@ -1,14 +1,24 @@
 package api.karbonzeromovil.Services.Company;
 
 import api.karbonzeromovil.Entities.Company.CompanyEntity;
+import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
+import api.karbonzeromovil.Entities.User.UserEntity;
+import api.karbonzeromovil.Models.DTO.Company.CompanyDTO;
+import api.karbonzeromovil.Models.DTO.User.UserDTO;
 import api.karbonzeromovil.Repositories.Company.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -17,11 +27,36 @@ public class CompanyService {
     @Autowired
     private CompanyRepository repo;
 
-    public List<CompanyDTO> getAllCompany(){
-        List<CompanyEntity> company = repo.findAll();
-        return company.stream()
-                .map(this::CompanyToDTO)
-                .collect(Collectors.toList());
+    public Map<String, String> getApiKey(String id) {
+        Map<String, String> answer = new HashMap<>();
+        CompanyEntity company = repo.getReferenceById(id);
+        answer.put("apiKey", company.getApiKey());
+        return answer;
+    }
+
+    public Page<CompanyDTO> getCompanyByName(String name, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CompanyEntity> companies = repo.findByNameContains(name, pageable);
+        return companies.map(this::CompanyToDTO);
+    }
+
+    public List<CompanyDTO> getAllCompaniesSp(){
+        List<CompanyEntity> entity = repo.findAll();
+
+        return entity.stream().map(this::CompanyToDTO).collect(Collectors.toList());
+    }
+
+    public Page<CompanyDTO> getAllCompanies(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<CompanyEntity> companies = repo.findAll(pageable);
+        return companies.map(this::CompanyToDTO);
+    }
+
+    public List<String> getAllCompaniesDomains() {
+        List<CompanyEntity> companies = repo.findAll();
+        return companies.stream()
+                .map(CompanyEntity::getFrontendDomain)
+                .toList();
     }
 
     public CompanyDTO getCompanyById(String id){
@@ -38,8 +73,8 @@ public class CompanyService {
         }
         try {
             CompanyEntity entity = DT0ToCompany(dto);
-            CompanyEntity savedCar = repo.save(entity);
-            return CompanyToDTO(savedCar);
+            CompanyEntity savedCompany = repo.save(entity);
+            return CompanyToDTO(savedCompany);
         } catch (Exception e) {
             throw new RuntimeException("The company could not be created"+ e.getMessage());
         }
@@ -51,7 +86,8 @@ public class CompanyService {
             if (repo.existsById((id))){
                 CompanyEntity entity = repo.getById(id);
                 entity.setName(dto.getName());
-                entity.setDomain(dto.getDomain());
+                entity.setBackendDomain(dto.getBackendDomain());
+                entity.setFrontendDomain(dto.getFrontendDomain());
 
                 CompanyEntity savedCompany = repo.save(entity);
                 return CompanyToDTO(savedCompany);
@@ -79,14 +115,17 @@ public class CompanyService {
         CompanyDTO dto = new CompanyDTO();
         dto.setIdCompany(entity.getIdCompany());
         dto.setName(entity.getName());
-        dto.setDomain(entity.getDomain());
+        dto.setBackendDomain(entity.getBackendDomain());
+        dto.setFrontendDomain(entity.getFrontendDomain());
         return dto;
     }
     private CompanyEntity DT0ToCompany(CompanyDTO dto){
         CompanyEntity entity = new CompanyEntity();
         entity.setIdCompany(dto.getIdCompany());
         entity.setName(dto.getName());
-        entity.setDomain(dto.getDomain());
+        entity.setBackendDomain(dto.getBackendDomain());
+        entity.setFrontendDomain(dto.getFrontendDomain());
+        entity.setApiKey(dto.getApiKey());
         return entity;
     }
 

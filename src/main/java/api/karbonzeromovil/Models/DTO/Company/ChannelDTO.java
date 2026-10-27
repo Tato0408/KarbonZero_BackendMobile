@@ -13,11 +13,16 @@ import lombok.ToString;
 @Getter @Setter
 public class ChannelDTO {
     private String idChannel;
-
-    @NotNull
     private String idCompany;
+
+    private String companyName;
 
     @NotBlank
     @Size(max = 200)
     private String name;
+
+    @Size(max = 200)
+    private String descript;
+
+    private String imagePath;
 }

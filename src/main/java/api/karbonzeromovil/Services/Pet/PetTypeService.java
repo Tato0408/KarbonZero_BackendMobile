@@ -11,9 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Slf4j
 @Service
 public class PetTypeService {
@@ -46,6 +43,11 @@ public class PetTypeService {
         catch (Exception e){
             throw new RuntimeException("Can't create Pet Type " + e.getMessage());
         }
+    }
+    public Page<PetTypeDTO> getPetTypeByName(String namePetType, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PetTypeEntity> users = repo.findByNamePetTypeContains(namePetType, pageable);
+        return users.map(this::PetTypeToDTO);
     }
 
     public PetTypeDTO updatePetType(String id, PetTypeDTO dto){

@@ -1,9 +1,7 @@
 package api.karbonzeromovil.Services.Food;
 
 import api.karbonzeromovil.Entities.Food.FoodCategoryEntity;
-import api.karbonzeromovil.Entities.Food.FoodEntity;
 import api.karbonzeromovil.Models.DTO.Food.FoodCategoryDTO;
-import api.karbonzeromovil.Models.DTO.Food.FoodDTO;
 import api.karbonzeromovil.Repositories.Food.FoodCategoryRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +20,18 @@ public class FoodCategoryService {
     @Autowired
     FoodCategoryRepository repo;
 
+
     public List<FoodCategoryDTO>getAllCategories(){
         List<FoodCategoryEntity> entity = repo.findAll();
         return entity.stream()
                 .map(this::categoryToDTO)
                 .collect(Collectors.toList());
+    }
+    public  Page<FoodCategoryDTO>getAllCategoriesPagination(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FoodCategoryEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::categoryToDTO);
     }
 
     public  Page<FoodCategoryDTO>getAllCategoriesPagination(int page, int size){
@@ -42,6 +47,12 @@ public class FoodCategoryService {
             return categoryToDTO(entity);
         }
         return null;
+    }
+
+    public Page<FoodCategoryDTO> getCategoryByName(String foodCategoryName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FoodCategoryEntity> users = repo.findByFoodCategoryNameContains(foodCategoryName, pageable);
+        return users.map(this::categoryToDTO);
     }
 
     public FoodCategoryDTO insertCategory(FoodCategoryDTO dto){

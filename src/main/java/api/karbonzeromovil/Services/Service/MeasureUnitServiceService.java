@@ -3,7 +3,6 @@ package api.karbonzeromovil.Services.Service;
 import api.karbonzeromovil.Entities.Service.MeasureUnitServiceEntity;
 import api.karbonzeromovil.Entities.Service.ServiceEntity;
 import api.karbonzeromovil.Models.DTO.Service.MeasureUnitServiceDTO;
-import api.karbonzeromovil.Models.DTO.Service.ServiceDTO;
 import api.karbonzeromovil.Repositories.Measure.MeasureUnitRepository;
 import api.karbonzeromovil.Repositories.Service.MeasureUnitServiceRepository;
 import api.karbonzeromovil.Repositories.Service.ServiceRepository;
@@ -44,6 +43,12 @@ public class MeasureUnitServiceService {
             throw new RuntimeException("The Measure could not be found" + err.getMessage());
 
         }
+    }
+    public Page<MeasureUnitServiceDTO> getMeasureUnitServiceByName(String serviceName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        List<ServiceEntity> services = serviceRepo.findByNameContains(serviceName);
+
+        return repo.findByIdServiceIn(services, pageable).map(this::MeasureUnitServiceToDTO);
     }
     public MeasureUnitServiceDTO insertMeasureUnitService(MeasureUnitServiceDTO dto) throws IllegalAccessException {
         if(dto == null){
@@ -88,8 +93,17 @@ public class MeasureUnitServiceService {
     private MeasureUnitServiceDTO MeasureUnitServiceToDTO(MeasureUnitServiceEntity entity){
         MeasureUnitServiceDTO dto = new MeasureUnitServiceDTO();
         dto.setIdMeasureUnitService(entity.getIdMeasureUnitService());
-        dto.setIdService(entity.getIdService().getIdService());
-        dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
+        if(entity.getIdMeasureUnit() != null && entity.getIdService() != null){
+            dto.setIdService(entity.getIdService().getIdService());
+            dto.setIdMeasureUnit(entity.getIdMeasureUnit().getIdMeasureUnit());
+            dto.setServiceName(entity.getIdService().getName());
+            dto.setMeasureUnitName(entity.getIdMeasureUnit().getNameMeasuresUnit());
+        }else{
+            dto.setIdService(null);
+            dto.setIdMeasureUnit(null);
+            dto.setServiceName("No hay relacion");
+            dto.setMeasureUnitName("No hay relacion");
+        }
         dto.setCarbonFootprint(entity.getCarbonFootprint());
         return dto;
     }

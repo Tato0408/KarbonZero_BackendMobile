@@ -6,7 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ServiceConsumptionRepository extends JpaRepository <ServiceConsumptionEntity, String> {
     Page<ServiceConsumptionEntity> findAll(Pageable pageable);
+    int countByIdUser_IdUser(String userId);
+
+    List<ServiceConsumptionEntity> findByLongitudeBetweenAndLatitudeBetween(Double minX, Double maxX, Double minY, Double maxY);
 }
