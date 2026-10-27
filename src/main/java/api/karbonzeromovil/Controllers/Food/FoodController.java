@@ -74,6 +74,7 @@ public class FoodController {
         }
         return ResponseEntity.ok(dto);
     }
+
     @GetMapping("/getAllFoodCategories")
     public List<FoodCategoryDTO> getAllFoodCategories()
     {

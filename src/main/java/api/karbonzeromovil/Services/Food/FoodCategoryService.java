@@ -34,6 +34,13 @@ public class FoodCategoryService {
         return entity.map(this::categoryToDTO);
     }
 
+    public  Page<FoodCategoryDTO>getAllCategoriesPagination(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<FoodCategoryEntity> entity = repo.findAll(pageable);
+
+        return entity.map(this::categoryToDTO);
+    }
+
     public FoodCategoryDTO getFoodCategoryById(String id){
         if(repo.existsById(id)){
             FoodCategoryEntity entity = repo.getReferenceById(id);
